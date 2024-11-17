@@ -1,4 +1,4 @@
-﻿@page "/movies/create"
+﻿@page "/Register2"
 @using Microsoft.EntityFrameworkCore
 @using BuddyFitProject.Models
 @inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
@@ -8,37 +8,22 @@
 
 <h1>Create</h1>
 
-<h2>Movie</h2>
+<h2>Users</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <EditForm method="post" Model="Movie" OnValidSubmit="AddMovie" FormName="create" Enhance>
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
+        <EditForm method="post" Model="Model1" OnValidSubmit="AddUser" FormName="create" Enhance>
             <div class="mb-3">
-                <label for="title" class="form-label">Title:</label>
-                <InputText id="title" @bind-Value="Movie.Title" class="form-control" />
-                <ValidationMessage For="() => Movie.Title" class="text-danger" />
+                <label for="UserName" class="form-label">Username:</label>
+                <InputText id="UserName" @bind-Value="Model1.UserName" class="form-control" />
             </div>
             <div class="mb-3">
-                <label for="releasedate" class="form-label">Release Date:</label>
-                <InputDate id="releasedate" @bind-Value="Movie.ReleaseDate" class="form-control" />
-                <ValidationMessage For="() => Movie.ReleaseDate" class="text-danger" />
+                <label for="Password" class="form-label">Passowrd:</label>
+                <InputText id="Password" @bind-Value="Model1.Password" class="form-control" />
             </div>
             <div class="mb-3">
-                <label for="genre" class="form-label">Genre:</label>
-                <InputText id="genre" @bind-Value="Movie.Genre" class="form-control" />
-                <ValidationMessage For="() => Movie.Genre" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="price" class="form-label">Price:</label>
-                <InputNumber id="price" @bind-Value="Movie.Price" class="form-control" />
-                <ValidationMessage For="() => Movie.Price" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="rating" class="form-label">Rating:</label>
-                <InputText id="rating" @bind-Value="Movie.Rating" class="form-control" />
-                <ValidationMessage For="() => Movie.Rating" class="text-danger" />
+                <label for="Email" class="form-label">Email:</label>
+                <InputText id="Email" @bind-Value="Model1.Email" class="form-control" />
             </div>
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
@@ -51,12 +36,12 @@
 
 @code {
     [SupplyParameterFromForm]
-    private Movie Movie { get; set; } = new();
+    private User Model1 { get; set; } = new();
 
-    private async Task AddMovie()
+    private async Task AddUser()
     {
         using var context = DbFactory.CreateDbContext();
-        context.Movie.Add(Movie);
+        context.User.Add(Model1);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/movies");
     }
