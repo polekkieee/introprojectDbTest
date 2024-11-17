@@ -43,6 +43,6 @@
         using var context = DbFactory.CreateDbContext();
         context.User.Add(Model1);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/movies");
+        // NavigationManager.NavigateTo("/movies");
     }
 }
