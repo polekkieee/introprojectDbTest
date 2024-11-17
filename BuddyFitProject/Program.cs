@@ -1,6 +1,15 @@
+using BuddyFitProject.Data;
 using BuddyFitProject.Components;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContextFactory<BuddyFitProjectContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BuddyFitProjectContext") ?? throw new InvalidOperationException("Connection string 'BuddyFitProjectContext' not found.")));
+
+//builder.Services.AddQuickGridEntityFrameworkAdapter();
+
+//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
