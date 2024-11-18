@@ -16,12 +16,17 @@ plaatje.SetPixel(10, 10, Color.Red);
 Graphics tekenaar = Graphics.FromImage(plaatje);
 tekenaar.FillEllipse(Brushes.Blue, 30, 40, 100, 50);
 
-// een Label kan ook gebruikt worden om een Bitmap te laten zien
-Label afbeelding = new Label();
-scherm.Controls.Add(afbeelding);
-afbeelding.Location = new Point(10, 10);
-afbeelding.Size = new Size(200, 200);
-afbeelding.BackColor = Color.White;
-afbeelding.Image = plaatje;
+    // Hoofdprogramma
+    static class Program
+    {
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MainForm());
+        }
+    }
+}
 
 Application.Run(scherm);
