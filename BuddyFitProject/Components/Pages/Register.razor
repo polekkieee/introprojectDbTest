@@ -1,0 +1,38 @@
+﻿@page "/register"
+@rendermode InteractiveServer
+
+<PageTitle>Register</PageTitle>
+
+<h1 class="h">Register</h1>
+<br/>
+<label class="l" for="fname">Username:</label>        <!--Make sure that it's visible on the screen that the user can only type 50 characters.-->
+<input class="i" type="text" id="fname" name="fname" @bind="Username"><br><br>
+
+<label class="l" for="fpassword">Password:</label>
+<input class="i" type="password" id="fpassword" name="fpassword"@bind="Password"><br><br>
+
+<label class="l" for="femail">E-mail:</label>
+<input class="i" type="email" id="femail" name="femail"@bind="Email"><br><br>
+
+<button class="btn2" @onclick="Save">Make my BuddyFit account</button>
+
+<img class="absolute" src="RegisterPage.png">
+
+<hr class="hr"/>
+
+
+@code {
+
+
+    private string Username { get; set; } = string.Empty;
+    private string Password { get; set; } = string.Empty;
+    private string Email { get; set; } = string.Empty;
+
+    private void Save()
+    {
+        var insertQuery = "INSERT INTO Product (Username, PassWord, Email) " +
+          "VALUES (@0, @1, @2)";
+        // Database.Execute(insertQuery, Username, Password, Email);
+    }
+
+}

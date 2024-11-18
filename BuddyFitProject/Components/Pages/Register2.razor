@@ -1,0 +1,48 @@
+﻿@page "/Register2"
+@using Microsoft.EntityFrameworkCore
+@using BuddyFitProject.Models
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Users</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Model1" OnValidSubmit="AddUser" FormName="create" Enhance>
+            <div class="mb-3">
+                <label for="UserName" class="form-label">Username:</label>
+                <InputText id="UserName" @bind-Value="Model1.UserName" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="Password" class="form-label">Passowrd:</label>
+                <InputText id="Password" @bind-Value="Model1.Password" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="Email" class="form-label">Email:</label>
+                <InputText id="Email" @bind-Value="Model1.Email" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/movies">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private User Model1 { get; set; } = new();
+
+    private async Task AddUser()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.User.Add(Model1);
+        await context.SaveChangesAsync();
+        // NavigationManager.NavigateTo("/movies");
+    }
+}
