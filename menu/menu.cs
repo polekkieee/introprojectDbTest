@@ -9,7 +9,7 @@ namespace FitBuddyApp
     {
         public MainForm()
         {
-           
+
             this.Text = "FitBuddy";
             this.Size = new Size(800, 600);
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -27,15 +27,34 @@ namespace FitBuddyApp
             this.Controls.Add(titleLabel);
 
             //Label gebruikersinfo
-            Label Gebruiker = new Label();
-            Gebruiker.Text = "Gebruikersinfo";
-            Gebruiker.Font = new Font("Arial", 8, FontStyle.Bold);
-            Gebruiker.ForeColor = Color.White;
-            Gebruiker.Size = new Size(740, 15);
-            Gebruiker.BackColor = Color.Black;
-            Gebruiker.Location = new Point(20, 20);
-            Gebruiker.TextAlign = ContentAlignment.TopCenter;
-            this.Controls.Add(Gebruiker);
+            Label Welcome = new Label();
+            Welcome.Text = "       Welcome \n         Name";
+            Welcome.ForeColor = Color.White; 
+            Welcome.Font = new Font("Verdana", 15, FontStyle.Bold | FontStyle.Italic);
+            Welcome.Location = new Point(20, 150);
+            Welcome.BackColor = Color.FromArgb(150, 255, 0, 0);
+            Welcome.Size = new Size(200, 50);
+            this.Controls.Add(Welcome);
+
+
+
+
+            Label userInfoLabel = new Label();
+            userInfoLabel.Text = "\n" +
+                                 "\n" + "\n" +
+                                 "Gender: \n" +
+                                 "\n" + "\n" +
+                                 "Age: \n" +
+                                 "\n" + "\n" + 
+                                 "Start Condition:";
+            userInfoLabel.Font = new Font("Arial", 15, FontStyle.Bold);
+            userInfoLabel.ForeColor = Color.White;
+            userInfoLabel.AutoSize = false;
+            userInfoLabel.Size = new Size(200, 400);
+            userInfoLabel.BackColor = Color.FromArgb(70, 200, 0, 0); 
+            userInfoLabel.TextAlign = ContentAlignment.TopLeft;
+            userInfoLabel.Location = new Point(20, 150);
+            this.Controls.Add(userInfoLabel);
 
             // Eerste knop
             Button button1 = new Button();
@@ -80,7 +99,7 @@ namespace FitBuddyApp
         {
             this.Hide(); // Verberg het huidige formulier
             form.ShowDialog(); // Toon het nieuwe formulier
-            this.Show(); // Laat het hoofdformulier zien als het nieuwe formulier wordt gesloten
+            this.Show(); 
         }
 
         // Methode om de achtergrond met een overloop te tekenen
