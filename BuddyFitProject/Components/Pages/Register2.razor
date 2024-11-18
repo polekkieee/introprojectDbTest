@@ -32,10 +32,6 @@
 
 <hr class="hr" />
 
-<div>
-    <a href="/movies">Back to List</a>
-</div>
-
 @code {
     [SupplyParameterFromForm]
     private User Model1 { get; set; } = new();
@@ -45,6 +41,6 @@
         using var context = DbFactory.CreateDbContext();
         context.User.Add(Model1);
         await context.SaveChangesAsync();
-        // NavigationManager.NavigateTo("/movies");
+        //NavigationManager.NavigateTo("/Login");
     }
 }
