@@ -5,24 +5,24 @@ using System.Windows.Forms;
 
 namespace FitBuddyApp
 {
-    public partial class Settings : Form
+    public partial class Shop : Form
     {
-        public Settings()
+        public Shop()
         {
-            this.Text = "settings";
+            this.Text = "Shop";
             this.Size = new Size(800, 600);
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            Label Settingslabel = new Label();
-            Settingslabel.Text = "settings";
-            Settingslabel.Font = new Font("Arial", 25, FontStyle.Bold | FontStyle.Italic);
-            Settingslabel.ForeColor = Color.White;
-            Settingslabel.BackColor = Color.Transparent;
-            Settingslabel.Location = new Point(330, 20);
-            Settingslabel.Size = new Size(200, 80);
-            this.Controls.Add(Settingslabel);
+            Label Shoplabel = new Label();
+            Shoplabel.Text = "Shop";
+            Shoplabel.Font = new Font("Arial", 25, FontStyle.Bold | FontStyle.Italic);
+            Shoplabel.ForeColor = Color.White;
+            Shoplabel.BackColor = Color.Transparent;
+            Shoplabel.Location = new Point(370, 20);
+            Shoplabel.Size = new Size(200, 80);
+            this.Controls.Add(Shoplabel);
 
-            this.Paint += new PaintEventHandler(settingsForm_Paint);
+            this.Paint += new PaintEventHandler(ShopForm_Paint);
 
             //back to main menu
             Button main = new Button();
@@ -50,8 +50,7 @@ namespace FitBuddyApp
         }
 
 
-
-        private void settingsForm_Paint(object sender, PaintEventArgs e)
+        private void ShopForm_Paint(object sender, PaintEventArgs e)
         {   // Method to show gradient background
 
             Graphics g = e.Graphics;
@@ -60,6 +59,7 @@ namespace FitBuddyApp
             {
                 g.FillRectangle(brush, rect);
             }
+
             // draw coin
             int x = 620;
             int y = 15;
@@ -89,6 +89,5 @@ namespace FitBuddyApp
             Brush levelBrush = Brushes.Black;
             g.DrawString("LVL", levelFont, levelBrush, 622, 77);
         }
-
     }
 }

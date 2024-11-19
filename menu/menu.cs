@@ -82,11 +82,20 @@ namespace FitBuddyApp
             this.Controls.Add(button1);
 
             // second button
+            Button button5 = new Button();
+            button5.Text = "My stats";
+            button5.Font = new Font("Arial", 14);
+            button5.Size = new Size(200, 50);
+            button5.Location = new Point((this.Width - button5.Width) / 2, 250);
+            button5.Click += (s, e) => OpenForm(new Stats());
+            this.Controls.Add(button5);
+
+            // second button
             Button button2 = new Button();
             button2.Text = "Pet";
             button2.Font = new Font("Arial", 14);
             button2.Size = new Size(200, 50);
-            button2.Location = new Point((this.Width - button2.Width) / 2, 260);
+            button2.Location = new Point((this.Width - button2.Width) / 2, 320);
             button2.Click += (s, e) => OpenForm(new Pets());
             this.Controls.Add(button2);
 
@@ -95,7 +104,7 @@ namespace FitBuddyApp
             button3.Text = "Settings";
             button3.Font = new Font("Arial", 14);
             button3.Size = new Size(200, 50);
-            button3.Location = new Point((this.Width - button3.Width) / 2, 340);
+            button3.Location = new Point((this.Width - button3.Width) / 2, 390);
             button3.Click += (s, e) => OpenForm(new Settings());
             this.Controls.Add(button3);
 
@@ -104,7 +113,7 @@ namespace FitBuddyApp
             button4.Text = "Help";
             button4.Font = new Font("Arial", 14);
             button4.Size = new Size(200, 50);
-            button4.Location = new Point((this.Width - button4.Width) / 2, 420);
+            button4.Location = new Point((this.Width - button4.Width) / 2, 460);
             button4.Click += (s, e) => OpenForm(new Help());
             this.Controls.Add(button4);
 
@@ -164,6 +173,22 @@ namespace FitBuddyApp
             Font levelFont = new Font("Arial", 25, FontStyle.Bold | FontStyle.Italic);
             Brush levelBrush = Brushes.Black;
             g.DrawString("LVL", levelFont, levelBrush, 534, 271);
+
+            //shop logo
+            Brush Shop = new SolidBrush(Color.White);
+            Pen Shopoutline = new Pen(Color.Black, 4);
+            g.FillEllipse(Shop,670 , 480, size, 40);
+            g.DrawEllipse(Shopoutline, 670, 480, size, 40);
+            
+            Button shop = new Button();
+            shop.Location = new Point(675, 490);
+            shop.Size = new Size(70, 20);
+            shop.Text = "Shop"; 
+            shop.Font = new Font("Arial", 10, FontStyle.Bold | FontStyle.Italic);  
+            shop.Click += (s, e) => OpenForm(new Shop());
+
+            Controls.Add(shop);
+
 
         }
     }

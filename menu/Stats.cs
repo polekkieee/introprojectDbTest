@@ -19,7 +19,7 @@ namespace FitBuddyApp
             Statslabel.ForeColor = Color.White;
             Statslabel.BackColor = Color.Transparent;
             Statslabel.Location = new Point(330, 20);
-            Statslabel.Size = new Size(300, 80);
+            Statslabel.Size = new Size(200, 80);
             this.Controls.Add(Statslabel);
 
             this.Paint += new PaintEventHandler(statsForm_Paint);
@@ -46,6 +46,11 @@ namespace FitBuddyApp
             this.Controls.Add(main);
             main.Click += (s, e) => OpenForm(new MainForm());
 
+            //Money amount and level
+            Label money = new Label(); money.Text = "1000"; money.BackColor = Color.Transparent; money.Size = new Size(150, 30); money.Location = new Point(670, 20); Controls.Add(money); money.Font = new Font("Arial", 20, FontStyle.Bold | FontStyle.Italic);
+            Label lvl = new Label(); lvl.Text = "50"; lvl.BackColor = Color.Transparent; lvl.Size = new Size(150, 30); lvl.Location = new Point(670, 70); Controls.Add(lvl); lvl.Font = new Font("Arial", 20, FontStyle.Bold | FontStyle.Italic);
+
+
 
         }
         private void OpenForm(Form form)
@@ -63,6 +68,37 @@ namespace FitBuddyApp
             {
                 g.FillRectangle(brush, rect);
             }
+
+            // draw coin
+            int x = 620;
+            int y = 15;
+            int size = 40;
+
+            Brush outerBrush = new SolidBrush(Color.Gold);
+            g.FillEllipse(outerBrush, x, y, size, size);
+
+            Brush innerBrush = new SolidBrush(Color.Orange);
+            int space = 5; // space between inner and outer cirkle 
+            g.FillEllipse(innerBrush, x + space, y + space, size - 2 * space, size - 2 * space);
+
+            Pen blackPen = new Pen(Color.Black, 2);
+            g.DrawEllipse(blackPen, x, y, size, size);
+            g.DrawEllipse(blackPen, x + space, y + space, size - 2 * space, size - 2 * space);
+
+            Font dollarFont = new Font("Arial", 20, FontStyle.Bold);
+            Brush dollarBrush = Brushes.Black;
+            g.DrawString("$", dollarFont, dollarBrush, 628, 20);
+
+            //level logo
+            Brush level = new SolidBrush(Color.DarkGreen);
+            Brush innerlevel = new SolidBrush(Color.LightGreen);
+            g.FillEllipse(level, x, y + 50, size, size);
+            g.FillEllipse(innerlevel, x + 4, y + 50 + 4, size - 2 * 4, size - 2 * 4);
+            Font levelFont = new Font("Arial", 12, FontStyle.Bold | FontStyle.Italic);
+            Brush levelBrush = Brushes.Black;
+            g.DrawString("LVL", levelFont, levelBrush, 622, 77);
         }
+
+
     }
 }
