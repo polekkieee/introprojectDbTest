@@ -1,7 +1,6 @@
-﻿@page "/session"
-using Microsoft.EntityFrameworkCore
-@using BuddyFitProject.Models
+﻿@page "/Session"
 @using Microsoft.EntityFrameworkCore
+@using BuddyFitProject.Models
 @inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
 @inject NavigationManager NavigationManager
 
@@ -11,7 +10,7 @@ using Microsoft.EntityFrameworkCore
 <p>Finished working out? Log your session!</p>
 
 <hr/>
-
+<p> I have done the following workout for [] minutes</p>
 <div class="row">
 	<div class="col-md-4">
 		<EditForm method ="post" Model="WorkSesh" OnValidSubmit="LogWorkout" Enhance>
@@ -40,8 +39,7 @@ using Microsoft.EntityFrameworkCore
 				<label for="plank">Plank:</label>
 				<InputText id="plank" @bind-Value="WorkSesh.Plank" class="form-control"></InputText>
 			</div>
-			<!--TODO: LoggedAt Datetime wanneer is iets eigenljk gelogd door user-->
-				<button type="submit" class="btn btn-primary">I finihsed working out!</button>
+			<button type="submit" class="btn btn-primary">I finihsed working out!</button>
 		</EditForm>
 	</div>
 </div>
@@ -50,9 +48,10 @@ using Microsoft.EntityFrameworkCore
 @code{
 	[SupplyParameterFromForm]
 	private Workout WorkSesh { get; set; } = new();
-	
+
 	private async Task LogWorkout()
 	{
+		WorkSesh.LoggedAt = DateTime.Now;
 		using var context = DbFactory.CreateDbContext();
 		context.Workout.Add(WorkSesh);
 		await context.SaveChangesAsync();
