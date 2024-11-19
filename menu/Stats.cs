@@ -5,24 +5,35 @@ using System.Windows.Forms;
 
 namespace FitBuddyApp
 {
-    public partial class Help : Form
+    public partial class Stats : Form
     {
-        public Help()
+        public Stats()
         {
-            this.Text = "Help";
+            this.Text = "Stats";
             this.Size = new Size(800, 600);
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            Label Helplabel = new Label();
-            Helplabel.Text = "Help";
-            Helplabel.Font = new Font("Arial", 25, FontStyle.Bold | FontStyle.Italic);
-            Helplabel.ForeColor = Color.White;
-            Helplabel.BackColor = Color.Transparent;
-            Helplabel.Location = new Point(370, 20);
-            Helplabel.Size = new Size(400, 80);
-            this.Controls.Add(Helplabel);
+            Label Statslabel = new Label();
+            Statslabel.Text = "Stats";
+            Statslabel.Font = new Font("Arial", 25, FontStyle.Bold | FontStyle.Italic);
+            Statslabel.ForeColor = Color.White;
+            Statslabel.BackColor = Color.Transparent;
+            Statslabel.Location = new Point(330, 20);
+            Statslabel.Size = new Size(300, 80);
+            this.Controls.Add(Statslabel);
 
-            this.Paint += new PaintEventHandler(HelpForm_Paint);
+            this.Paint += new PaintEventHandler(statsForm_Paint);
+
+            //back to workout
+            Button workout = new Button();
+            workout.Text = "Workout";
+            workout.Font = new Font("Arial", 14);
+            workout.Size = new Size(120, 25);
+            workout.Location = new Point(20, 20);
+            workout.ForeColor = Color.White;
+            workout.BackColor = Color.DarkRed;
+            this.Controls.Add(workout);
+            workout.Click += (s, e) => OpenForm(new Workout());
 
             //back to main menu
             Button main = new Button();
@@ -43,9 +54,7 @@ namespace FitBuddyApp
             form.ShowDialog(); // show new file
             this.Show();
         }
-
-
-        private void HelpForm_Paint(object sender, PaintEventArgs e)
+        private void statsForm_Paint(object sender, PaintEventArgs e)
         {   // Method to show gradient background
 
             Graphics g = e.Graphics;

@@ -128,6 +128,8 @@ namespace FitBuddyApp
             {
                 g.FillRectangle(brush, rect);
             }
+           
+            //logo fitbuddy
             Brush b = new SolidBrush(Color.FromArgb(150, 255, 0, 0));
             Pen p = new Pen(Color.White, 3);
             g.FillEllipse(b, 230, 35, 340, 110);
