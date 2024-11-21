@@ -12,16 +12,16 @@
     <div class="col-md-3">
         <EditForm method="post" Model="Model1" OnValidSubmit="AddUser" FormName="create" Enhance>
             <div class="mb-2">
-                <label for="UserName" class="l">Username:</label>
-                <InputText id="UserName" @bind-Value="Model1.UserName" class="i" />
-            </div>
-            <div class="mb-2">
-                <label for="Password" class="l">Password:</label>
-                <InputText id="Password" @bind-Value="Model1.Password" class="i" />
+                <label for="Username" class="l">Username:</label>
+                <InputText id="Username" @bind-Value="Model1.Username" class="i" />
             </div>
             <div class="mb-2">
                 <label for="Email" class="l">Email:</label>
                 <InputText id="Email" @bind-Value="Model1.Email" class="i" />
+            </div>
+            <div class="mb-2">
+                <label for="Password" class="l">Password:</label>
+                <InputText id="Password" @bind-Value="Model1.Password" class="i" />
             </div>
             <button type="submit" class="btn2">Create</button>
         </EditForm>
@@ -41,6 +41,6 @@
         using var context = DbFactory.CreateDbContext();
         context.User.Add(Model1);
         await context.SaveChangesAsync();
-        //NavigationManager.NavigateTo("/Login");
+        NavigationManager.NavigateTo("/Login");
     }
 }

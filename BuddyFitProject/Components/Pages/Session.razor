@@ -13,32 +13,32 @@
 <p> I have done the following workout for [] minutes</p>
 <div class="row">
 	<div class="col-md-4">
-		<EditForm method ="post" Model="WorkSesh" OnValidSubmit="LogWorkout" Enhance>
+		<EditForm method ="post" Model="WorkoutSession" OnValidSubmit="LogWorkout" Enhance>
 			<!--is hier een DataAnnotationsValidator nodig?-->
-			<div class="mb-3">
+			@* <div class="mb-3">
 				<label for="pushup">Pushups:</label>
-				<InputText id="pushup" @bind-Value="WorkSesh.Pushups" class="form-control"></InputText>
+				<InputText id="pushup" @bind-Value="WorkoutSession.Name" class="form-control"></InputText>
 			</div>
 			<div class="mb-3">
 				<label for="situp">Situps:</label>
-				<InputText id="situps" @bind-Value="WorkSesh.Situps" class="form-control"></InputText>
+				<InputText id="situps" @bind-Value="WorkoutSession.Situps" class="form-control"></InputText>
 			</div>
 			<div class="mb-3">
 				<label for="jumpingjacks">Jumping Jacks:</label>
-				<InputText id="jumpingjacks" @bind-Value="WorkSesh.JumpingJacks" class="form-control"></InputText>
+				<InputText id="jumpingjacks" @bind-Value="WorkoutSession.JumpingJacks" class="form-control"></InputText>
 			</div>	
 			<div class="mb-3">
 				<label for="squats">Squats:</label>
-				<InputText id="squats" @bind-Value="WorkSesh.Squats" class="form-control"></InputText>
+				<InputText id="squats" @bind-Value="WorkoutSession.Squats" class="form-control"></InputText>
 			</div>
 			<div class="mb-3">
 				<label for="running">Running:</label>
-				<InputText id="running" @bind-Value="WorkSesh.Running" class="form-control"></InputText>
+				<InputText id="running" @bind-Value="WorkoutSession.Running" class="form-control"></InputText>
 			</div>
 			<div class="mb-3">
 				<label for="plank">Plank:</label>
-				<InputText id="plank" @bind-Value="WorkSesh.Plank" class="form-control"></InputText>
-			</div>
+				<InputText id="plank" @bind-Value="WorkoutSession.Plank" class="form-control"></InputText>
+			</div> *@
 			<button type="submit" class="btn btn-primary">I finihsed working out!</button>
 		</EditForm>
 	</div>
@@ -47,13 +47,13 @@
 
 @code{
 	[SupplyParameterFromForm]
-	private Workout WorkSesh { get; set; } = new();
+	private WorkoutSession WorkoutSession { get; set; } = new();
 
 	private async Task LogWorkout()
 	{
-		WorkSesh.LoggedAt = DateTime.Now;
+		WorkoutSession.Timestamp = DateTime.Now;
 		using var context = DbFactory.CreateDbContext();
-		context.Workout.Add(WorkSesh);
+		context.WorkoutSession.Add(WorkoutSession);
 		await context.SaveChangesAsync();
 	}
 }
