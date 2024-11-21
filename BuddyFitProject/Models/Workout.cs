@@ -5,7 +5,7 @@ namespace BuddyFitProject.Models;
 
 public class Workout
 {
-  
+    [Key]
     public string Pushups { get; set; }
     public string Situps { get; set; }
     public string Plank { get; set; } 
