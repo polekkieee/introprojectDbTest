@@ -1,11 +1,11 @@
 ﻿@page "/Register2"
-@using Microsoft.EntityFrameworkCore
 @using BuddyFitProject.Models
+@using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
 @inject NavigationManager NavigationManager
 
 <PageTitle>Create</PageTitle>
-
+<!--Register2 is de goeie, register 1 niet gebruiken-->
 <h1>Create</h1>
 
 <h2>Users</h2>
@@ -31,7 +31,7 @@
 </div>
 
 <div>
-    <a href="/movies">Back to List</a>
+    <a href="/">Go Back</a>
 </div>
 
 @code {
@@ -43,6 +43,6 @@
         using var context = DbFactory.CreateDbContext();
         context.User.Add(Model1);
         await context.SaveChangesAsync();
-        // NavigationManager.NavigateTo("/movies");
+        NavigationManager.NavigateTo("/Session");
     }
 }
