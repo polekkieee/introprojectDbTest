@@ -1,7 +1,8 @@
-﻿@page "/Register2"
+﻿@page "/register2"
 @using Microsoft.EntityFrameworkCore
 @using BuddyFitProject.Models
-@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
+@using BuddyFitProject.Data
+@inject BuddyFitProjectContext appDbContext
 @inject NavigationManager NavigationManager
 
 <PageTitle>Create</PageTitle>
@@ -38,9 +39,8 @@
 
     private async Task AddUser()
     {
-        using var context = DbFactory.CreateDbContext();
-        context.User.Add(Model1);
-        await context.SaveChangesAsync();
-        //NavigationManager.NavigateTo("/Login");
+        appDbContext.User.Add(Model1);
+        await appDbContext.SaveChangesAsync();
+        //NavigationManager.NavigateTo("/counter");
     }
 }
