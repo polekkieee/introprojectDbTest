@@ -40,7 +40,7 @@
     private async Task AddUser()
     {
         appDbContext.User.Add(Model1);
-        await appDbContext.SaveChangesAsync();
-        //NavigationManager.NavigateTo("/counter");
+        await appDbContext.SaveChangesAsync();;
+        NavigationManager.NavigateTo("/session");
     }
 }

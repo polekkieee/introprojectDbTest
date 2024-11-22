@@ -1,0 +1,32 @@
+﻿@page "/stats"
+@using BuddyFitProject.Models
+@using BuddyFitProject.Data
+@using Microsoft.EntityFrameworkCore
+@inject BuddyFitProjectContext appDbContext
+@inject NavigationManager NavigationManager
+
+<PageTitle>Statistics</PageTitle>
+
+<h1>Workout History</h1>
+<p>Check your previous workouts here</p>
+
+<table class="table">
+	<thead>
+		<tr>Workouts</tr>
+	</thead>
+	<tbody>
+		@foreach (var w in workouts)
+		{
+
+		}
+	</tbody>
+</table>
+
+@code {
+	private List<Workout> workouts = new();
+
+	protected async Task OnInitialized()
+	{
+		
+	}
+}

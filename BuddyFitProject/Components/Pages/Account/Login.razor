@@ -57,6 +57,6 @@
 		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 		var principal = new ClaimsPrincipal(identity);
 		await httpcontext.SignInAsync(principal);
-		navigationManager.NavigateTo("/");
+		navigationManager.NavigateTo("/session");
 	}
 }
