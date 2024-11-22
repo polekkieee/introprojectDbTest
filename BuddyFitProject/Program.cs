@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextFactory<BuddyFitProjectContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BuddyFitProjectContext") ?? throw new InvalidOperationException("Connection string 'BuddyFitProjectContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BuddyFitContext") ?? throw new InvalidOperationException("Connection string 'BuddyFitContext' not found.")));
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

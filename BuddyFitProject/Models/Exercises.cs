@@ -1,6 +1,6 @@
 ﻿namespace BuddyFitProject.Models
 {
-    public class Exercise
+    public class Exercises
     {
         public int Id { get; set; }
 

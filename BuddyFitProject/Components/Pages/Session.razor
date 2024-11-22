@@ -47,13 +47,13 @@
 
 @code{
 	[SupplyParameterFromForm]
-	private WorkoutSession WorkoutSession { get; set; } = new();
+	private WorkoutSessions WorkoutSession { get; set; } = new();
 
 	private async Task LogWorkout()
 	{
 		WorkoutSession.Timestamp = DateTime.Now;
 		using var context = DbFactory.CreateDbContext();
-		context.WorkoutSession.Add(WorkoutSession);
+		context.WorkoutSessions.Add(WorkoutSession);
 		await context.SaveChangesAsync();
 	}
 }

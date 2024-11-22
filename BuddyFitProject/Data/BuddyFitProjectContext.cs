@@ -9,13 +9,13 @@ namespace BuddyFitProject.Data
 {
     public class BuddyFitProjectContext(DbContextOptions<BuddyFitProjectContext> options) : DbContext(options)
     {
-        public DbSet<Exercise> Exercise { get; set; } = default!;
-        public DbSet<Item> Item { get; set; } = default!;
-        public DbSet<Pet> Pet { get; set; } = default!;
-        public DbSet<User> User { get; set; } = default!;
-        public DbSet<UserInventory> UserInventory { get; set; } = default!;
+        public DbSet<Exercises> Exercises { get; set; } = default!;
+        public DbSet<Items> Items { get; set; } = default!;
+        public DbSet<Pets> Pets { get; set; } = default!;
+        public DbSet<Users> Users { get; set; } = default!;
+        public DbSet<UserInventory> UserInventorys { get; set; } = default!;
         public DbSet<UserStatistics> UserStatistics { get; set; } = default!;
-        public DbSet<WorkoutSession> WorkoutSession { get; set; } = default!;
+        public DbSet<WorkoutSessions> WorkoutSessions { get; set; } = default!;
 
     }
 }

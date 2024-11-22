@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BuddyFitProject.Models;
 
-public class User
+public class Users
 {
     public int Id { get; set; }
     public string Username { get; set; }
@@ -14,10 +14,9 @@ public class User
     public int Start_condition { get; set; }   
     public int Coins { get; set; } 
 
-    public User()
+    public Users()
     {
         Age = 0;
-        Gender = "Male";
         Start_condition = 0;
         Coins = 0;
     }
