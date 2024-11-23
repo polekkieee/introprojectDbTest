@@ -11,6 +11,8 @@ builder.Services.AddDbContext<BuddyFitProjectContext>(options =>
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -24,6 +26,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+
 
 if (!app.Environment.IsDevelopment())
 {

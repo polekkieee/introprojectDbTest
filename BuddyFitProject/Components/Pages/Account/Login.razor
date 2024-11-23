@@ -23,7 +23,14 @@
 	<InputText @bind-Value="Model1.Password" />
 	<br />
 	<span> @errorMessage </span>
-	<button type="submit" b2">Login</button>
+	<button type="submit" class="b2">Login</button>
+	<a href="register">
+		<button class="b2">Register</button>
+	</a>
+
+	<a href="password">
+		<button class="b3">Password forgotten?</button>
+	</a>
 </EditForm>
 
 @code {
