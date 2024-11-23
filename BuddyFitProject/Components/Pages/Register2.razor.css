@@ -1,5 +1,4 @@
-﻿label
-{
+﻿label {
     width: 6em;
 }
 
@@ -10,7 +9,7 @@
 
 .h {
     font-family: Impact;
-    font-size: 4em;
+    font-size: 2em;
 }
 
 .i {
