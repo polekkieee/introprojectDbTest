@@ -1,4 +1,4 @@
-﻿@page "/Register2"
+﻿@page "/Register"
 @using Microsoft.EntityFrameworkCore
 @using BuddyFitProject.Models
 @inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
@@ -23,10 +23,10 @@
                 <label for="Password" class="l">Password:</label>
                 <InputText id="Password" @bind-Value="User.Password" class="i" />
             </div>
-            <div class="mb-2">
+           @* <div class="mb-2">
                 <label for="Gender" class="l">Gender:</label>
                 <InputText id="Gender" @bind-Value="User.Gender" class="i" />
-            </div>
+            </div>*@
             <button type="submit" class="btn2">Create</button>
         </EditForm>
     </div>

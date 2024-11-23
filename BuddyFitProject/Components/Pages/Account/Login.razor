@@ -16,7 +16,7 @@
 <h1 class="l2">Login</h1>
 <EditForm FormName="LoginUser" Model="@Model1" OnValidSubmit="LoginUser">
 	<label for="UserName" class="l2">Username:</label>
-	<InputText @bind-Value="Model1.UserName" />
+	<InputText @bind-Value="Model1.Username" />
 	<br>
 	<br>
 	<label for="Password" class="l2">Password:</label>
@@ -24,18 +24,15 @@
 	<br />
 	<span> @errorMessage </span>
 	<button type="submit" class="b2">Login</button>
-	<a href="register">
-		<button class="b2">Register</button>
-	</a>
-
-	<a href="password">
-		<button class="b3">Password forgotten?</button>
-	</a>
+	<a href="register"></a>
+	<button class="b2">Register</button>
+	<a href="password"></a>
+	<button class="b3">Password forgotten?</button>
 </EditForm>
 
 @code {
 	[SupplyParameterFromForm]
-	private User Model1 { get; set; } = new();
+	private Users Model1 { get; set; } = new();
 
 	[CascadingParameter]
 	public HttpContext httpcontext { get; set; } = default!;
@@ -46,8 +43,8 @@
 
 	private async Task LoginUser()
 	{
-		var userAccount = appDbContext.User
-			.Where(x => x.UserName == Model1.UserName)
+		var userAccount = appDbContext.Users
+			.Where(x => x.Username == Model1.Username)
 			.FirstOrDefault();
 
 		if (userAccount is null || userAccount.Password != Model1.Password)
@@ -58,7 +55,7 @@
 
 		var claims = new List<Claim>
 		{
-			new Claim(ClaimTypes.Name, Model1.UserName),
+			new Claim(ClaimTypes.Name, Model1.Username),
 		};
 
 		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
