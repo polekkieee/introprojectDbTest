@@ -5,8 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<BuddyFitProjectContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BuddyFitProjectContext") ?? throw new InvalidOperationException("Connection string 'BuddyFitProjectContext' not found.")));
+builder.Services.AddDbContextFactory<BuddyFitProjectContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BuddyFitContext") ?? throw new InvalidOperationException("Connection string 'BuddyFitContext' not found.")));
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

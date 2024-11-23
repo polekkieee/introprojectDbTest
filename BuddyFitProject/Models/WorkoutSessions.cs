@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BuddyFitProject.Models;
 
-public class WorkoutSession
+public class WorkoutSessions
 {
     public int Id { get; set; }
     public int UserId { get; set; }

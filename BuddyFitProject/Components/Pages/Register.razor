@@ -1,8 +1,7 @@
-﻿@page "/register"
+﻿@page "/Register2"
 @using Microsoft.EntityFrameworkCore
 @using BuddyFitProject.Models
-@using BuddyFitProject.Data
-@inject BuddyFitProjectContext appDbContext
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
 @inject NavigationManager NavigationManager
 
 <PageTitle>Create</PageTitle>
@@ -11,18 +10,22 @@
 <hr />
 <div class="row">
     <div class="col-md-3">
-        <EditForm method="post" Model="Model1" OnValidSubmit="AddUser" FormName="create" Enhance>
+        <EditForm method="post" Model="User" OnValidSubmit="AddUser" FormName="create" Enhance>
             <div class="mb-2">
-                <label for="UserName" class="l">Username:</label>
-                <InputText id="UserName" @bind-Value="Model1.UserName" class="i" />
-            </div>
-            <div class="mb-2">
-                <label for="Password" class="l">Password:</label>
-                <InputText id="Password" @bind-Value="Model1.Password" class="i" />
+                <label for="Username" class="l">Username:</label>
+                <InputText id="Username" @bind-Value="User.Username" class="i" />
             </div>
             <div class="mb-2">
                 <label for="Email" class="l">Email:</label>
-                <InputText id="Email" @bind-Value="Model1.Email" class="i" />
+                <InputText id="Email" @bind-Value="User.Email" class="i" />
+            </div>
+            <div class="mb-2">
+                <label for="Password" class="l">Password:</label>
+                <InputText id="Password" @bind-Value="User.Password" class="i" />
+            </div>
+            <div class="mb-2">
+                <label for="Gender" class="l">Gender:</label>
+                <InputText id="Gender" @bind-Value="User.Gender" class="i" />
             </div>
             <button type="submit" class="btn2">Create</button>
         </EditForm>
@@ -35,12 +38,13 @@
 
 @code {
     [SupplyParameterFromForm]
-    private User Model1 { get; set; } = new();
+    private Users User { get; set; } = new();
 
     private async Task AddUser()
     {
-        appDbContext.User.Add(Model1);
-        await appDbContext.SaveChangesAsync();;
-        NavigationManager.NavigateTo("/session");
+        using var context = DbFactory.CreateDbContext();
+        context.Users.Add(User);
+        await context.SaveChangesAsync();
+        // NavigationManager.NavigateTo("/Login");
     }
 }
