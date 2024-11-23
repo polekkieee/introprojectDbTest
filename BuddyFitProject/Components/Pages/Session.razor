@@ -1,62 +1,57 @@
-﻿@page "/Session"
+﻿@page "/session"
 @using Microsoft.EntityFrameworkCore
 @using BuddyFitProject.Models
-@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
+@using BuddyFitProject.Data
 @inject NavigationManager NavigationManager
+@inject BuddyFitProjectContext appDbContext
 
 <PageTitle>Session</PageTitle>
 
 <h1>Workout</h1>
 <p>Finished working out? Log your session!</p>
 
-<hr/>
+<hr />
 <p> I have done the following workout for [] minutes</p>
 <div class="row">
-	<div class="col-md-4">
-		<EditForm method ="post" Model="WorkoutSession" OnValidSubmit="LogWorkout" FormName="create" Enhance>
-			<!--is hier een DataAnnotationsValidator nodig?-->
-			@* <div class="mb-3">
-				<label for="pushup">Pushups:</label>
-				<InputText id="pushup" @bind-Value="WorkoutSession.Name" class="form-control"></InputText>
-			</div>
-			<div class="mb-3">
-				<label for="situp">Situps:</label>
-				<InputText id="situps" @bind-Value="WorkoutSession.Situps" class="form-control"></InputText>
-			</div>
-			<div class="mb-3">
-				<label for="jumpingjacks">Jumping Jacks:</label>
-				<InputText id="jumpingjacks" @bind-Value="WorkoutSession.JumpingJacks" class="form-control"></InputText>
-			</div>	
-			<div class="mb-3">
-				<label for="squats">Squats:</label>
-				<InputText id="squats" @bind-Value="WorkoutSession.Squats" class="form-control"></InputText>
-			</div>
-			<div class="mb-3">
-				<label for="running">Running:</label>
-				<InputText id="running" @bind-Value="WorkoutSession.Running" class="form-control"></InputText>
-			</div>
-			<div class="mb-3">
-				<label for="plank">Plank:</label>
-				<InputText id="plank" @bind-Value="WorkoutSession.Plank" class="form-control"></InputText>
-			</div> *@
-			<button type="submit" class="btn btn-primary">I finihsed working out!</button>
-		</EditForm>
-	</div>
+    <div class="col-md-4">
+        <EditForm method="post" Model="WorkSesh" OnValidSubmit="LogWorkout" FormName="create2" Enhance>
+            <div class="mb-3">
+                <label for="pushup">Pushups:</label>
+                <InputText id="pushup" @bind-Value="WorkSesh.Pushups" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="situp">Situps:</label>
+                <InputText id="situps" @bind-Value="WorkSesh.Situps" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="jumpingjacks">Jumping Jacks:</label>
+                <InputText id="jumpingjacks" @bind-Value="WorkSesh.JumpingJacks" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="squats">Squats:</label>
+                <InputText id="squats" @bind-Value="WorkSesh.Squats" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="running">Running:</label>
+                <InputText id="running" @bind-Value="WorkSesh.Running" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="plank">Plank:</label>
+                <InputText id="plank" @bind-Value="WorkSesh.Plank" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">I finished working out!</button>
+        </EditForm>
+    </div>
 </div>
 
+@code {
+    [SupplyParameterFromForm]
+    private Workout WorkSesh { get; set; } = new Workout();
 
-@code{
-	[SupplyParameterFromForm]
-	private WorkoutSession WorkoutSession { get; set; } = new();
-
-	private async Task LogWorkout()
-	{
-		WorkoutSession.Timestamp = DateTime.Now;
-		using var context = DbFactory.CreateDbContext();
-		context.WorkoutSession.Add(WorkoutSession);
-		await context.SaveChangesAsync();
-	}
+    private async Task LogWorkout()
+    {
+        WorkSesh.LoggedAt = DateTime.Now;
+        appDbContext.Workout.Add(WorkSesh); // Ensure this matches the DbSet for Workout
+        await appDbContext.SaveChangesAsync();
+    }
 }
-
-
-
