@@ -3,6 +3,9 @@
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
 @inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Mvc;
+@using System.Data.SqlClient;
+
 
 <PageTitle>Statistics</PageTitle>
 
@@ -11,21 +14,122 @@
 
 <table class="table">
 	<thead>
-		<tr>Workouts</tr>
+		<tr>
+			<th>ID</th>
+			<th>UserId</th>
+			<th>ExerciseId</th>
+			<th>Minutes</th>
+			<th>Reward</th>
+			<th>Timestamp</th>
+		</tr>
 	</thead>
-	<tbody>
-		@foreach(var w in workouts)
-		{
 
+	<tbody>
+		@foreach(var session in listSession)
+		{
+			<tr>
+				<td>@session.Id</td>
+				<td>@session.UserId</td>
+				<td>@session.ExerciseId</td>
+				<td>@session.Minutes</td>
+				<td>@session.Reward</td>
+				<td>@session.Timestamp</td>
+			</tr>
 		}
 	</tbody>
-	</table>
+</table>
 
-	@code {
+@code {
 	private List<WorkoutSessions> workouts = new();
+	public List<WorkoutSessions> listSession = new List<WorkoutSessions>();
 
+	/*
 	protected async Task OnInitialized()
-	{
+		{
 		using var context = DbFactory.CreateDbContext();
 	}
+
+
+
+	// via nuget system data sql client gedownload hiervoor
+		public void OnGet()
+			{
+			try
+			{
+			string connectionString = "Data Source=DESKTOP-Q0GPGOI;Initial Catalog=[DESKTOP-Q0GPGOI].[FitBuddyDb];Persist Security Info=True;User ID=Liesbeth;Password=***********;Trust Server Certificate=True";
+			using (SqlConnection connection = new SqlConnection(connectionString))
+				{
+				connection.Open();
+				string sql = "SELECT * FROM Table";
+				using (SqlCommand command = new SqlCommand(sql, connection))
+					{
+					using (SqlDataReader reader = command.ExecuteReader())
+						{
+						while(reader.Read())
+							{
+							WorkoutSessions workoutSession = new WorkoutSessions();
+							workoutSession.Id = reader.GetInt32(0);
+							workoutSession.UserId = reader.GetInt32(1);
+							workoutSession.ExerciseId = reader.GetInt32(2);
+							workoutSession.Minutes = int.Parse(reader.GetString(3));
+							workoutSession.Reward = int.Parse(reader.GetString(4));
+							workoutSession.Timestamp = DateTime.Parse(reader.GetString(5));
+
+							listSession.Add(workoutSession);
+					}
+
+				}
+			}
+		}
+		}
+		catch (Exception e)
+		{
+
+	}
+	}
+	*/
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadWorkoutSessionsAsync();
+	}
+
+
+	// hier nog later naar kijken hoe we het kunnen laten werken op meer laptops want tis nu lokaal
+	private async Task LoadWorkoutSessionsAsync()
+	{
+		try
+		{
+			string connectionString = "Data Source=DESKTOP-Q0GPGOI;Initial Catalog=[DESKTOP-Q0GPGOI].[FitBuddyDb];Persist Security Info=True;User ID=Liesbeth;Password=123,Trust Server Certificate=True";
+			using (SqlConnection connection = new SqlConnection(connectionString))
+			{
+				await connection.OpenAsync();
+				string sql = "SELECT * FROM [WorkoutSession]";
+				using (SqlCommand command = new SqlCommand(sql, connection))
+				{
+					using (SqlDataReader reader = await command.ExecuteReaderAsync())
+					{
+						while (await reader.ReadAsync())
+						{
+							var workoutSession = new WorkoutSessions
+								{
+									Id = reader.GetInt32(0),
+									UserId = reader.GetInt32(1),
+									ExerciseId = reader.GetInt32(2),
+									Minutes = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+									Reward = reader.IsDBNull(4) ? 0 : reader.GetInt32(4),
+									Timestamp = reader.GetDateTime(5)
+								};
+							listSession.Add(workoutSession);
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			// Log error for debugging
+			Console.WriteLine(e.Message);
+		}
+	}
+
 }
