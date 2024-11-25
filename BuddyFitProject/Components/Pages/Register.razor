@@ -1,7 +1,7 @@
-﻿@page "/Register"
+﻿@page "/register"
 @using Microsoft.EntityFrameworkCore
-@using BuddyFitProject.Models
-@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
+@using BuddyFitProject.Data.Models;
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
 @inject NavigationManager NavigationManager
 
 <PageTitle>Create</PageTitle>
@@ -23,10 +23,10 @@
                 <label for="Password" class="l">Password:</label>
                 <InputText id="Password" @bind-Value="User.Password" class="i" />
             </div>
-           @* <div class="mb-2">
+            <div class="mb-2">
                 <label for="Gender" class="l">Gender:</label>
                 <InputText id="Gender" @bind-Value="User.Gender" class="i" />
-            </div>*@
+            </div>
             <button type="submit" class="btn2">Create</button>
         </EditForm>
     </div>
@@ -45,6 +45,7 @@
         using var context = DbFactory.CreateDbContext();
         context.Users.Add(User);
         await context.SaveChangesAsync();
-        // NavigationManager.NavigateTo("/Login");
+        NavigationManager.NavigateTo("/");
     }
+
 }

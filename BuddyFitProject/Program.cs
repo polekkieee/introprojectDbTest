@@ -3,15 +3,17 @@ using BuddyFitProject.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using BuddyFitProject.Components.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContextFactory<BuddyFitProjectContext>(options =>
+builder.Services.AddDbContextFactory<BuddyFitDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BuddyFitContext") ?? throw new InvalidOperationException("Connection string 'BuddyFitContext' not found.")));
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-
+builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<WorkoutSessionService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

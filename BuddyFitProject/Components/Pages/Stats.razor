@@ -1,7 +1,7 @@
 ﻿@page "/Stats"
-@using BuddyFitProject.Models
+@using BuddyFitProject.Data.Models
 @using Microsoft.EntityFrameworkCore
-@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
 @inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Mvc;
 @using System.Data.SqlClient;
