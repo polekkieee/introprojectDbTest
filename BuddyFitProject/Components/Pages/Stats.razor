@@ -8,20 +8,23 @@
 
 <h1>Workout History</h1>
 
+<a href="logout">
+	<button>Logout</button>
+</a>
 
 <table class="table">
 	<thead>
 		<tr>Workouts</tr>
 	</thead>
 	<tbody>
-		@foreach(var w in workouts)
+		@foreach (var w in workouts)
 		{
 
 		}
 	</tbody>
-	</table>
+</table>
 
-	@code {
+@code {
 	private List<WorkoutSessions> workouts = new();
 
 	protected async Task OnInitialized()

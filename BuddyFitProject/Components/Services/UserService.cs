@@ -60,7 +60,7 @@ namespace BuddyFitProject.Components.Services
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                return (dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Password == password) != null) ? true : false;
+                return (dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Password == password) != null);
             }
         }
 

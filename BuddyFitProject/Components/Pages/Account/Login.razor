@@ -16,13 +16,13 @@
 <PageTitle>Login</PageTitle>
 
 <h1 class="l2">Login</h1>
-<EditForm FormName="LoginUser" Model="@Model1" OnValidSubmit="LoginUser">
+<EditForm FormName="LoginUser" Model="@User" OnValidSubmit="LoginUser">
 	<label for="Username" class="l2">Username:</label>
-	<InputText @bind-Value="Model1.Username" />
+	<InputText @bind-Value="User.Username" />
 	<br>
 	<br>
 	<label for="Password" class="l2">Password:</label>
-	<InputText @bind-Value="Model1.Password" />
+	<InputText @bind-Value="User.Password" />
 	<br />
 	<span> @errorMessage </span>
 	<button type="submit" class="b2">Login</button>
@@ -38,7 +38,7 @@
 
 @code {
 	[SupplyParameterFromForm]
-	private Users Model1 { get; set; } = new();
+	private Users User { get; set; } = new();
 
 	[CascadingParameter]
 	public HttpContext httpcontext { get; set; } = default!;
@@ -49,7 +49,7 @@
 
 	private async Task LoginUser()
 	{
-		bool isUserValid = UserService.ValidateUser(Model1.Username, Model1.Password);
+		bool isUserValid = UserService.ValidateUser(User.Username, User.Password);
 
 		if (!isUserValid)
 		{
@@ -59,13 +59,15 @@
 
 		var claims = new List<Claim>
 		{
-			new Claim(ClaimTypes.Name, Model1.Username),
+			new Claim(ClaimTypes.Name, User.Username),
 		};
 
 		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 		var principal = new ClaimsPrincipal(identity);
 		await httpcontext.SignInAsync(principal);
-		string url = "/session/" + Model1.Username;
+		string url = "/stats";
+		// User.Username; 
+		// Moet weer session worden
 		navigationManager.NavigateTo(url);
 	}
 }
