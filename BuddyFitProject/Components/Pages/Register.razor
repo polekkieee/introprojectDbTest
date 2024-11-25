@@ -1,7 +1,7 @@
-﻿@page "/Register2"
+﻿@page "/register"
 @using Microsoft.EntityFrameworkCore
-@using BuddyFitProject.Models
-@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitProjectContext> DbFactory
+@using BuddyFitProject.Data.Models;
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
 @inject NavigationManager NavigationManager
 
 <PageTitle>Create</PageTitle>
@@ -45,7 +45,7 @@
         using var context = DbFactory.CreateDbContext();
         context.Users.Add(User);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/login");
+        NavigationManager.NavigateTo("/");
     }
 
 }

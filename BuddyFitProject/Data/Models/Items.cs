@@ -1,4 +1,4 @@
-﻿namespace BuddyFitProject.Models
+﻿namespace BuddyFitProject.Data.Models
 {
     public class Items
     {
