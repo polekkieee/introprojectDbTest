@@ -45,6 +45,7 @@
         using var context = DbFactory.CreateDbContext();
         context.Users.Add(User);
         await context.SaveChangesAsync();
-        // NavigationManager.NavigateTo("/Login");
+        NavigationManager.NavigateTo("/login");
     }
+
 }
