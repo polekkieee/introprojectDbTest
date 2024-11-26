@@ -47,25 +47,45 @@
 
 
 
-	private async Task LoginUser()
-	{
-		bool isUserValid = UserService.ValidateUser(Model1.Username, Model1.Password);
+    private async Task LoginUser()
+    {
+        // Validate user credentials
+        bool isUserValid = UserService.ValidateUser(Model1.Username, Model1.Password);
 
-		if (!isUserValid)
-		{
-			errorMessage = "Your username or password is invalid.";
-			return;
-		}
+        if (!isUserValid)
+        {
+            errorMessage = "Your username or password is invalid.";
+            return;
+        }
 
-		var claims = new List<Claim>
-		{
-			new Claim(ClaimTypes.Name, Model1.Username),
-		};
+        // Fetch user details
+        var user = UserService.GetUserByName(Model1.Username);
+        if (user == null)
+        {
+            errorMessage = "User not found.";
+            return;
+        }
 
-		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-		var principal = new ClaimsPrincipal(identity);
-		await httpcontext.SignInAsync(principal);
-		string url = "/session/" + Model1.Username;
-		navigationManager.NavigateTo(url);
-	}
+        // Update Model1 with retrieved user details
+        Model1.Id = user.Id;
+
+        // Create claims for authentication
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, Model1.Username), // Username claim
+            new Claim(ClaimTypes.NameIdentifier, Model1.Id.ToString()), // User ID claim
+        };
+
+        // Create ClaimsIdentity and ClaimsPrincipal
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+
+        // Sign in the user
+        await httpcontext.SignInAsync(principal);
+
+        // Redirect to user-specific session page
+        string url = "/session/" + Model1.Id.ToString();
+        //navigationManager.NavigateTo(url);
+    }
+
 }
