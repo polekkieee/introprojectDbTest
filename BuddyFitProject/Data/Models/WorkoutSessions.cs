@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BuddyFitProject.Data.Models;
@@ -13,3 +13,4 @@ public class WorkoutSessions
     public DateTime Timestamp { get; set; }
 
 }
+

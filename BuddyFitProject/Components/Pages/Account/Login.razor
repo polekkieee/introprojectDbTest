@@ -16,13 +16,13 @@
 <PageTitle>Login</PageTitle>
 
 <h1 class="l2">Login</h1>
-<EditForm FormName="LoginUser" Model="@Model1" OnValidSubmit="LoginUser">
+<EditForm FormName="LoginUser" Model="@User" OnValidSubmit="LoginUser">
 	<label for="Username" class="l2">Username:</label>
-	<InputText @bind-Value="Model1.Username" />
+	<InputText @bind-Value="User.Username" />
 	<br>
 	<br>
 	<label for="Password" class="l2">Password:</label>
-	<InputText @bind-Value="Model1.Password" />
+	<InputText @bind-Value="User.Password" />
 	<br />
 	<span> @errorMessage </span>
 	<button type="submit" class="b2">Login</button>
@@ -38,7 +38,7 @@
 
 @code {
 	[SupplyParameterFromForm]
-	private Users Model1 { get; set; } = new();
+	private Users User { get; set; } = new();
 
 	[CascadingParameter]
 	public HttpContext httpcontext { get; set; } = default!;
@@ -47,45 +47,27 @@
 
 
 
-    private async Task LoginUser()
-    {
-        // Validate user credentials
-        bool isUserValid = UserService.ValidateUser(Model1.Username, Model1.Password);
+	private async Task LoginUser()
+	{
+		bool isUserValid = UserService.ValidateUser(User.Username, User.Password);
 
-        if (!isUserValid)
-        {
-            errorMessage = "Your username or password is invalid.";
-            return;
-        }
+		if (!isUserValid)
+		{
+			errorMessage = "Your username or password is invalid.";
+			return;
+		}
 
-        // Fetch user details
-        var user = UserService.GetUserByName(Model1.Username);
-        if (user == null)
-        {
-            errorMessage = "User not found.";
-            return;
-        }
+		var claims = new List<Claim>
+		{
+			new Claim(ClaimTypes.Name, User.Username),
+		};
 
-        // Update Model1 with retrieved user details
-        Model1.Id = user.Id;
-
-        // Create claims for authentication
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, Model1.Username), // Username claim
-            new Claim(ClaimTypes.NameIdentifier, Model1.Id.ToString()), // User ID claim
-        };
-
-        // Create ClaimsIdentity and ClaimsPrincipal
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
-
-        // Sign in the user
-        await httpcontext.SignInAsync(principal);
-
-        // Redirect to user-specific session page
-        string url = "/session/" + Model1.Id.ToString();
-        //navigationManager.NavigateTo(url);
-    }
-
+		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+		var principal = new ClaimsPrincipal(identity);
+		await httpcontext.SignInAsync(principal);
+		string url = "/stats";
+		// User.Username; 
+		// Moet weer session worden
+		navigationManager.NavigateTo(url);
+	}
 }

@@ -11,7 +11,7 @@ public class Users
     public string Email { get; set; }
     public int Age { get; set; } = 0;
     public string Gender { get; set; }
-    public string Start_condition { get; set; } = String.Empty;
+    public string Start_condition { get; set; }
     public int Coins { get; set; } = 0;
 
 }
