@@ -6,7 +6,7 @@
 
         public string Name { get; set; }
 
-        public string Coins_pm { get; set; }
+        public int Coins_pm { get; set; }
 
 
     }

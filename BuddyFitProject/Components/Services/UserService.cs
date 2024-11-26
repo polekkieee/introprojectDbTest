@@ -37,6 +37,15 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
+        public Users GetUserByLogin(string name, string password)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                Users user = dbContext.Users.SingleOrDefault<Users>(x => x.Username == name && x.Password == password) ?? throw new Exception("User bestaat niet!");
+                return user;
+            }
+        }
+
         public void DeleteUser(Users user)
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
