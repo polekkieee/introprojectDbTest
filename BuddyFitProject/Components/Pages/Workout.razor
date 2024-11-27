@@ -1,7 +1,79 @@
-﻿@page "/Workout"
+﻿
+
+        @page "/Workout"
 @attribute [StreamRendering]
 
 <PageTitle>Workout</PageTitle>
+
+@code {
+    // Variabelen voor oefeningen
+    private int PushUpMinutes = 2;
+    private int PlankMinutes = 0;
+    private int BurpeesMinutes = 0;
+    private int JumpingJacksMinutes = 0;
+    private int BenchPressMinutes = 0;
+    private int BenchPressWeight = 0;
+    private int DumbbellRowsMinutes = 0;
+    private int DumbbellRowsWeight = 0;
+    private int CurlsMinutes = 0;
+    private int CurlsWeight = 0;
+    private int PullUpMinutes = 0;
+    private int LegPressMinutes = 0;
+    private int LegPressWeight = 0;
+    private int WalkingMinutes = 0;
+    private int WalkingSpeed = 0;
+    private int CyclingMinutes = 0;
+    private int CyclingSpeed = 0;
+    private int SwimmingMinutes = 0;
+    private int SwimmingSpeed = 0;
+    private int RunningMinutes = 0;
+    private int RunningSpeed = 0;
+    private int SprintingMinutes = 0;
+    private int SprintingSpeed = 0;
+    private int WallsitsMinutes = 0;
+    private int RopeJumpingMinutes = 0;
+    private int StairWalkingMinutes = 0;
+    private int StairWalkingSpeed = 0;
+
+    private int coinsamount = 0; // Definieer de coins variabele
+    private int level = 10; // Definieer de level variabele
+
+    // Methode die wordt aangeroepen bij de knopdruk
+    private void UpdateCoinsAmount()
+    {
+        // Bijwerken van coins op basis van de minuten voor elke oefening
+        coinsamount = PushUpMinutes * 150
+                    + PlankMinutes * 100
+                    + BurpeesMinutes * 200
+                    + JumpingJacksMinutes * 100
+                    + BenchPressMinutes * 50
+                    + BenchPressWeight * 1
+                    + DumbbellRowsMinutes * 30
+                    + DumbbellRowsWeight * 2
+                    + CurlsMinutes * 30
+                    + CurlsWeight * 2
+                    + PullUpMinutes * 50
+                    + LegPressMinutes * 30
+                    + LegPressWeight * 1
+                    + WalkingMinutes * 20
+                    + WalkingSpeed * 1
+                    + CyclingMinutes * 20
+                    + CyclingSpeed * 1
+                    + SwimmingMinutes * 50
+                    + SwimmingSpeed * 2
+                    + RunningMinutes * 60
+                    + RunningSpeed * 1
+                    + SprintingMinutes * 100
+                    + SprintingSpeed * 1
+                    + WallsitsMinutes * 70
+                    + RopeJumpingMinutes * 120
+                    + StairWalkingMinutes * 140
+                    + StairWalkingSpeed * 1;
+
+        // Herlaad de UI na de wijziging
+        InvokeAsync(StateHasChanged);
+    }
+}
 
 <style>
     body {
@@ -93,11 +165,11 @@
             border-radius: 5px;
         }
 
-    .exercise-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
+        .exercise-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
 
         .exercise-item label {
             flex: none;
@@ -107,6 +179,41 @@
             width: 160px;
             font-weight: bold;
         }
+
+        .onderdeel-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        margin-left: 370px;
+            
+
+        }
+
+        .onderdeel-item label {
+            flex: none;
+            color: #fff;
+            font-size: 1rem;
+            text-align: right;
+            width: 70px;
+            font-weight: bold;
+        }
+
+    .onderdeel-item2 {
+        display: flex;
+        gap: 180px;
+        margin-bottom: 10px;
+        margin-left: 270px;
+    }
+
+        .onderdeel-item2 label {
+            flex: none;
+            color: #fff;
+            font-size: 1rem;
+            text-align: right;
+            width: 70px;
+            font-weight: bold;
+        }
+
 
         .exercise-item input {
             flex-grow: 1;
@@ -187,16 +294,10 @@
 <h1>Workout</h1>
 <p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox</p>
 
-<!-- Coin -->
 <div class="coin">$</div>
-
-<!-- Coin label showing the value of coinsamount -->
 <div class="coin-label">@coinsamount</div>
 
-<!-- Level Coin -->
 <div class="level-coin">lvl</div>
-
-<!-- Level label showing the value of level -->
 <div class="level-label">@level</div>
 
 <div class="wrapper">
@@ -206,95 +307,106 @@
         <label>@coinsamount</label>
 
         <!-- Convert button -->
-        <button>Convert given data to coins</button>
+        <!-- Convert button -->
+        <button @onclick="UpdateCoinsAmount">Convert given data to coins</button>
 
         <label>So name, what exercises did you do today?</label>
     </div>
 
     <!-- Exercise container -->
     <div class="exercise-container">
+        <div class="onderdeel-item">
+            <label>Minutes</label>
+        </div>
         <div class="exercise-item">
             <label>Push-up:</label>
-            <input type="number" placeholder="Minutes" />
+            <input type="number" @bind="@PushUpMinutes" />
         </div>
         <div class="exercise-item">
             <label>Plank:</label>
-            <input type="number" placeholder="Minutes" />
+            <input type="number" @bind="@PlankMinutes" />
         </div>
         <div class="exercise-item">
             <label>Burpees:</label>
-            <input type="number" placeholder="Minutes" />
+            <input type="number" @bind="@BurpeesMinutes" />
         </div>
         <div class="exercise-item">
             <label>Jumping Jacks:</label>
-            <input type="number" placeholder="Minutes" />
-        </div>
-        <div class="exercise-item">
-            <label>Bench Press:</label>
-            <input type="number" placeholder="Minutes" />
-            <input type="number" class="weight-input" placeholder="Weight (kg)" />
-        </div>
-        <div class="exercise-item">
-            <label>Dumbbell Rows:</label>
-            <input type="number" placeholder="Minutes" />
-            <input type="number" class="weight-input" placeholder="Weight (kg)" />
-        </div>
-        <div class="exercise-item">
-            <label>Curls:</label>
-            <input type="number" placeholder="Minutes" />
-            <input type="number" class="weight-input" placeholder="Weight (kg)" />
+            <input type="number" @bind="@JumpingJacksMinutes"  />
         </div>
         <div class="exercise-item">
             <label>Pull-up:</label>
-            <input type="number" placeholder="Minutes" />
-        </div>
-        <div class="exercise-item">
-            <label>Leg Press:</label>
-            <input type="number" placeholder="Minutes" />
-            <input type="number" class="weight-input" placeholder="Weight (kg)" />
-        </div>
-        <div class="exercise-item">
-            <label>Walking:</label>
-            <input type="number" placeholder="Minutes" />
-            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
-        </div>
-        <div class="exercise-item">
-            <label>Cycling:</label>
-            <input type="number" placeholder="Minutes" />
-            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
-        </div>
-        <div class="exercise-item">
-            <label>Swimming:</label>
-            <input type="number" placeholder="Minutes" />
-            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
-        </div>
-        <div class="exercise-item">
-            <label>Running:</label>
-            <input type="number" placeholder="Minutes" />
-            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
-        </div>
-        <div class="exercise-item">
-            <label>Sprinting:</label>
-            <input type="number" placeholder="Minutes" />
-            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
+            <input type="number" @bind="@PullUpMinutes"  />
         </div>
         <div class="exercise-item">
             <label>Wallsits:</label>
-            <input type="number" placeholder="Minutes" />
+            <input type="number" @bind="@WallsitsMinutes"  />
         </div>
         <div class="exercise-item">
             <label>Rope jumping:</label>
-            <input type="number" placeholder="Minutes" />
+            <input type="number" @bind="@RopeJumpingMinutes" />
+        </div>
+        <div class="onderdeel-item2">
+            <label>Minutes</label>
+            <label>Weights(kg)</label>
+        </div>
+        <div class="exercise-item">
+            <label>Bench Press:</label>
+            <input type="number" @bind="@BenchPressMinutes"  />
+            <input type="number" @bind="@BenchPressWeight" class="weight-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Dumbbell Rows:</label>
+            <input type="number" @bind="@DumbbellRowsMinutes" />
+            <input type="number" @bind="@DumbbellRowsWeight" class="weight-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Curls:</label>
+            <input type="number" @bind="@CurlsMinutes"  />
+            <input type="number" @bind="@CurlsWeight" class="weight-input"  />
+        </div> 
+        <div class="exercise-item">
+            <label>Leg Press:</label>
+            <input type="number" @bind="@LegPressMinutes"  />
+            <input type="number" @bind="@LegPressWeight" class="weight-input"  />
+        </div>
+        <div class="onderdeel-item2">
+            <label>Minutes</label>
+            <label>Speed(km/h)</label>
+        </div>
+        <div class="exercise-item">
+            <label>Walking:</label>
+            <input type="number" @bind="@WalkingMinutes"  />
+            <input type="number" @bind="@WalkingSpeed" class="speed-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Cycling:</label>
+            <input type="number" @bind="@CyclingMinutes"  />
+            <input type="number" @bind="@CyclingSpeed" class="speed-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Swimming:</label>
+            <input type="number" @bind="@SwimmingMinutes"  />
+            <input type="number" @bind="@SwimmingSpeed" class="speed-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Running:</label>
+            <input type="number" @bind="@RunningMinutes"/>
+            <input type="number" @bind="@RunningSpeed" class="speed-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Sprinting:</label>
+            <input type="number" @bind="@SprintingMinutes" />
+            <input type="number" @bind="@SprintingSpeed" class="speed-input"  />
         </div>
         <div class="exercise-item">
             <label>Stair walking:</label>
-            <input type="number" placeholder="Minutes" />
-            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
+            <input type="number" @bind="@StairWalkingMinutes" />
+            <input type="number" @bind="@StairWalkingSpeed" class="speed-input"  />
         </div>
     </div>
 </div>
 
-@code {
-    private int coinsamount = 1000; // Definieer de coins variabele
-    private int level = 10; // Definieer de level variabele
-}
+
+
+
