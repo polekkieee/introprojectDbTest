@@ -1,0 +1,150 @@
+﻿@page "/Workout"
+@attribute [StreamRendering]
+
+<PageTitle>Workout</PageTitle>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, yellow, red);
+        color: #333;
+        text-align: center;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 4rem;
+        margin-top: 20px;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    p {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+        color: #fdfdfd;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .exercise-container {
+        width: 700px;
+        height: 450px;
+        margin: 0 auto;
+        overflow-y: scroll; /* Scrollen mogelijk maken */
+        border: 2px solid #fff;
+        border-radius: 8px;
+        background: rgba(100, 255, 255, 0);
+        padding: 10px;
+    }
+
+        .exercise-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .exercise-container::-webkit-scrollbar-thumb {
+            background: #fff;
+            border-radius: 5px;
+        }
+
+    .exercise-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+        .exercise-item label {
+            flex: none; /* Zorg dat het label niet rekt */
+            color: #fff;
+            font-size: 1rem;
+            text-align: left;
+            width: 150px; /* Optionele breedte om consistentie te waarborgen */
+            font-weight: bold; /* Dikker label */
+        }
+
+        .exercise-item input {
+            margin: 0 auto; /* Horizontaal centreren van de input */
+            width: 120px; /* Breder invoerveld */
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 40px;
+            text-align: center; /* Tekst in het midden van het veld */
+            display: block; /* Zorg dat margin werkt */
+        }
+
+      
+</style>
+
+<h1>Workout</h1>
+<p>Log your exercises by filling the minutes or by add +1 minute by clicking the arrow in the textbox</p>
+
+<div class="exercise-container">
+    <div class="exercise-item">
+        <label>Push-up:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Plank:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Burpees:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Jumping Jacks:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Bench Press:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Dumbbell Rows:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Curls:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Pull-up:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Leg Press:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Walking:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Cycling:</label>
+        <input type="number" placeholder="Minutes" />
+]    </div>
+    <div class="exercise-item">
+        <label>Swimming:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Running:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Sprinting:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Wallsits:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Rope jumping:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+    <div class="exercise-item">
+        <label>Stair walking:</label>
+        <input type="number" placeholder="Minutes" />
+    </div>
+</div>
