@@ -1,9 +1,8 @@
-﻿@page "/session/{Username}"
+﻿@page "/session"
 @using Microsoft.EntityFrameworkCore
 @using BuddyFitProject.Data;
 @using BuddyFitProject.Data.Models
 @using BuddyFitProject.Components.Services
-@* @using Microsoft.AspNetCore.Components.QuickGrid *@
 @inject WorkoutSessionService WorkoutService
 @inject UserService UserService
 @inject NavigationManager NavigationManager
@@ -17,70 +16,12 @@
 <hr />
 <p> I have done the following workout for [] minutes</p>
 
-@* <div class="row"> *@
-@*     <div class="col-md-4"> *@
-@*         <EditForm method="post" Model="WorkSesh" OnValidSubmit="LogWorkout" FormName="create2" Enhance> *@
-@*             <div class="mb-3"> *@
-@*                 <span class="coin-value">@WorkoutService.GetWorkoutCoins(new Exercises { Pushups = WorkSesh.Pushups })</span> *@
-@*                 <img class="pic" src="Goldencoin.png" /> *@
-@*                 <label for="pushup">Pushups:</label> *@
-@*                 <InputText id="pushup" @bind-Value="WorkSesh.Pushups" class="form-control" /> *@
-@*             </div> *@
-@*             <div class="mb-3"> *@
-@*                 <span class="coin-value">@WorkoutService.GetWorkoutCoins(new Exercises { Situps = WorkSesh.Situps })</span> *@
-@*                 <img class="pic" src="Goldencoin.png" /> *@
-@*                 <label for="situp">Situps:</label> *@
-@*                 <InputText id="situps" @bind-Value="WorkSesh.Situps" class="form-control" /> *@
-@*             </div> *@
-@*             <div class="mb-3"> *@
-@*                 <span class="coin-value">@WorkoutService.GetWorkoutCoins(new Exercises { JumpingJacks = WorkSesh.JumpingJacks })</span> *@
-@*                 <img class="pic" src="Goldencoin.png" /> *@
-@*                 <label for="jumpingjacks">Jumping Jacks:</label> *@
-@*                 <InputText id="jumpingjacks" @bind-Value="WorkSesh.JumpingJacks" class="form-control" /> *@
-@*             </div> *@
-@*             <div class="mb-3"> *@
-@*                 <span class="coin-value">@WorkoutService.GetWorkoutCoins(new Exercises { Squats = WorkSesh.Squats })</span> *@
-@*                 <img class="pic" src="Goldencoin.png" /> *@
-@*                 <label for="squats">Squats:</label> *@
-@*                 <InputText id="squats" @bind-Value="WorkSesh.Squats" class="form-control" /> *@
-@*             </div> *@
-@*             <div class="mb-3"> *@
-@*                 <span class="coin-value">@WorkoutService.GetWorkoutCoins(new Exercises { Running = WorkSesh.Running })</span> *@
-@*                 <img class="pic" src="Goldencoin.png" /> *@
-@*                 <label for="running">Running:</label> *@
-@*                 <InputText id="running" @bind-Value="WorkSesh.Running" class="form-control" /> *@
-@*             </div> *@
-@*             <div class="mb-3"> *@
-@*                 <span class="coin-value">@WorkoutService.GetWorkoutCoins(new Exercises { Plank = WorkSesh.Plank })</span> *@
-@*                 <img class="pic" src="Goldencoin.png" /> *@
-@*                 <label for="plank">Plank:</label> *@
-@*                 <InputText id="plank" @bind-Value="WorkSesh.Plank" class="form-control" /> *@
-@*             </div> *@
-@*             <button type="submit" class="btn btn-primary">I finished working out!</button> *@
+<a href="logout">
+	<button>Logout</button>
+</a>
 
-@*             <a href="logout"> *@
-@*                 <button>Logout</button> *@
-@*             </a> *@
-@*             <a href="delete"> *@
-@*                 <button>Delete user</button> *@
-@*             </a> *@
-@*         </EditForm> *@
-@*     </div> *@
-@* </div> *@
+code {
 
-@* @code { *@
-@*     [SupplyParameterFromForm] *@
-@*     private Exercises WorkSesh { get; set; } = new Workout(); *@
-
-@*     [Parameter] *@
-@*     public string? Username { get; set; } *@
-
-@*     public void LogWorkout() *@
-@*     { *@
-@*         User user = UserService.GetUserByName(Username); *@
-@*         UserService.AddWorkout(user, WorkSesh); *@
-@*     } *@
-@* } *@
-
+} 
 
 
