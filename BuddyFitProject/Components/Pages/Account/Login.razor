@@ -7,11 +7,8 @@
 @using Microsoft.AspNetCore.Authentication.Cookies
 @using BuddyFitProject.Components.Services;
 @inject UserService UserService
-@inject BuddyFitDbContext appDbContext
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@attribute [ExcludeFromInteractiveRouting]
-
 
 <PageTitle>Login</PageTitle>
 
@@ -49,7 +46,7 @@
 
 	private async Task LoginUser()
 	{
-		bool isUserValid = UserService.ValidateUser(User.Username, User.Password);
+		var isUserValid = UserService.ValidateUser(User.Username, User.Password);
 
 		if (!isUserValid)
 		{

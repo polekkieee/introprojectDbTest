@@ -14,6 +14,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<WorkoutSessionService>();
+builder.Services.AddTransient<EmailService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
