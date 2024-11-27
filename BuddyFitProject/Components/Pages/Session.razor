@@ -1,5 +1,4 @@
-﻿@page "/session/0"
-@page "/session/{UserId:int}"
+﻿@page "/session"
 @using BuddyFitProject.Data
 @using BuddyFitProject.Data.Models
 @using BuddyFitProject.Components.Services
@@ -14,7 +13,7 @@
 
 @if (LoggedIn)
 {
-    <p>Welcome, @user?.Username</p>
+    <p>Welcome, @user.Username</p>
     <h1>Log Your Workout Session</h1>
     <EditForm method="post" FormName="WorkoutLogForm" Model="WorkoutSession" OnValidSubmit="LogWorkout">
         <div>
@@ -42,11 +41,10 @@
 else
 {
     <h1>You must be logged in to access this page.</h1>
-    <button @onclick='() => NavigationManager.NavigateTo("/login")'>Go to Login</button>
+    <a href="login">Go to Login</a>
 }
 
 @code {
-    [Parameter] public int UserId { get; set; }
     [SupplyParameterFromForm] private WorkoutSessions WorkoutSession { get; set; } = new();
 
     private Users? user;
@@ -66,13 +64,9 @@ else
             {
                 // Load user and exercises if UserId is provided
                 user = UserService.GetUserById(loggedInUserId);
-                if (user != null && loggedInUserId == UserId)
-                {
-                    // User is authenticated
-                    LoggedIn = true;
-                    Exercises = ExerciseService.LoadExercises();
-                    return;
-                }
+                LoggedIn = true;
+                Exercises = ExerciseService.LoadExercises();
+
             }
         }
     }
@@ -94,7 +88,7 @@ else
 
         // Calculate reward
         WorkoutSession.Reward = exercise.Coins_pm * WorkoutSession.Minutes;
-        WorkoutSession.UserId = UserId;
+        WorkoutSession.UserId = user.Id;
         WorkoutSession.Timestamp = DateTime.Now;
 
         // Save workout session

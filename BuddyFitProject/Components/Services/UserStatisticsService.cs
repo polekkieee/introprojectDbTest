@@ -28,6 +28,15 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
+        public UserStatistics GetStatisticByUserAndExercise(int userId, int exerciseId)
+        {
+            using (var dbContext = DbContextFactory.CreateDbContext())
+            {
+                var stats = dbContext.UserStatistics.FirstOrDefault(x => x.UserId == userId && x.ExerciseId == exerciseId);
+                return stats;
+            }
+        }
+
         //public void DeleteUser(Users user)
         //{
         //    using (var dbContext = this.DbContextFactory.CreateDbContext())
@@ -39,28 +48,57 @@ namespace BuddyFitProject.Components.Services
 
         public void UpdateUserStatistics(int userId)
         {
-            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            using (var dbContext = DbContextFactory.CreateDbContext())
             {
-                var stats = dbContext.UserStatistics
-                    .Where(x => x.UserId == userId)
-                    .ToList();
+                // Fetch all exercises and statistics related to the user
+                var exercises = dbContext.Exercises.ToList();
+                var userStats = dbContext.UserStatistics
+                    .Where(us => us.UserId == userId)
+                    .ToDictionary(us => us.ExerciseId); // Create dictionary for quick lookup
 
-                var workouts = dbContext.WorkoutSessions
-                    .Where(x => x.UserId == userId)
-                    .ToList();
-
-                foreach(var workout in workouts)
+                foreach (var exercise in exercises)
                 {
-                    if(!dbContext.UserStatistics.Where(x => x.ExerciseId == workout.ExerciseId).Any())
+                    // Calculate total minutes and coins for the current exercise
+                    var userWorkouts = dbContext.WorkoutSessions
+                        .Where(ws => ws.UserId == userId && ws.ExerciseId == exercise.Id)
+                        .ToList();
+
+                    int totalMinutes = userWorkouts.Sum(ws => ws.Minutes);
+                    int totalCoins = userWorkouts.Sum(ws => ws.Reward);
+
+                    if (totalMinutes > 0 || totalCoins > 0) // Only update if there are relevant workouts
                     {
-                        AddUserStatistic(userId, workout.ExerciseId);
+                        if (userStats.TryGetValue(exercise.Id, out var existingStat))
+                        {
+                            // Update the existing statistics entry
+                            existingStat.Total_minutes = totalMinutes;
+                            existingStat.Total_coins = totalCoins;
+                            dbContext.UserStatistics.Update(existingStat);
+                        }
+                        else
+                        {
+                            // Create a new statistics entry if one doesn't exist
+                            var newStat = new UserStatistics
+                            {
+                                UserId = userId,
+                                ExerciseId = exercise.Id,
+                                Total_minutes = totalMinutes,
+                                Total_coins = totalCoins
+                            };
+                            dbContext.UserStatistics.Add(newStat);
+                        }
                     }
                 }
 
-                dbContext.UserStatistics.UpdateRange(stats);
+                // Save changes to the database
                 dbContext.SaveChanges();
             }
         }
+
+
+
+
+
 
         //public bool ValidateUser(string username, string password)
         //{
