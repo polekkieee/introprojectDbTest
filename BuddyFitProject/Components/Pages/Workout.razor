@@ -7,15 +7,16 @@
     body {
         margin: 0;
         font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom, yellow, red);
+        background: linear-gradient(to bottom, purple, blue);
         color: #333;
         text-align: center;
         padding: 20px;
+        position: relative;
     }
 
     h1 {
         font-size: 4rem;
-        margin-top: 20px;
+        margin-top: 5px;
         color: #fff;
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
@@ -27,11 +28,56 @@
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
 
+    .wrapper {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .left-frame {
+        width: 300px;
+        height: 450px;
+        background-color: rgba(0,0,0,0.3);
+        margin-right: 2px;
+        margin-left: 70px;
+        border-radius: 8px;
+        padding: 20px;
+        color: #fff;
+    }
+
+        .left-frame label {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+            .left-frame label:last-of-type {
+                margin-top: 60px; /* Voeg marge toe aan de laatste label */
+            }
+
+        .left-frame button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ffcc00;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+            .left-frame button:hover {
+                background-color: #ff9900;
+            }
+
     .exercise-container {
         width: 700px;
         height: 450px;
-        margin: 0 auto;
-        overflow-y: scroll; /* Scrollen mogelijk maken */
+        margin-left: auto;
+        margin-right: 100px;
+        overflow-y: scroll;
         border: 2px solid #fff;
         border-radius: 8px;
         background: rgba(100, 255, 255, 0);
@@ -54,97 +100,201 @@
     }
 
         .exercise-item label {
-            flex: none; /* Zorg dat het label niet rekt */
+            flex: none;
             color: #fff;
             font-size: 1rem;
             text-align: left;
-            width: 150px; /* Optionele breedte om consistentie te waarborgen */
-            font-weight: bold; /* Dikker label */
+            width: 160px;
+            font-weight: bold;
         }
 
         .exercise-item input {
-            margin: 0 auto; /* Horizontaal centreren van de input */
-            width: 120px; /* Breder invoerveld */
+            flex-grow: 1;
+            margin-left: 10px;
             padding: 5px;
             border: 1px solid #ddd;
             border-radius: 40px;
-            text-align: center; /* Tekst in het midden van het veld */
-            display: block; /* Zorg dat margin werkt */
+            text-align: center;
+            display: block;
         }
 
-      
+        .exercise-item .weight-input,
+        .exercise-item .speed-input {
+            width: 100px;
+        }
+
+    /* Coin styling (right top corner) */
+    .coin {
+        position: absolute;
+        top: 10px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: gold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Coin label styling */
+    .coin-label {
+        position: absolute;
+        top: 15px;
+        right: 140px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Level Coin styling (green circle below the coin) */
+    .level-coin {
+        position: absolute;
+        top: 60px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: green;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Level label styling */
+    .level-label {
+        position: absolute;
+        top: 65px;
+        right: 140px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
 </style>
 
 <h1>Workout</h1>
-<p>Log your exercises by filling the minutes or by add +1 minute by clicking the arrow in the textbox</p>
+<p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox</p>
 
-<div class="exercise-container">
-    <div class="exercise-item">
-        <label>Push-up:</label>
-        <input type="number" placeholder="Minutes" />
+<!-- Coin -->
+<div class="coin">$</div>
+
+<!-- Coin label showing the value of coinsamount -->
+<div class="coin-label">@coinsamount</div>
+
+<!-- Level Coin -->
+<div class="level-coin">lvl</div>
+
+<!-- Level label showing the value of level -->
+<div class="level-label">@level</div>
+
+<div class="wrapper">
+    <!-- Left white frame with Coins amount label -->
+    <div class="left-frame">
+        <label>Current coins amount:</label>
+        <label>@coinsamount</label>
+
+        <!-- Convert button -->
+        <button>Convert given data to coins</button>
+
+        <label>So name, what exercises did you do today?</label>
     </div>
-    <div class="exercise-item">
-        <label>Plank:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Burpees:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Jumping Jacks:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Bench Press:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Dumbbell Rows:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Curls:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Pull-up:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Leg Press:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Walking:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Cycling:</label>
-        <input type="number" placeholder="Minutes" />
-]    </div>
-    <div class="exercise-item">
-        <label>Swimming:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Running:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Sprinting:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Wallsits:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Rope jumping:</label>
-        <input type="number" placeholder="Minutes" />
-    </div>
-    <div class="exercise-item">
-        <label>Stair walking:</label>
-        <input type="number" placeholder="Minutes" />
+
+    <!-- Exercise container -->
+    <div class="exercise-container">
+        <div class="exercise-item">
+            <label>Push-up:</label>
+            <input type="number" placeholder="Minutes" />
+        </div>
+        <div class="exercise-item">
+            <label>Plank:</label>
+            <input type="number" placeholder="Minutes" />
+        </div>
+        <div class="exercise-item">
+            <label>Burpees:</label>
+            <input type="number" placeholder="Minutes" />
+        </div>
+        <div class="exercise-item">
+            <label>Jumping Jacks:</label>
+            <input type="number" placeholder="Minutes" />
+        </div>
+        <div class="exercise-item">
+            <label>Bench Press:</label>
+            <input type="number" placeholder="Minutes" />
+            <input type="number" class="weight-input" placeholder="Weight (kg)" />
+        </div>
+        <div class="exercise-item">
+            <label>Dumbbell Rows:</label>
+            <input type="number" placeholder="Minutes" />
+            <input type="number" class="weight-input" placeholder="Weight (kg)" />
+        </div>
+        <div class="exercise-item">
+            <label>Curls:</label>
+            <input type="number" placeholder="Minutes" />
+            <input type="number" class="weight-input" placeholder="Weight (kg)" />
+        </div>
+        <div class="exercise-item">
+            <label>Pull-up:</label>
+            <input type="number" placeholder="Minutes" />
+        </div>
+        <div class="exercise-item">
+            <label>Leg Press:</label>
+            <input type="number" placeholder="Minutes" />
+            <input type="number" class="weight-input" placeholder="Weight (kg)" />
+        </div>
+        <div class="exercise-item">
+            <label>Walking:</label>
+            <input type="number" placeholder="Minutes" />
+            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
+        </div>
+        <div class="exercise-item">
+            <label>Cycling:</label>
+            <input type="number" placeholder="Minutes" />
+            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
+        </div>
+        <div class="exercise-item">
+            <label>Swimming:</label>
+            <input type="number" placeholder="Minutes" />
+            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
+        </div>
+        <div class="exercise-item">
+            <label>Running:</label>
+            <input type="number" placeholder="Minutes" />
+            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
+        </div>
+        <div class="exercise-item">
+            <label>Sprinting:</label>
+            <input type="number" placeholder="Minutes" />
+            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
+        </div>
+        <div class="exercise-item">
+            <label>Wallsits:</label>
+            <input type="number" placeholder="Minutes" />
+        </div>
+        <div class="exercise-item">
+            <label>Rope jumping:</label>
+            <input type="number" placeholder="Minutes" />
+        </div>
+        <div class="exercise-item">
+            <label>Stair walking:</label>
+            <input type="number" placeholder="Minutes" />
+            <input type="number" class="speed-input" placeholder="Speed (km/h)" />
+        </div>
     </div>
 </div>
+
+@code {
+    private int coinsamount = 1000; // Definieer de coins variabele
+    private int level = 10; // Definieer de level variabele
+}
