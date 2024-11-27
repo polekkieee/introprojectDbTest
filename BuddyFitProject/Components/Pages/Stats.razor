@@ -15,17 +15,19 @@
 
 
 <a href="logout">
-	<button>Logout</button>
+    <button>Logout</button>
 </a>
 
-<table class="table">
-	<thead>
-		<tr>Statistics</tr>
-	</thead>
-	<tbody>
+<button @onclick="UserStatisticsService.UpdateUserStatistics(user.Id)">Update Stats</button>
 
-		@foreach (var s in userStatistics)
-		{
+<table class="table">
+    <thead>
+        <tr>Statistics</tr>
+    </thead>
+    <tbody>
+
+        @foreach (var s in userStatistics)
+        {
             <tr>
                 <td>@ExerciseService.GetExerciseById(s.ExerciseId).Name</td>
 
@@ -33,14 +35,19 @@
 
                 <td>@s.Total_coins.ToString()</td>
             </tr>
-		}
-	</tbody>
+        }
+    </tbody>
 </table>
 
 <p><a href="login">Log in</a> first</p>
 
 @code {
     private List<UserStatistics> userStatistics = new();
+    private Users? user;
+
+    private void UpdateStats(int userId){
+        UserStatisticsService.UpdateUserStatistics(userId);
+    }
 
     protected override async void OnInitialized()
     {
@@ -53,12 +60,15 @@
             // Extract user ID from claims
             var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
             {
+
+                user = UserService.GetUserById(loggedInUserId);
+
                 try
                 {
                     // Fetch user statistics using the extracted user ID
-                    userStatistics = UserStatisticsService.GetStatisticsByUser(userId);
+                    userStatistics = UserStatisticsService.GetStatisticsByUser(loggedInUserId);
                     // Process `userStatistics` as needed
                 }
                 catch (Exception ex)
@@ -76,8 +86,6 @@
         {
             NavigationManager.NavigateTo("/login");
         }
-
-
 
     }
 }

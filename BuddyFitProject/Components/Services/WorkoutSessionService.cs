@@ -3,6 +3,7 @@ using BuddyFitProject.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace BuddyFitProject.Components.Services
 {
@@ -15,7 +16,7 @@ namespace BuddyFitProject.Components.Services
             DbContextFactory = dbContext;
         }
 
-        public void AddWorkoutSessions(WorkoutSessions WorkSesh)
+        public void AddWorkoutSession(WorkoutSessions WorkSesh)
         {
             using (var dbContext = DbContextFactory.CreateDbContext())
             {
@@ -24,13 +25,30 @@ namespace BuddyFitProject.Components.Services
                 dbContext.SaveChanges();
             }
         }
-        public List<WorkoutSessions> RetrieveWorkoutSessionss()
-        {
 
+        public async Task AddWorkoutSessionAsync(WorkoutSessions WorkSesh)
+        {
             using (var dbContext = DbContextFactory.CreateDbContext())
             {
-                //return WorkoutSessions.Include(x => x.user).ToList();
-                return null;
+                WorkSesh.Timestamp = DateTime.Now;
+                await dbContext.WorkoutSessions.AddAsync(WorkSesh); // Ensure this matches the DbSet for WorkoutSessions
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public List<WorkoutSessions> LoadWorkoutSessionsByUser(int userId)
+        {
+            List<WorkoutSessions> workouts = new();
+            using (var dbContext = DbContextFactory.CreateDbContext())
+            {
+                workouts = dbContext.WorkoutSessions
+                    .Where(x => x.UserId == userId)
+                    .ToList();
+
+                if (!workouts.Any())
+                    throw new Exception("User statistics do not exist!");
+
+                return workouts;
             }
         }
     }

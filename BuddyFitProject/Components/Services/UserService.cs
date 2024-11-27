@@ -37,6 +37,15 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
+        public Users GetUserById(int id)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                Users user = dbContext.Users.SingleOrDefault<Users>(x => x.Id == id) ?? throw new Exception("User bestaat niet!");
+                return user;
+            }
+        }
+
         public Users GetUserByLogin(string name, string password)
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
@@ -55,11 +64,10 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-        public void UpdateUser(Users user, string email)
+        public void UpdateUser(Users user)
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                user.Email = email;
                 dbContext.Users.Update(user);
                 dbContext.SaveChanges();
             }

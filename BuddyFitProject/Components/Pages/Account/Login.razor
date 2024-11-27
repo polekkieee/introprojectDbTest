@@ -70,9 +70,7 @@
 		var principal = new ClaimsPrincipal(identity);
 		await httpcontext.SignInAsync(principal);
 
-		string url = "/stats";	
-		// User.Username; 
-		// Moet weer session worden
+		string url = "/session/" + User.Id.ToString();
 		navigationManager.NavigateTo(url);
 	}
 }

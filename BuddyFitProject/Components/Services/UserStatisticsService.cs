@@ -37,15 +37,30 @@ namespace BuddyFitProject.Components.Services
         //    }
         //}
 
-        //public void UpdateUser(Users user, string email)
-        //{
-        //    using (var dbContext = this.DbContextFactory.CreateDbContext())
-        //    {
-        //        user.Email = email;
-        //        dbContext.Users.Update(user);
-        //        dbContext.SaveChanges();
-        //    }
-        //}
+        public void UpdateUserStatistics(int userId)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                var stats = dbContext.UserStatistics
+                    .Where(x => x.UserId == userId)
+                    .ToList();
+
+                var workouts = dbContext.WorkoutSessions
+                    .Where(x => x.UserId == userId)
+                    .ToList();
+
+                foreach(var workout in workouts)
+                {
+                    if(!dbContext.UserStatistics.Where(x => x.ExerciseId == workout.ExerciseId).Any())
+                    {
+                        AddUserStatistic(userId, workout.ExerciseId);
+                    }
+                }
+
+                dbContext.UserStatistics.UpdateRange(stats);
+                dbContext.SaveChanges();
+            }
+        }
 
         //public bool ValidateUser(string username, string password)
         //{
@@ -55,15 +70,29 @@ namespace BuddyFitProject.Components.Services
         //    }
         //}
 
-        //public void AddWorkout(Users user, WorkoutSessions workout)
-        //{
-        //    using (var dbContext = this.DbContextFactory.CreateDbContext())
-        //    {
-        //        //user.WorkoutSessions.Add(workout);
-        //        //workout.user = user;
-        //        dbContext.Users.Update(user);
-        //        dbContext.SaveChanges();
-        //    }
-        //}
+        public void AddUserStatistic(int userId, int exerciseId)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                UserStatistics userStat = new();
+                userStat.UserId = userId;
+                userStat.ExerciseId = exerciseId;
+
+                int total_minutes = 0;
+                int total_coins = 0;
+
+                foreach (WorkoutSessions workout in dbContext.WorkoutSessions.Where(x => x.ExerciseId == exerciseId && x.UserId == userId).ToList())
+                {
+                    total_minutes += workout.Minutes;
+                    total_coins += workout.Reward;
+                }
+
+                userStat.Total_minutes = total_minutes;
+                userStat.Total_coins = total_coins;
+
+                dbContext.UserStatistics.Add(userStat);
+                dbContext.SaveChanges();
+            }
+        }
     }
 }
