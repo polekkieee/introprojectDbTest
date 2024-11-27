@@ -1,11 +1,11 @@
-﻿@page "/"
+﻿@page "/login"
 @using BuddyFitProject.Data
-@using BuddyFitProject.Models
+@using BuddyFitProject.Data.Models
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Authentication.Cookies
-@inject BuddyFitProjectContext appDbContext
+@inject BuddyFitDbContext appDbContext
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [ExcludeFromInteractiveRouting]

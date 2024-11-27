@@ -12,50 +12,68 @@
 <hr/>
 <p> I have done the following workout for [] minutes</p>
 <div class="row">
-	<div class="col-md-4">
-		<EditForm method ="post" Model="WorkoutSession" OnValidSubmit="LogWorkout" Enhance>
-			<!--is hier een DataAnnotationsValidator nodig?-->
-			@* <div class="mb-3">
-				<label for="pushup">Pushups:</label>
-				<InputText id="pushup" @bind-Value="WorkoutSession.Name" class="form-control"></InputText>
+	<div class="col-md-8">
+		<EditForm method ="post" Model="WorkoutSession" OnValidSubmit="LogWorkout" FormName="create" Enhance>
+
+			<div class="mb-3">
+				<label for="pushups"> pushups:</label>
+			<InputNumber id="pushup" @bind-Value="WorkoutSession.Minutes" class="form-control"></InputNumber>
 			</div>
 			<div class="mb-3">
-				<label for="situp">Situps:</label>
-				<InputText id="situps" @bind-Value="WorkoutSession.Situps" class="form-control"></InputText>
+				<label for="situps">Situps:</label>
+				<InputNumber id="situp" @bind-Value="WorkoutSession.Minutes" class="form-control"></InputNumber>
 			</div>
 			<div class="mb-3">
-				<label for="jumpingjacks">Jumping Jacks:</label>
-				<InputText id="jumpingjacks" @bind-Value="WorkoutSession.JumpingJacks" class="form-control"></InputText>
-			</div>	
-			<div class="mb-3">
-				<label for="squats">Squats:</label>
-				<InputText id="squats" @bind-Value="WorkoutSession.Squats" class="form-control"></InputText>
+				<label for="plank">Planks:</label>
+				<InputNumber id="plank" @bind-Value="WorkoutSession.Minutes" class="form-control"></InputNumber>
 			</div>
-			<div class="mb-3">
-				<label for="running">Running:</label>
-				<InputText id="running" @bind-Value="WorkoutSession.Running" class="form-control"></InputText>
-			</div>
-			<div class="mb-3">
-				<label for="plank">Plank:</label>
-				<InputText id="plank" @bind-Value="WorkoutSession.Plank" class="form-control"></InputText>
-			</div> *@
+			
 			<button type="submit" class="btn btn-primary">I finihsed working out!</button>
 		</EditForm>
 	</div>
 </div>
 
 
+
 @code{
 	[SupplyParameterFromForm]
 	private WorkoutSessions WorkoutSession { get; set; } = new();
 
+	private int pushupmins { get; set; } = 0;
+	private int pushupcoins { get; set; } = 0;
+
 	private async Task LogWorkout()
 	{
-		WorkoutSession.Timestamp = DateTime.Now;
+		//WorkoutSession.Timestamp = DateTime.Now;
 		using var context = DbFactory.CreateDbContext();
-		context.WorkoutSessions.Add(WorkoutSession);
+		//context.WorkoutSessions.Add(WorkoutSession);
+
+
+		using var dbContext = await DbFactory.CreateDbContextAsync();
+
+
+		//pushup
+		if (pushupmins > 0 && pushupmins != null)
+		{
+			context.WorkoutSessions.Add(new WorkoutSessions
+				{
+					ExerciseId = 1,
+					UserId = 1, // nog ff kijken hoe dit aan die user gelogd wordt
+					Minutes = pushupmins,
+					Reward = pushupcoins,
+					Timestamp = DateTime.Now,
+				});
+		}
 		await context.SaveChangesAsync();
 	}
+
+
+	private int calculateCoins()
+	{
+		return 0;
+	}
+	
+	
 }
 
 
