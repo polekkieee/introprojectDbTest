@@ -1,13 +1,13 @@
 ﻿
 
-        @page "/Workout"
+@page "/Workout"
 @attribute [StreamRendering]
 
 <PageTitle>Workout</PageTitle>
 
 @code {
     // Variabelen voor oefeningen
-    private int PushUpMinutes = 2;
+    private int PushUpMinutes = 0;
     private int PlankMinutes = 0;
     private int BurpeesMinutes = 0;
     private int JumpingJacksMinutes = 0;
@@ -35,13 +35,13 @@
     private int StairWalkingMinutes = 0;
     private int StairWalkingSpeed = 0;
 
-    private int coinsamount = 0; // Definieer de coins variabele
-    private int level = 10; // Definieer de level variabele
+    private int coinsamount = 0; // De hoeveelheid coins
+    private int level = 10; // Hoogte level gebruiker
 
     // Methode die wordt aangeroepen bij de knopdruk
     private void UpdateCoinsAmount()
     {
-        // Bijwerken van coins op basis van de minuten voor elke oefening
+        // Bijwerken van coins hoeveelheid op basis van de minuten voor elke oefening
         coinsamount = PushUpMinutes * 150
                     + PlankMinutes * 100
                     + BurpeesMinutes * 200
@@ -70,8 +70,9 @@
                     + StairWalkingMinutes * 140
                     + StairWalkingSpeed * 1;
 
+
         // Herlaad de UI na de wijziging
-        InvokeAsync(StateHasChanged);
+        StateHasChanged();
     }
 }
 
@@ -260,7 +261,7 @@
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
 
-    /* Level Coin styling (green circle below the coin) */
+    /* Level Coin styling */
     .level-coin {
         position: absolute;
         top: 60px;
@@ -306,8 +307,6 @@
         <label>Current coins amount:</label>
         <label>@coinsamount</label>
 
-        <!-- Convert button -->
-        <!-- Convert button -->
         <button @onclick="UpdateCoinsAmount">Convert given data to coins</button>
 
         <label>So name, what exercises did you do today?</label>
