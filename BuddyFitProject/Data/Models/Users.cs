@@ -5,7 +5,7 @@ namespace BuddyFitProject.Data.Models;
 
 public class Users
 {
-    public int Id { get; set; }
+    public int Id {get;set;}
     public string Username { get; set; }
     public string Password { get; set; }
     public string Email { get; set; }
@@ -13,5 +13,5 @@ public class Users
     public string Gender { get; set; }
     public string Start_condition { get; set; }
     public int Coins { get; set; } = 0;
-
+    public int Resetcode { get; set; } = 0;
 }

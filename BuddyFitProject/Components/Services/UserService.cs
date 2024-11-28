@@ -82,16 +82,16 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-        //public void AddWorkout(Users user, WorkoutSessions workout)
-        //{
-        //    using (var dbContext = this.DbContextFactory.CreateDbContext())
-        //    {
-        //        //user.WorkoutSessions.Add(workout);
-        //        //workout.user = user;
-        //        dbContext.Users.Update(user);
-        //        dbContext.SaveChanges();
-        //    }
-        //}
+        public void AddWorkout(Users user, WorkoutSessions workout)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                //user.WorkoutSessions.Add(workout);
+                //workout.user = user;
+                dbContext.Users.Update(user);
+                dbContext.SaveChanges();
+            }
+        }
 
     }
 }

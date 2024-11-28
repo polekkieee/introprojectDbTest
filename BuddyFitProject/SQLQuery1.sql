@@ -1,4 +1,4 @@
--- Create the database
+﻿-- Create the database
 CREATE DATABASE FitBuddy_db;
 GO
 
@@ -15,7 +15,7 @@ CREATE TABLE Users (
     age INT NOT NULL,
     start_condition NVARCHAR(100),
     coins INT DEFAULT 0,
-    resetcode INT
+    resetcode INT DEFAULT 0
 );
 GO
 
