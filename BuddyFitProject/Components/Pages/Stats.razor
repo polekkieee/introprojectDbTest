@@ -20,6 +20,12 @@
     <a href="logout">
         <button>Logout</button>
     </a>
+
+    <div class="coin">$</div>
+    <div class="coin-label">@user.Coins</div>
+
+    <div class="level-coin">lvl</div>
+    <div class="level-label">???</div>
     <br />
     <br />
     <button class="btn btn-primary" @onclick="LoadStats">Load Stats</button>
@@ -67,7 +73,6 @@ else
 
     private void LoadStats()
     {
-        Console.WriteLine($"user id = {user.Id}");
         try
         {
             // Update and fetch user statistics

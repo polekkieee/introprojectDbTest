@@ -1,37 +1,215 @@
-﻿@page "/session"
+﻿@page "/Session"
+@attribute [StreamRendering]
+@rendermode InteractiveServer
 @using BuddyFitProject.Data
 @using BuddyFitProject.Data.Models
 @using BuddyFitProject.Components.Services
 @using System.Security.Claims
 @inject UserService UserService
+@inject UserStatisticsService UserStatisticsService
 @inject WorkoutSessionService WorkoutService
 @inject ExerciseService ExerciseService
-@inject NavigationManager NavigationManager
 @inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager NavigationManager
 
-<PageTitle>Session</PageTitle>
+<PageTitle>Workout Session</PageTitle>
 
 @if (LoggedIn)
 {
-    <p>Welcome, @user.Username</p>
-    <h1>Log Your Workout Session</h1>
-    <EditForm method="post" FormName="WorkoutLogForm" Model="WorkoutSession" OnValidSubmit="LogWorkout">
-        <div>
+    <style>
+        body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, purple, blue);
+        color: #333;
+        text-align: center;
+        padding: 20px;
+        position: relative;
+        }
+    </style>
+
+    <EditForm method="post" Model="WorkoutSession" OnValidSubmit="LogWorkout">
+        @* <div>
             <label for="exercise">Select Exercise:</label>
-            <InputSelect id="exercise" @bind-Value="WorkoutSession.ExerciseId">
-                <option value="">-- Choose an exercise --</option>
+            <select id="exercise" @bind="WorkoutSession.ExerciseId">
+                <option value="">-- Select an Exercise --</option>
                 @foreach (var exercise in Exercises)
                 {
                     <option value="@exercise.Id">@exercise.Name</option>
                 }
-            </InputSelect>
+            </select>
         </div>
+
         <div>
             <label for="minutes">Duration (minutes):</label>
             <InputNumber id="minutes" @bind-Value="WorkoutSession.Minutes" />
         </div>
-        <button type="submit" class="btn btn-primary">Log Workout</button>
+
+        <button type="submit" class="btn btn-primary">Log Workout</button> *@
     </EditForm>
+
+    <h1>Workout</h1>
+    <p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox</p>
+
+    <div class="coin">$</div>
+    <div class="coin-label">@user.Coins</div>
+
+    <div class="level-coin">lvl</div>
+    <div class="level-label">???</div>
+
+    <div class="wrapper">
+        <!-- Left white frame with Coins amount label -->
+        <div class="left-frame">
+            <label>Current coins amount:</label>
+            <label>@coinsamount</label>
+
+            <button @onclick="CalculateRewards">Convert given data to coins</button>
+            <button @onclick="LogWorkout">Log your workout</button>
+
+
+            <label>So @user.Username, what exercises did you do today?</label>
+        </div>
+
+
+
+        <!-- Exercise container -->
+        <div class="exercise-container">
+
+            
+
+            @foreach(var workout in WorkoutList){
+
+                if (WeightExercises.Contains(ExerciseService.GetExerciseById(workout.ExerciseId).Name))
+                {
+                    <div class="onderdeel-item2">
+                        <label>Minutes</label>
+                        <label>Weights(kg)</label>
+                    </div>
+
+                    <div class="exercise-item">
+                        <label>@ExerciseService.GetExerciseById(workout.ExerciseId).Name</label>
+                        <input type="number" @bind="workout.Minutes" />
+                        <input type="number" class="weight-input" />
+                    </div>
+                }
+                else if (DistanceExercises.Contains(ExerciseService.GetExerciseById(workout.ExerciseId).Name))
+                {
+                    <div class="onderdeel-item2">
+                        <label>Minutes</label>
+                        <label>Distance(m)</label>
+                    </div>
+
+                    <div class="exercise-item">
+                        <label>@ExerciseService.GetExerciseById(workout.ExerciseId).Name</label>
+                        <input type="number" @bind="workout.Minutes" />
+                        <input type="number" class="speed-input" />
+                    </div>
+                } else {
+                    <div class="onderdeel-item">
+                        <label>Minutes</label>
+                    </div>
+
+                    <div class="exercise-item">
+                        <label>@ExerciseService.GetExerciseById(workout.ExerciseId).Name</label>
+                        <input type="number" @bind="workout.Minutes" />
+                    </div>
+                }
+
+
+
+
+
+
+
+            }
+
+            @* 
+            <div class="exercise-item">
+                <label>Push-up:</label>
+                <input type="number" />
+            </div>
+            <div class="exercise-item">
+                <label>Plank:</label>
+                <input type="number" />
+            </div>
+            <div class="exercise-item">
+                <label>Burpees:</label>
+                <input type="number" />
+            </div>
+            <div class="exercise-item">
+                <label>Jumping Jacks:</label>
+                <input type="number" />
+            </div>
+            <div class="exercise-item">
+                <label>Pull-up:</label>
+                <input type="number" />
+            </div>
+            <div class="exercise-item">
+                <label>Wallsits:</label>
+                <input type="number" />
+            </div>
+            <div class="exercise-item">
+                <label>Rope jumping:</label>
+                <input type="number" />
+            </div>
+
+            <div class="exercise-item">
+                <label>Bench Press:</label>
+                <input type="number" />
+                <input type="number" class="weight-input" />
+            </div>
+            <div class="exercise-item">
+                <label>Dumbbell Rows:</label>
+                <input type="number"  />
+                <input type="number" class="weight-input" />
+            </div>
+            <div class="exercise-item">
+                <label>Curls:</label>
+                <input type="number"  />
+                <input type="number"  class="weight-input" />
+            </div>
+            <div class="exercise-item">
+                <label>Leg Press:</label>
+                <input type="number"  />
+                <input type="number" class="weight-input" />
+            </div>
+
+            <div class="exercise-item">
+                <label>Walking:</label>
+                <input type="number" />
+                <input type="number" class="speed-input" />
+            </div>
+            <div class="exercise-item">
+                <label>Cycling:</label>
+                <input type="number"/>
+                <input type="number" class="speed-input" />
+            </div>
+            <div class="exercise-item">
+                <label>Swimming:</label>
+                <input type="number" />
+                <input type="number" class="speed-input" />
+            </div>
+            <div class="exercise-item">
+                <label>Running:</label>
+                <input type="number" />
+                <input type="number" class="speed-input" />
+            </div>
+            <div class="exercise-item">
+                <label>Sprinting:</label>
+                <input type="number" />
+                <input type="number" class="speed-input" />
+            </div>
+            <div class="exercise-item">
+                <label>Stair walking:</label>
+                <input type="number" />
+                <input type="number" class="speed-input" />
+            </div> *@
+        </div>
+    </div>
+
+
+
+
 
     @if (!string.IsNullOrEmpty(RewardMessage))
     {
@@ -45,63 +223,109 @@ else
 }
 
 @code {
-    [SupplyParameterFromForm] private WorkoutSessions WorkoutSession { get; set; } = new();
-
     private Users? user;
     private List<Exercises> Exercises = new();
-    private bool LoggedIn  = false;
+    private bool LoggedIn = false;
     private string RewardMessage = string.Empty;
+    private List<WorkoutSessions> WorkoutList = new();
+    private List<string> WeightExercises = ["Bench Press", "Dumbbell Rows", "Curls", "Leg Press"];
+    private List<string> DistanceExercises = ["Walking", "Cycling", "Swimming", "Running", "Sprinting", "Stair Walking"];
+
+    private int PushUpMinutes = 0;
+    private int PlankMinutes = 0;
+    private int BurpeesMinutes = 0;
+    private int JumpingJacksMinutes = 0;
+    private int BenchPressMinutes = 0;
+    private int BenchPressWeight = 0;
+    private int DumbbellRowsMinutes = 0;
+    private int DumbbellRowsWeight = 0;
+    private int CurlsMinutes = 0;
+    private int CurlsWeight = 0;
+    private int PullUpMinutes = 0;
+    private int LegPressMinutes = 0;
+    private int LegPressWeight = 0;
+    private int WalkingMinutes = 0;
+    private int WalkingSpeed = 0;
+    private int CyclingMinutes = 0;
+    private int CyclingSpeed = 0;
+    private int SwimmingMinutes = 0;
+    private int SwimmingSpeed = 0;
+    private int RunningMinutes = 0;
+    private int RunningSpeed = 0;
+    private int SprintingMinutes = 0;
+    private int SprintingSpeed = 0;
+    private int WallsitsMinutes = 0;
+    private int RopeJumpingMinutes = 0;
+    private int StairWalkingMinutes = 0;
+    private int StairWalkingSpeed = 0;
+
+    private int coinsamount = 0;
+
+
+    [SupplyParameterFromForm] private WorkoutSessions WorkoutSession { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         var httpContext = HttpContextAccessor.HttpContext;
 
-        // Check if user is authenticated
         if (httpContext?.User.Identity?.IsAuthenticated == true)
         {
             var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
             {
-                // Load user and exercises if UserId is provided
                 user = UserService.GetUserById(loggedInUserId);
                 LoggedIn = true;
                 Exercises = ExerciseService.LoadExercises();
+
+                foreach(var exercise in Exercises){
+                    WorkoutList.Add(new WorkoutSessions
+                        {
+                            UserId = user.Id,
+                            ExerciseId = exercise.Id
+                        }
+                     );
+                }
             }
+        }
+    }
+
+    private void CalculateRewards(){
+        coinsamount = 0;
+        foreach(var workout in WorkoutList){
+            if (workout.Minutes > 0)
+            {
+                coinsamount += workout.Minutes * ExerciseService.GetExerciseById(workout.ExerciseId).Coins_pm;
+            }
+        }
+        if(coinsamount == 0){
+            return;
         }
     }
 
     private async Task LogWorkout()
     {
-        if (WorkoutSession.ExerciseId == 0 || WorkoutSession.Minutes <= 0)
-        {
-            RewardMessage = "Please select a valid exercise and duration.";
+        if(coinsamount == 0){
             return;
         }
-
-        var exercise = Exercises.FirstOrDefault(e => e.Id == WorkoutSession.ExerciseId);
-        if (exercise == null)
-        {
-            RewardMessage = "Invalid exercise selected.";
-            return;
+        foreach (var workout in WorkoutList){
+            if(workout.Minutes > 0){
+                workout.Reward = workout.Minutes * ExerciseService.GetExerciseById(workout.ExerciseId).Coins_pm;
+                await WorkoutService.AddWorkoutSessionAsync(workout);
+            }
         }
-
-        // Calculate reward
-        WorkoutSession.Reward = exercise.Coins_pm * WorkoutSession.Minutes;
-        WorkoutSession.UserId = user.Id;
-        WorkoutSession.Timestamp = DateTime.Now;
-
-        // Save workout session
-        await WorkoutService.AddWorkoutSessionAsync(WorkoutSession);
-
-        // Update user coins
-        if (user != null)
+        WorkoutList.Clear();
+        foreach (var exercise in Exercises)
         {
-            user.Coins += WorkoutSession.Reward;
-            UserService.UpdateUser(user);
+            WorkoutList.Add(new WorkoutSessions
+                {
+                    UserId = user.Id,
+                    ExerciseId = exercise.Id
+                }
+             );
         }
-
-        RewardMessage = $"Workout logged! You earned {WorkoutSession.Reward} coins.";
-        // Reset form and show success message
-        WorkoutSession = new WorkoutSessions();
+        UserStatisticsService.UpdateUserStatistics(user.Id);
+        UserService.UpdateUser(user); 
+        CalculateRewards();
+        StateHasChanged();
     }
 }

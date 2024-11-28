@@ -15,6 +15,7 @@ CREATE TABLE Users (
     age INT NOT NULL,
     start_condition NVARCHAR(100),
     coins INT DEFAULT 0,
+    gender NVARCHAR(10) NOT NULL,
     resetcode INT
 );
 GO

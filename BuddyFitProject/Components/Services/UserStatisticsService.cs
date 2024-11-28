@@ -90,6 +90,13 @@ namespace BuddyFitProject.Components.Services
                     }
                 }
 
+                var user = dbContext.Users.FirstOrDefault(x => x.Id == userId);
+                user.Coins = 0;
+                foreach (var stat in GetStatisticsByUser(userId))
+                {
+                    user.Coins += stat.Total_coins;
+                }
+
                 // Save changes to the database
                 dbContext.SaveChanges();
             }
