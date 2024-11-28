@@ -36,40 +36,92 @@
     private int StairWalkingMinutes = 0;
     private int StairWalkingSpeed = 0;
 
-    private int coinsamount = 0; // De hoeveelheid coins
+    private int coinsamount = 1000; // De hoeveelheid coins
     private int level = 10; // Hoogte level gebruiker
 
     // Methode die wordt aangeroepen bij de knopdruk
     private void UpdateCoinsAmount()
     {
         // Bijwerken van coins hoeveelheid op basis van de minuten voor elke oefening
-        coinsamount = PushUpMinutes * 150
-                    + PlankMinutes * 100
-                    + BurpeesMinutes * 200
-                    + JumpingJacksMinutes * 100
-                    + BenchPressMinutes * 50
-                    + BenchPressWeight * 1
-                    + DumbbellRowsMinutes * 30
-                    + DumbbellRowsWeight * 2
-                    + CurlsMinutes * 30
-                    + CurlsWeight * 2
-                    + PullUpMinutes * 50
-                    + LegPressMinutes * 30
-                    + LegPressWeight * 1
-                    + WalkingMinutes * 20
-                    + WalkingSpeed * 1
-                    + CyclingMinutes * 20
-                    + CyclingSpeed * 1
-                    + SwimmingMinutes * 50
-                    + SwimmingSpeed * 2
-                    + RunningMinutes * 60
-                    + RunningSpeed * 1
-                    + SprintingMinutes * 100
-                    + SprintingSpeed * 1
-                    + WallsitsMinutes * 70
-                    + RopeJumpingMinutes * 120
-                    + StairWalkingMinutes * 140
-                    + StairWalkingSpeed * 1;
+        coinsamount = coinsamount
+            + PushUpMinutes * 150
+            + PlankMinutes * 100
+            + BurpeesMinutes * 200
+            + JumpingJacksMinutes * 100
+            + BenchPressMinutes * 50
+            + DumbbellRowsMinutes * 30
+            + CurlsMinutes * 30
+            + PullUpMinutes * 50
+            + LegPressMinutes * 30
+            + WalkingMinutes * 20
+            + CyclingMinutes * 20
+            + SwimmingMinutes * 50
+            + RunningMinutes * 60
+            + SprintingMinutes * 100
+            + WallsitsMinutes * 70
+            + RopeJumpingMinutes * 120
+            + StairWalkingMinutes * 140;
+
+        // Gewicht en snelheid alleen toevoegen als minuten > 0
+        if (BenchPressMinutes > 0)
+            coinsamount += BenchPressWeight * 1;
+
+        if (DumbbellRowsMinutes > 0)
+            coinsamount += DumbbellRowsWeight * 2;
+
+        if (CurlsMinutes > 0)
+            coinsamount += CurlsWeight * 2;
+
+        if (LegPressMinutes > 0)
+            coinsamount += LegPressWeight * 1;
+
+        if (WalkingMinutes > 0)
+            coinsamount += WalkingSpeed * 1;
+
+        if (CyclingMinutes > 0)
+            coinsamount += CyclingSpeed * 1;
+
+        if (SwimmingMinutes > 0)
+            coinsamount += SwimmingSpeed * 2;
+
+        if (RunningMinutes > 0)
+            coinsamount += RunningSpeed * 1;
+
+        if (SprintingMinutes > 0)
+            coinsamount += SprintingSpeed * 1;
+
+        if (StairWalkingMinutes > 0)
+            coinsamount += StairWalkingSpeed * 1;
+
+
+
+        PushUpMinutes = 0;
+        PlankMinutes = 0;
+        BurpeesMinutes = 0;
+        JumpingJacksMinutes = 0;
+        BenchPressMinutes = 0;
+        BenchPressWeight = 0;
+        DumbbellRowsMinutes = 0;
+        DumbbellRowsWeight = 0;
+        CurlsMinutes = 0;
+        CurlsWeight = 0;
+        PullUpMinutes = 0;
+        LegPressMinutes = 0;
+        LegPressWeight = 0;
+        WalkingMinutes = 0;
+        WalkingSpeed = 0;
+        CyclingMinutes = 0;
+        CyclingSpeed = 0;
+        SwimmingMinutes = 0;
+        SwimmingSpeed = 0;
+        RunningMinutes = 0;
+        RunningSpeed = 0;
+        SprintingMinutes = 0;
+        SprintingSpeed = 0;
+        WallsitsMinutes = 0;
+        RopeJumpingMinutes = 0;
+        StairWalkingMinutes = 0;
+        StairWalkingSpeed = 0;
 
 
         // Herlaad de UI na de wijziging
@@ -123,16 +175,12 @@
         .left-frame label {
             font-size: 1.5rem;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-top: 20px;
             display: block;
         }
 
-            .left-frame label:last-of-type {
-                margin-top: 60px; /* Voeg marge toe aan de laatste label */
-            }
-
         .left-frame button {
-            margin-top: 20px;
+            margin-top: 5px;
             padding: 10px 20px;
             background-color: #ffcc00;
             border: none;
@@ -294,7 +342,7 @@
 </style>
 
 <h1>Workout</h1>
-<p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox</p>
+<p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox. Do not forget to fill in the speed or weights if needed</p>
 
 <div class="coin">$</div>
 <div class="coin-label">@coinsamount</div>
@@ -311,6 +359,8 @@
         <button @onclick="UpdateCoinsAmount">Convert given data to coins</button>
 
         <label>So name, what exercises did you do today?</label>
+        <label>Current minutes</label>
+
     </div>
 
     <!-- Exercise container -->
