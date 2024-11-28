@@ -1,27 +1,107 @@
 ﻿@page "/session"
-@using Microsoft.EntityFrameworkCore
-@using BuddyFitProject.Data;
+@using BuddyFitProject.Data
 @using BuddyFitProject.Data.Models
 @using BuddyFitProject.Components.Services
-@inject WorkoutSessionService WorkoutService
+@using System.Security.Claims
 @inject UserService UserService
+@inject WorkoutSessionService WorkoutService
+@inject ExerciseService ExerciseService
 @inject NavigationManager NavigationManager
-@inject BuddyFitDbContext appDbContext
+@inject IHttpContextAccessor HttpContextAccessor
 
 <PageTitle>Session</PageTitle>
 
-<h1>Workout</h1>
-<p>Finished working out? Log your session!</p>
+@if (LoggedIn)
+{
+    <p>Welcome, @user.Username</p>
+    <h1>Log Your Workout Session</h1>
+    <EditForm method="post" FormName="WorkoutLogForm" Model="WorkoutSession" OnValidSubmit="LogWorkout">
+        <div>
+            <label for="exercise">Select Exercise:</label>
+            <InputSelect id="exercise" @bind-Value="WorkoutSession.ExerciseId">
+                <option value="">-- Choose an exercise --</option>
+                @foreach (var exercise in Exercises)
+                {
+                    <option value="@exercise.Id">@exercise.Name</option>
+                }
+            </InputSelect>
+        </div>
+        <div>
+            <label for="minutes">Duration (minutes):</label>
+            <InputNumber id="minutes" @bind-Value="WorkoutSession.Minutes" />
+        </div>
+        <button type="submit" class="btn btn-primary">Log Workout</button>
+    </EditForm>
 
-<hr />
-<p> I have done the following workout for [] minutes</p>
+    @if (!string.IsNullOrEmpty(RewardMessage))
+    {
+        <p class="text-success">@RewardMessage</p>
+    }
+}
+else
+{
+    <h1>You must be logged in to access this page.</h1>
+    <a href="login">Go to Login</a>
+}
 
-<a href="logout">
-	<button>Logout</button>
-</a>
+@code {
+    [SupplyParameterFromForm] private WorkoutSessions WorkoutSession { get; set; } = new();
 
-code {
+    private Users? user;
+    private List<Exercises> Exercises = new();
+    private bool LoggedIn  = false;
+    private string RewardMessage = string.Empty;
 
-} 
+    protected override async Task OnInitializedAsync()
+    {
+        var httpContext = HttpContextAccessor.HttpContext;
 
+        // Check if user is authenticated
+        if (httpContext?.User.Identity?.IsAuthenticated == true)
+        {
+            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+            {
+                // Load user and exercises if UserId is provided
+                user = UserService.GetUserById(loggedInUserId);
+                LoggedIn = true;
+                Exercises = ExerciseService.LoadExercises();
+            }
+        }
+    }
 
+    private async Task LogWorkout()
+    {
+        if (WorkoutSession.ExerciseId == 0 || WorkoutSession.Minutes <= 0)
+        {
+            RewardMessage = "Please select a valid exercise and duration.";
+            return;
+        }
+
+        var exercise = Exercises.FirstOrDefault(e => e.Id == WorkoutSession.ExerciseId);
+        if (exercise == null)
+        {
+            RewardMessage = "Invalid exercise selected.";
+            return;
+        }
+
+        // Calculate reward
+        WorkoutSession.Reward = exercise.Coins_pm * WorkoutSession.Minutes;
+        WorkoutSession.UserId = user.Id;
+        WorkoutSession.Timestamp = DateTime.Now;
+
+        // Save workout session
+        await WorkoutService.AddWorkoutSessionAsync(WorkoutSession);
+
+        // Update user coins
+        if (user != null)
+        {
+            user.Coins += WorkoutSession.Reward;
+            UserService.UpdateUser(user);
+        }
+
+        RewardMessage = $"Workout logged! You earned {WorkoutSession.Reward} coins.";
+        // Reset form and show success message
+        WorkoutSession = new WorkoutSessions();
+    }
+}

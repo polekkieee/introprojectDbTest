@@ -7,19 +7,22 @@
 @using Microsoft.AspNetCore.Authentication.Cookies
 @using BuddyFitProject.Components.Services;
 @inject UserService UserService
+@inject BuddyFitDbContext appDbContext
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [ExcludeFromInteractiveRouting]
+
 
 <PageTitle>Login</PageTitle>
 
 <h1 class="l2">Login</h1>
 <EditForm FormName="LoginUser" Model="@User" OnValidSubmit="LoginUser">
 	<label for="Username" class="l2">Username:</label>
-	<InputText @bind-Value="User.Username" />
+	<InputText required @bind-Value="User.Username" />
 	<br>
 	<br>
 	<label for="Password" class="l2">Password:</label>
-	<InputText @bind-Value="User.Password" />
+	<InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="User.Password" />
 	<br />
 	<span> @errorMessage </span>
 	<button type="submit" class="b2">Login</button>
@@ -46,22 +49,27 @@
 
 	private async Task LoginUser()
 	{
-		var isUserValid = UserService.ValidateUser(User.Username, User.Password);
+		bool isUserValid = UserService.ValidateUser(User.Username, User.Password);
 
 		if (!isUserValid)
 		{
 			errorMessage = "Your username or password is invalid.";
 			return;
+		} else {
+			User = UserService.GetUserByLogin(User.Username, User.Password);
 		}
+
 
 		var claims = new List<Claim>
 		{
 			new Claim(ClaimTypes.Name, User.Username),
+			new Claim(ClaimTypes.NameIdentifier, User.Id.ToString())
 		};
 
 		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 		var principal = new ClaimsPrincipal(identity);
 		await httpcontext.SignInAsync(principal);
+
 		navigationManager.NavigateTo("/session");
 	}
 }
