@@ -1,30 +1,91 @@
 ﻿@page "/Stats"
 @using BuddyFitProject.Data.Models
+@using System.Security.Claims
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject Services.UserService UserService
+@inject Services.UserStatisticsService UserStatisticsService
+@inject Services.ExerciseService ExerciseService
 
 <PageTitle>Statistics</PageTitle>
 
 <h1>Workout History</h1>
 
-<table class="table">
-	<thead>
-		<tr>Workouts</tr>
-	</thead>
-	<tbody>
-		@foreach (var w in workouts)
-		{
 
-		}
-	</tbody>
+<a href="logout">
+    <button>Logout</button>
+</a>
+
+<button @onclick="UserStatisticsService.UpdateUserStatistics(user.Id)">Update Stats</button>
+
+<table class="table">
+    <thead>
+        <tr>Statistics</tr>
+    </thead>
+    <tbody>
+
+        @foreach (var s in userStatistics)
+        {
+            <tr>
+                <td>@ExerciseService.GetExerciseById(s.ExerciseId).Name</td>
+
+                <td>@s.Total_minutes.ToString()</td>
+
+                <td>@s.Total_coins.ToString()</td>
+            </tr>
+        }
+    </tbody>
 </table>
 
-@code {
-	private List<WorkoutSessions> workouts = new();
+<p><a href="login">Log in</a> first</p>
 
-	protected async Task OnInitialized()
-	{
-		using var context = DbFactory.CreateDbContext();
-	}
+@code {
+    private List<UserStatistics> userStatistics = new();
+    private Users? user;
+
+    private void UpdateStats(int userId){
+        UserStatisticsService.UpdateUserStatistics(userId);
+    }
+
+    protected override async void OnInitialized()
+    {
+        await base.OnInitializedAsync();
+
+        var httpContext = HttpContextAccessor.HttpContext;
+
+        if (httpContext?.User.Identity?.IsAuthenticated == true)
+        {
+            // Extract user ID from claims
+            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+            {
+
+                user = UserService.GetUserById(loggedInUserId);
+
+                try
+                {
+                    // Fetch user statistics using the extracted user ID
+                    userStatistics = UserStatisticsService.GetStatisticsByUser(loggedInUserId);
+                    // Process `userStatistics` as needed
+                }
+                catch (Exception ex)
+                {
+                    // Handle exception, e.g., log it or show a message to the user
+                }
+            }
+            else
+            {
+                // Handle case where user ID is missing or invalid
+                NavigationManager.NavigateTo("/login");
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+
+    }
 }

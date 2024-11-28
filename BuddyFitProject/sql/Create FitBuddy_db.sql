@@ -13,7 +13,6 @@ CREATE TABLE Users (
     password NVARCHAR(255) NOT NULL,
     email NVARCHAR(100) NOT NULL UNIQUE,
     age INT NOT NULL,
-    gender NVARCHAR(10) NOT NULL CHECK (gender IN ('Male', 'Female', 'Other')),
     start_condition NVARCHAR(100),
     coins INT DEFAULT 0,
     resetcode INT

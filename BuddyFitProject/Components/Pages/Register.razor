@@ -12,14 +12,14 @@
 <hr />
 <div class="row">
 	<div class="col-md-3">
-		<EditForm method="post" Model="User" OnValidSubmit="AddUser" FormName="create" Enhance>
+		<EditForm method="post" Model="User" OnValidSubmit="AddUser" FormName="create">
 			<div class="mb-2">
 				<label for="UserName" class="l">Username:</label>
 				<InputText id="UserName" @bind-Value="User.Username" class="i" />
 			</div>
 			<div class="mb-2">
 				<label for="Password" class="l">Password:</label>
-				<InputText id="Password" @bind-Value="User.Password" class="i" />
+				<InputText style="-webkit-text-security: disc; text-security: disc;" id="Password" @bind-Value="User.Password" class="i" />
 			</div>
 			<div class="mb-2">
 				<label for="Email" class="l">Email:</label>
@@ -49,6 +49,7 @@
 	private void AddUser()
 	{
 		UserService.AddUser(User);
-		NavigationManager.NavigateTo("/stats"); //moet weer session worden
+		string url = $"session/{User.Id}";
+		NavigationManager.NavigateTo("url"); //moet weer session worden
 	}
 }

@@ -7,13 +7,17 @@ using BuddyFitProject.Components.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextFactory<BuddyFitDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BuddyFitProjectContext") ?? throw new InvalidOperationException("Connection string 'BuddyFitContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BuddyFitContext") ?? throw new InvalidOperationException("Connection string 'BuddyFitContext' not found.")));
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<WorkoutSessionService>();
+builder.Services.AddTransient<UserStatisticsService>();
+builder.Services.AddTransient<ExerciseService>();
+
+
 builder.Services.AddTransient<EmailService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
