@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System;
 using Azure.Identity;
+using SendGrid.Helpers.Mail;
 
 namespace BuddyFitProject.Components.Services
 {
@@ -82,6 +83,5 @@ namespace BuddyFitProject.Components.Services
                 dbContext.SaveChanges();
             }
         }
-
     }
 }
