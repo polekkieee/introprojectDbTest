@@ -14,11 +14,5 @@ public class Users
     public string Gender { get; set; }
     public string Start_condition { get; set; }
     public int Coins { get; set; } = 0;
-
-    public Users()
-    {
-        Age = 0;
-        Start_condition = 0;
-        Coins = 0;
-    }
+    public int Resetcode { get; set; } = 0;
 }

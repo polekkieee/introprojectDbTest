@@ -64,6 +64,14 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
+        public bool ValidateUserByEmailAndUsername(string username, string Email)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return (dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Email == Email) != null);
+            }
+        }
+
         public void AddWorkout(Users user, WorkoutSessions workout)
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
