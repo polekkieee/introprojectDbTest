@@ -1,40 +1,43 @@
 ﻿@page "/Store"
+@inject IJSRuntime JSRuntime
 
-<head>
-	<PageTitle> Store </PageTitle>
+<PageTitle> Store </PageTitle>
 
-	<h1 class="h">Store </h1>
-</head>
+<h1 class="h">Store </h1>
 
 
 
 <body style="background-color:#ffcc99;">
 
 	<div>
-		<a href="Food">
+		<a href="https://localhost:7068/Food">
 			Go to Food
 		</a>
 	</div>
 
 	<div>
-		<a href="Costumes">
+		<a href="https://localhost:7068/costumes">
 			Go to Costumes
 		</a>
 	</div>
 
 	<div>
-		<a href="MyPet">
+		<a href="https://localhost:7068/pets">
 			Go to Pets
 		</a>
 	</div>
 
 	<div>
-		<a href="Home">
+		<a href="https://localhost:7068/">
 			Go to Homepage
 		</a>
 	</div>
 
 	<br />
+
+	<div> Inventory: </div>
+
+	<br/>
 
 	<ul>
 		<li> Dragon outfit</li>
@@ -42,7 +45,7 @@
 		<li> Water outfit</li>
 		<li> Earth outfit</li>
 	</ul>
-		
+
 	<ul>
 		<li> Bananas</li>
 		<li> Apples</li>
@@ -50,13 +53,55 @@
 		<li> Cucumbers </li>
 	</ul>
 
-	<div> Inventory: </div>
-
+	<div id="myDiv" style= "height:300px;overflow-y:auto;border:1px solid black;">	
+		@foreach (var item in Allitems)
+		{
+			<div style= "height: 80px; background-color: pink; margin: 10px; padding: 20px; color: black; text-align: center;">
+				@item
+			</div>
+		}
+	</div>
 
 </body>
 
+@code{
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await JSRuntime.InvokeVoidAsync("checkDivScrollEnd", "myDiv", nameof (OnDivScrolledToEnd), DotNetObjectReference.Create(this));
+		}
+	}
+	protected List<string> Allitems = new List<string>
+	{
+		"Bananas",
+		"Apples",
+		"Pears",
+		"Cucumbers"
+	};
 
+	[JSInvokable]
 
-@code {
+	public async Task OnDivScrolledToEnd()
+	{
 
+		await JSRuntime.InvokeVoidAsync(() =>
+		{
+			Allitems.AddRange(new List<string>
+							{
+							"Dragon outfit",
+							"Fire outfit",
+							"Water outfit",
+							"Earth outfit",
+							"Item5",
+							"Item6",
+							"Item7",
+							"Item8",
+							"Item9",
+							"Item10",
+
+							}), StateHasChanged());
+			}
+		}
+	}	
 }
