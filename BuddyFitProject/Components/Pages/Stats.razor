@@ -100,7 +100,15 @@ else
 
                 LoggedIn = true;
             }
-
+            else
+            {
+                // Handle case where user ID is missing or invalid
+                navigationManager.NavigateTo("/login");
+            }
+        }
+        else
+        {  
+            navigationManager.NavigateTo("/login");
         }
 
     }
