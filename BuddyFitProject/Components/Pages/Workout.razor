@@ -8,6 +8,10 @@
 
 @code {
     // Variabelen voor oefeningen
+    private int CurrentMinutes = 0;
+    private int Next100mins = 0;
+    private int lastBonus100 = 0; // Houdt het laatste honderdtal bij waarvoor bonus is gegeven
+
     private int PushUpMinutes = 0;
     private int PlankMinutes = 0;
     private int BurpeesMinutes = 0;
@@ -93,7 +97,18 @@
         if (StairWalkingMinutes > 0)
             coinsamount += StairWalkingSpeed * 1;
 
+        CurrentMinutes = CurrentMinutes + PushUpMinutes + PlankMinutes + BurpeesMinutes + JumpingJacksMinutes + PullUpMinutes + WallsitsMinutes + RopeJumpingMinutes + BenchPressMinutes + DumbbellRowsMinutes + CurlsMinutes + LegPressMinutes + WalkingMinutes + CyclingMinutes + SwimmingMinutes + RunningMinutes + SprintingMinutes + StairWalkingMinutes;
 
+        Next100mins = 100 - (CurrentMinutes % 100);
+
+        int current100 = CurrentMinutes / 100;
+        if (current100 > lastBonus100)
+        {
+            int bonus = (current100 - lastBonus100) * 1000; 
+            coinsamount += bonus;
+
+            lastBonus100 = current100;
+        }
 
         PushUpMinutes = 0;
         PlankMinutes = 0;
@@ -123,10 +138,10 @@
         StairWalkingMinutes = 0;
         StairWalkingSpeed = 0;
 
-
         // Herlaad de UI na de wijziging
         StateHasChanged();
     }
+
 }
 
 <style>
@@ -146,6 +161,16 @@
         color: #fff;
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
+
+    h2 {
+        font-size: 1.5rem;
+        position: absolute;
+        left: 247px;
+        top:50px;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
 
     p {
         font-size: 1.4rem;
@@ -175,12 +200,12 @@
         .left-frame label {
             font-size: 1.5rem;
             font-weight: bold;
-            margin-top: 20px;
+            margin-bottom: 20px;
             display: block;
         }
 
         .left-frame button {
-            margin-top: 5px;
+            margin-bottom: 15px;
             padding: 10px 20px;
             background-color: #ffcc00;
             border: none;
@@ -264,6 +289,22 @@
             font-weight: bold;
         }
 
+    .onderdeel-item3 {
+        display: flex;
+        gap: 180px;
+        margin-bottom: 10px;
+        margin-left: 270px;
+    }
+
+        .onderdeel-item3 label {
+            flex: none;
+            color: #fff;
+            font-size: 1rem;
+            text-align: right;
+            width: 70px;
+            font-weight: bold;
+        }
+
 
         .exercise-item input {
             flex-grow: 1;
@@ -302,7 +343,7 @@
     .coin-label {
         position: absolute;
         top: 15px;
-        right: 140px;
+        right: 120px;
         font-size: 22px;
         font-weight: bold;
         text-align: left;
@@ -332,7 +373,7 @@
     .level-label {
         position: absolute;
         top: 65px;
-        right: 140px;
+        right: 120px;
         font-size: 22px;
         font-weight: bold;
         text-align: left;
@@ -341,6 +382,7 @@
     }
 </style>
 
+<h2>Current total minutes: @CurrentMinutes </h2>
 <h1>Workout</h1>
 <p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox. Do not forget to fill in the speed or weights if needed</p>
 
@@ -359,7 +401,9 @@
         <button @onclick="UpdateCoinsAmount">Convert given data to coins</button>
 
         <label>So name, what exercises did you do today?</label>
-        <label>Current minutes</label>
+
+        <label>Minutes till bonus:</label>
+        <label> @Next100mins</label>            
 
     </div>
 
@@ -420,9 +464,9 @@
             <input type="number" @bind="@LegPressMinutes"  />
             <input type="number" @bind="@LegPressWeight" class="weight-input"  />
         </div>
-        <div class="onderdeel-item2">
+        <div class="onderdeel-item3">
             <label>Minutes</label>
-            <label>Speed(km/h)</label>
+            <label>distance(km)</label>
         </div>
         <div class="exercise-item">
             <label>Walking:</label>
