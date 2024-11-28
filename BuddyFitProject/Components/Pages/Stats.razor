@@ -1,0 +1,108 @@
+﻿@page "/Stats"
+@using BuddyFitProject.Data.Models
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
+@inject NavigationManager navigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject Services.UserService UserService
+@inject Services.UserStatisticsService UserStatisticsService
+@inject Services.ExerciseService ExerciseService
+@rendermode InteractiveServer
+
+
+<PageTitle>Statistics</PageTitle>
+
+<h1>Workout History</h1>
+
+@if(LoggedIn)
+{
+    <a href="logout">
+        <button>Logout</button>
+    </a>
+    <br />
+    <br />
+    <button class="btn btn-primary" @onclick="LoadStats">Load Stats</button>
+    <br />
+    <br />
+
+    <h4>@user.Username 's Statistics</h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <td>    <p>Exercise</p>             </td>
+                <td>    <p>Total Minutes</p>        </td>
+                <td>    <p>Total Coins earned</p>   </td>
+                
+            </tr>
+        </thead>
+        
+        <tbody>
+            @foreach (var s in userStatistics)
+            {
+                <tr>
+                    <td>@ExerciseService.GetExerciseById(s.ExerciseId).Name</td>
+
+                    <td>@s.Total_minutes.ToString()</td>
+
+                    <td>@s.Total_coins.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+else
+{
+    <h1>You must be logged in to access this page.</h1>
+    <a href="login">Go to Login</a>
+}
+
+@code {
+    private List<UserStatistics> userStatistics = new();
+    private Users? user;
+
+    private bool LoggedIn = false;
+
+    private void LoadStats()
+    {
+        Console.WriteLine($"user id = {user.Id}");
+        try
+        {
+            // Update and fetch user statistics
+            UserStatisticsService.UpdateUserStatistics(user.Id);
+            userStatistics = UserStatisticsService.GetStatisticsByUser(user.Id);
+        }
+        catch (Exception ex)
+        {
+            // Log error or show a user-friendly message
+            Console.WriteLine($"Error updating stats: {ex.Message}");
+        }
+    }
+
+    protected override async void OnInitialized()
+    {
+        await base.OnInitializedAsync();
+
+        var httpContext = HttpContextAccessor.HttpContext;
+
+        if (httpContext?.User.Identity?.IsAuthenticated == true)
+        {
+            // Extract user ID from claims
+            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+            {
+
+                user = UserService.GetUserById(loggedInUserId);
+                LoadStats();
+
+                LoggedIn = true;
+            }
+            
+        }
+        
+
+    }
+}
