@@ -1,47 +1,119 @@
-﻿@page "/pet"
+﻿@page "/MyPet"
 
 <head>
-	<PageTitle> Pets </PageTitle>
+	<PageTitle> Pet </PageTitle>
 </head>
 
-<h1 class="h">Pets</h1>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, purple, blue);
+        color: #333;
+        padding: 20px;
+        position: relative;
+    }
+
+    .coin {
+        position: absolute;
+        top: 10px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: gold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Coin label styling */
+    .coin-label {
+        position: absolute;
+        top: 15px;
+        right: 120px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Level Coin styling */
+    .level-coin {
+        position: absolute;
+        top: 60px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: green;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Level label styling */
+    .level-label {
+        position: absolute;
+        top: 65px;
+        right: 120px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+    /* hier moet uiteindelijk ipv 1000 en 10 coinsamount en Level moeten staan zoals in workoutscherm*/
+
+</style>
+
+<div class="coin">$</div>
+<div class="coin-label">1000</div>
+
+<div class="level-coin">lvl</div>
+<div class="level-label">10</div>
+
+
+<h1 class="h">Pet</h1>
 
 <body style="background-color:#ffcc99;">
 	<div> 
-		<a href ="https://localhost:7068/Store"> 
+		<a href ="Store"> 
 			Go to Store 
 		</a> 
 	</div>
 
 	<div>
-		<a href="https://localhost:7068/costumes">
+		<a href="Costumes">
 			Go to Costumes
 		</a>
 	</div>
 
 	<div>
-		<a href="https://localhost:7068/Food">
+		<a href="Food">
 			Go to Food
 		</a>
 	</div>
 
 	<br />
 
-	<svg width="600" height="200" xmlns="https://localhost:7068/pets">
-		<img src="bunny.png"
-		     aria-hidden = "true"
-			 width="400">
-		<img src="bear.png"
-			 aria-hidden = "false"
-			 width="400">
-		<img src="cat.png"
-			 aria-hidden = "true"
-			 width="400"> 
+	<svg width="1200" height="500" xmlns="MyPet">
+		<polygon points="700, 125, 550, 375, 850, 375" fill="#b35900" stroke="black" stroke-linejoin="round" stroke-width="15" />
+
 	</svg>
 
 </body>
 
 
 @code {
-	
+
 }

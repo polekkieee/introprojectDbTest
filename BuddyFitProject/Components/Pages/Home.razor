@@ -3,24 +3,85 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Welcome to BuddyFit!</h1>
-<br />
-<h2>How to be fit with <strong>BuddyFit</strong>?:</h2>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, purple, blue);
+        color: #333;
+        padding: 20px;
+        position: relative;
+    }
 
-<div>
-	<label>STEP 1: REGISTER</label> 
-	<p>Make an account</p>
-</div>
-<div>
-	<label>STEP 2: START</label>
-	<p>Tell us about yourself and select a fit buddy to accompany you on your fit journey</p>
-</div>
-<div>
-	<label>STEP 3: GO</label>
-	<p>Work out! Log your excercises after each workoutsession in order to collect coins. 
-		These coins will be used to keep your pet happy. If you don't keep your pet happy, it will be very sad:(</p>
-</div>
-<br />
-<div>
-	<p>That's it! Have fun and stay fit ;)</p>
-</div>
+    .coin {
+        position: absolute;
+        top: 10px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: gold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Coin label styling */
+    .coin-label {
+        position: absolute;
+        top: 15px;
+        right: 120px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Level Coin styling */
+    .level-coin {
+        position: absolute;
+        top: 60px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: green;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Level label styling */
+    .level-label {
+        position: absolute;
+        top: 65px;
+        right: 120px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+    /* hier moet uiteindelijk ipv 1000 en 10 coinsamount en Level moeten staan zoals in workoutscherm*/
+
+</style>
+
+<div class="coin">$</div>
+<div class="coin-label">1000</div>
+
+<div class="level-coin">lvl</div>
+<div class="level-label">10</div>
+
+
+<h1>Welcome to BuddyFit!!</h1>
+
+Welcome to your new app.
