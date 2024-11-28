@@ -26,13 +26,19 @@
     <br />
     <br />
 
+    <h4>@user.Username 's Statistics</h4>
 
     <table class="table">
         <thead>
-            <tr>@user.Username 's Statistics</tr>
+            <tr>
+                <td>    <p>Exercise</p>             </td>
+                <td>    <p>Total Minutes</p>        </td>
+                <td>    <p>Total Coins earned</p>   </td>
+                
+            </tr>
         </thead>
+        
         <tbody>
-
             @foreach (var s in userStatistics)
             {
                 <tr>
@@ -101,7 +107,7 @@ else
             }
         }
         else
-        {
+        {  
             navigationManager.NavigateTo("/login");
         }
 

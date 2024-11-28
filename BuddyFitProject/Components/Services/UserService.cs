@@ -77,20 +77,21 @@ namespace BuddyFitProject.Components.Services
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                return (dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Password == password) != null);
+                Users user = dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Password == password) ?? throw new Exception("User bestaat niet!");
+                return user != null;
             }
         }
 
-        public void AddWorkout(Users user, WorkoutSessions workout)
-        {
-            using (var dbContext = this.DbContextFactory.CreateDbContext())
-            {
-                //user.WorkoutSessions.Add(workout);
-                //workout.user = user;
-                dbContext.Users.Update(user);
-                dbContext.SaveChanges();
-            }
-        }
+        //public void AddWorkout(Users user, WorkoutSessions workout)
+        //{
+        //    using (var dbContext = this.DbContextFactory.CreateDbContext())
+        //    {
+        //        //user.WorkoutSessions.Add(workout);
+        //        //workout.user = user;
+        //        dbContext.Users.Update(user);
+        //        dbContext.SaveChanges();
+        //    }
+        //}
 
     }
 }

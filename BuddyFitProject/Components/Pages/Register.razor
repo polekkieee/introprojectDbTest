@@ -4,7 +4,7 @@
 @using BuddyFitProject.Data;
 @using BuddyFitProject.Components.Services
 @inject UserService UserService
-@inject NavigationManager NavigationManager
+@inject NavigationManager navigationManager
 
 <PageTitle>Create</PageTitle>
 
@@ -45,7 +45,6 @@
 	private void AddUser()
 	{
 		UserService.AddUser(User);
-		string url = $"session/{User.Id}";
-		NavigationManager.NavigateTo("url"); //moet weer session worden
+		navigationManager.NavigateTo("/login");
 	}
 }
