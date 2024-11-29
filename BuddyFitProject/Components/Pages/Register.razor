@@ -5,6 +5,8 @@
 @using BuddyFitProject.Components.Services
 @inject UserService UserService
 @inject NavigationManager navigationManager
+@inject EmailService EmailService
+@inject ValidateUserService ValidateUserService
 
 <PageTitle>Create</PageTitle>
 
@@ -46,9 +48,16 @@
 	[SupplyParameterFromForm]
 	private Users User { get; set; } = new();
 
-	private void AddUser()
+	private async Task AddUser()
 	{
+		User.Resetcode = "Empty";
+		User.Validatecode = "Empty";
 		UserService.AddUser(User);
-		navigationManager.NavigateTo("/login");
+
+		string validatecode = ValidateUserService.SetValidateCode(User.Email);
+		await EmailService.SendEmailValidateEmail(User.Email, "Validation Code", $"Your validation code is:", validatecode);
+
+		navigationManager.NavigateTo($"/validateemail/{User.Email}");
+
 	}
 }

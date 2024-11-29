@@ -19,7 +19,7 @@ builder.Services.AddTransient<ExerciseService>();
 
 
 builder.Services.AddTransient<EmailService>();
-builder.Services.AddTransient<ResetPasswordService>();
+builder.Services.AddTransient<ValidateUserService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

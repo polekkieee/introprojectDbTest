@@ -11,7 +11,8 @@ public class Users
     public string Email { get; set; } = string.Empty;
     public int Age { get; set; } = 0;
     public string Gender { get; set; } = string.Empty;
-    public string Start_condition { get; set; } = "standard";
+    public string Start_condition { get; set; } = string.Empty;
     public int Coins { get; set; } = 0;
-    public int Resetcode { get; set; } = 12345678;
+    public string Resetcode { get; set; } = "Empty";
+    public string Validatecode { get; set; } = "Empty";
 }

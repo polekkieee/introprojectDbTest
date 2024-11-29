@@ -82,6 +82,40 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
+        public bool ValidateUserByEmailAndUsername(string username, string email)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Email == email) != null;
+            }
+        }
+
+        public bool ValidateUserByEmail(string email)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault<Users>(x => x.Email == email) != null;
+            }
+        }
+
+        public Users GetUserByUsernameAndEmail(string username, string email)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Email == email);
+
+            }
+        }
+
+        public Users GetUserByEmail(string email)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault<Users>(x => x.Email == email);
+
+            }
+        }
+
         public void AddWorkout(Users user, WorkoutSessions workout)
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())

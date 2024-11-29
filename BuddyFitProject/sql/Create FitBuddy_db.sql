@@ -1,3 +1,5 @@
+USE MASTER
+
 -- Create the database
 CREATE DATABASE FitBuddy_db;
 GO
@@ -13,9 +15,11 @@ CREATE TABLE Users (
     password NVARCHAR(255) NOT NULL,
     email NVARCHAR(100) NOT NULL UNIQUE,
     age INT NOT NULL,
+    gender NVARCHAR(100),
     start_condition NVARCHAR(100),
     coins INT DEFAULT 0,
-    resetcode INT
+    resetcode NVARCHAR(50),
+    validatecode NVARCHAR(50),
 );
 GO
 
