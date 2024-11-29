@@ -1,4 +1,4 @@
-﻿@page "/Session"
+﻿@page "/session"
 @attribute [StreamRendering]
 @rendermode InteractiveServer
 @using BuddyFitProject.Data
@@ -253,7 +253,7 @@
 
 @if (LoggedIn)
 {
-   
+
 
     <EditForm method="post" Model="WorkoutSession" OnValidSubmit="LogWorkout">
         @* <div>
@@ -302,7 +302,7 @@
         <!-- Exercise container -->
         <div class="exercise-container">
 
-            
+
 
             @foreach(var workout in WorkoutList){
 
@@ -452,6 +452,7 @@ else
 @code {
     private Users? user;
     private List<Exercises> Exercises = new();
+    private List<UserStatistics> userStatistics = new();
     private bool LoggedIn = false;
     private string RewardMessage = string.Empty;
     private List<WorkoutSessions> WorkoutList = new();
@@ -515,6 +516,22 @@ else
             }
         }
     }
+    
+
+    private void LoadStats()
+    {
+        try
+        {
+            // Update and fetch user statistics
+            UserStatisticsService.UpdateUserStatistics(user.Id);
+            userStatistics = UserStatisticsService.GetStatisticsByUser(user.Id);
+        }
+        catch (Exception ex)
+        {
+            // Log error or show a user-friendly message
+            Console.WriteLine($"Error updating stats: {ex.Message}");
+        }
+    }
 
     private void CalculateRewards(){
         coinsamount = 0;
@@ -555,5 +572,6 @@ else
         user = UserService.GetUserById(user.Id);
         CalculateRewards();
         StateHasChanged();
+        LoadStats();
     }
 }

@@ -83,16 +83,11 @@
         color: #fff;
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
-    /* hier moet uiteindelijk ipv 1000 en 10 coinsamount en Level moeten staan zoals in workoutscherm*/
+
 
 </style>
 
-<div class="coin">$</div>
-<div class="coin-label">1000</div>
 
-<div class="level-coin">lvl</div>
-<div class="level-label">10</div>
-<h1 class="l2">Login</h1>
 <EditForm FormName="LoginUser" Model="@User" OnValidSubmit="LoginUser">
 	<label for="Username" class="l2">Username:</label>
 	<InputText required @bind-Value="User.Username" />
@@ -114,39 +109,46 @@
 </EditForm>
 
 @code {
-	[SupplyParameterFromForm]
-	private Users User { get; set; } = new();
+    [SupplyParameterFromForm]
+    private Users User { get; set; } = new();
 
-	[CascadingParameter]
-	public HttpContext httpcontext { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext httpcontext { get; set; } = default!;
 
-	private string errorMessage;
-
-
-
-	private async Task LoginUser()
-	{
-		bool isUserValid = UserService.ValidateUser(User.Username, User.Password);
-
-		if (!isUserValid)
-		{
-			errorMessage = "Your username or password is invalid.";
-			return;
-		} else {
-			User = UserService.GetUserByLogin(User.Username, User.Password);
-		}
+    private string errorMessage;
 
 
-		var claims = new List<Claim>
+
+    private async Task LoginUser()
+    {
+        bool isUserValid = UserService.ValidateUser(User.Username, User.Password);
+
+        if (!isUserValid)
+        {
+            errorMessage = "Your username or password is invalid.";
+            return;
+        } else {
+            User = UserService.GetUserByLogin(User.Username, User.Password);
+        }
+
+
+        var claims = new List<Claim>
 		{
 			new Claim(ClaimTypes.Name, User.Username),
 			new Claim(ClaimTypes.NameIdentifier, User.Id.ToString())
 		};
 
-		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-		var principal = new ClaimsPrincipal(identity);
-		await httpcontext.SignInAsync(principal);
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+        await httpcontext.SignInAsync(principal);
 
-		navigationManager.NavigateTo("/session");
+        bool newUser = UserService.NewUser(User.Username, User.Start_condition);
+        if (newUser)
+        {navigationManager.NavigateTo("/userinfo"); 
+        }
+        else
+        {
+            navigationManager.NavigateTo("/session");
+        }
 	}
 }

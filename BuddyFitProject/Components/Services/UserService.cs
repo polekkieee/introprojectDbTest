@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System;
 using Azure.Identity;
+using BuddyFitProject.Components.Pages.Account;
 
 namespace BuddyFitProject.Components.Services
 {
@@ -81,6 +82,13 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
+        public bool NewUser(string username, string startcondition)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault(x =>x.Username == username &&  x.Start_condition == "new")!= null;
+            }
+        }
         public void AddWorkout(Users user, WorkoutSessions workout)
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
