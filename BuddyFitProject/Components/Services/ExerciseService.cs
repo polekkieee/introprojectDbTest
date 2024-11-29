@@ -19,7 +19,7 @@ namespace BuddyFitProject.Components.Services
                 var exercises = dbContext.Exercises.ToList();
 
                 if (!exercises.Any())
-                    throw new Exception("Exercisis do not exist!");
+                    throw new Exception("Exercises do not exist!");
 
                 return exercises;
             }
