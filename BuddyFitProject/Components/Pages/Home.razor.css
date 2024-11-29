@@ -1,4 +1,4 @@
-﻿
+﻿/*
 body {
     margin: 0;
     font-family: "Hind", sans-serif;
@@ -7,7 +7,7 @@ body {
     text-align: center;
     padding: 20px;
     position: relative;
-}
+}*/
 
 header {
     text-align: center;
@@ -16,10 +16,11 @@ header {
 
     header h1 {
         font-family: "Montserrat", sans-serif;
-        font-size: 3.5rem;
+        font-size: 4rem;
         color: #ffffff;
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
         margin: 10px 0;
+     
     }
 
     header h2 {
@@ -71,35 +72,4 @@ div.final-message {
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
 
-    /*
-h2 {
-    font-size: 2.5rem;
-
-    left: 247px;
-    top: 50px;
-    color: #fff;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-}
-h3 {
-    font-size: 2rem;
-
-    left: 247px;
-    top: 50px;
-    color: #fff;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-}
-
-p {
-    font-size: 1.4rem;
-    margin-bottom: 20px;
-    color: #fdfdfd;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-}
-
-.wrapper {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    width: 100%;
-}*/
-
+ 

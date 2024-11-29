@@ -1,7 +1,7 @@
 ﻿
 body {
     margin: 0;
-    font-family: "Hind", sans-serif;
+    font-family: Arial, sans-serif;
     background: linear-gradient(to bottom, purple, blue);
     color: #333;
     text-align: center;
@@ -10,7 +10,6 @@ body {
 }
 
 h1 {
-    font-family: "Montserrat", serif;
     font-size: 4rem;
     margin-top: 5px;
     color: #fff;
@@ -18,7 +17,7 @@ h1 {
 }
 
 h2 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     position: absolute;
     left: 247px;
     top: 50px;
@@ -233,3 +232,5 @@ p {
     color: #fff;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
+
+
