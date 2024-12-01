@@ -1,13 +1,4 @@
-﻿/*
-body {
-    margin: 0;
-    font-family: "Hind", sans-serif;
-    background: linear-gradient(to bottom, purple, blue);
-    color: #333;
-    text-align: center;
-    padding: 20px;
-    position: relative;
-}*/
+﻿
 
 header {
     text-align: center;
@@ -48,7 +39,7 @@ div.step {
 }
     div.step h3 {
         font-size: 1.8rem;
-        color: #ffed00;
+        color: #ffe1e6;
         text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
         margin-bottom: 10px;
     }
@@ -60,12 +51,12 @@ div.step {
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
     }
 
-div.final-message {
+div.message {
     text-align: center;
     margin-top: 20px;
 }
 
-    div.final-message p {
+    div.message p {
         font-style: italic;
         font-size: 1.3rem;
         color: #ffffff;

@@ -1,13 +1,4 @@
 ﻿
-body {
-    margin: 0;
-    font-family: "Hind", sans-serif;
-    background: linear-gradient(to bottom, purple, blue);
-    color: #333;
-    text-align: center;
-    padding: 20px;
-    position: relative;
-}
 
 h1 {
     font-family: "Montserrat", serif;

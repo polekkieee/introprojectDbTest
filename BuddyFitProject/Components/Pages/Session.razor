@@ -17,9 +17,7 @@
 
 <head>
     <link href="Session.razor.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@500&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
@@ -284,20 +282,7 @@ else
     }
     
 
-    private void LoadStats()
-    {
-        try
-        {
-            // Update and fetch user statistics
-            UserStatisticsService.UpdateUserStatistics(user.Id);
-            userStatistics = UserStatisticsService.GetStatisticsByUser(user.Id);
-        }
-        catch (Exception ex)
-        {
-            // Log error or show a user-friendly message
-            Console.WriteLine($"Error updating stats: {ex.Message}");
-        }
-    }
+   
 
     private void CalculateRewards(){
         coinsamount = 0;
@@ -338,6 +323,6 @@ else
         user = UserService.GetUserById(user.Id);
         CalculateRewards();
         StateHasChanged();
-        LoadStats();
+     
     }
 }

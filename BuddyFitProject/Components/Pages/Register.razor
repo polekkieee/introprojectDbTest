@@ -8,48 +8,51 @@
 
 <head>
     <link href="Register.razor.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@500&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <PageTitle>Create</PageTitle>
 </head>
-<PageTitle>Create</PageTitle>
 
+<body>
+    <header>
+        <h1>Register</h1>
+    </header>
 
-
-
-<h1 class="h"> Your Own Account</h1>
-<hr />
-<div class="row">
-    <div class="col-md-3">
+    <main>
         <EditForm method="post" Model="User" OnValidSubmit="AddUser" FormName="create">
-            <div class="mb-2">
+            <div class="input">
                 <label for="UserName" class="l">Username:</label>
                 <InputText id="UserName" @bind-Value="User.Username" class="i" />
             </div>
-            <div class="mb-2">
+            <hr />
+            <div class="input">
                 <label for="Password" class="l">Password:</label>
                 <InputText style="-webkit-text-security: disc; text-security: disc;" id="Password" @bind-Value="User.Password" class="i" />
             </div>
-            <div class="mb-2">
-                <label for="Email" class="l">Email:</label>
+            <hr />
+            <div class="input">
+                <label for="input" class="l">Email:</label>
                 <InputText id="Email" @bind-Value="User.Email" class="i" />
             </div>
-            <div class="mb-2">
-                <label for="Gender" class="l">Gender:</label>
-                <InputText id="Gender" @bind-Value="User.Gender" class="i" />
-            </div>
+
             @*<div class="mb-2">
+                        <label for="Gender" class="l">Gender:</label>
+                        <InputText id="Gender" @bind-Value="User.Gender" class="i" />
+                    </div>
+                    <div class="mb-2">
 				<label for="StartCondition" class="l">Start Condition:</label>
 				<InputText id="StartCondition" @bind-Value="User.Start_condition" class="i" />
 			</div>*@
-            <button type="submit" class="btn2">Create</button>
+            <hr />
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a href="login" class="btn btn-secondary">Already have an account?</a>
+            </div>
+           
         </EditForm>
-    </div>
-</div>
 
-<img class="absolute" src="RegisterPage.png">
 
-<hr class="hr" />
+    </main>
+</body>
+
 
 @code {
     [SupplyParameterFromForm]

@@ -12,91 +12,38 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [ExcludeFromInteractiveRouting]
 
+<head>
+    <PageTitle> Login </PageTitle>
+    <link href="Login.razor.css" rel="stylesheet" />
+ 
+</head>
 
-<PageTitle>Login</PageTitle>
-
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom, purple, blue);
-        color: #333;
-        padding: 20px;
-        position: relative;
-    }
-
-    .coin {
-        position: absolute;
-        top: 10px;
-        right: 200px;
-        width: 40px;
-        height: 40px;
-        background-color: gold;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #fff;
-        font-size: 18px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Coin label styling */
-    .coin-label {
-        position: absolute;
-        top: 15px;
-        right: 120px;
-        font-size: 22px;
-        font-weight: bold;
-        text-align: left;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Level Coin styling */
-    .level-coin {
-        position: absolute;
-        top: 60px;
-        right: 200px;
-        width: 40px;
-        height: 40px;
-        background-color: green;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #fff;
-        font-size: 18px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Level label styling */
-    .level-label {
-        position: absolute;
-        top: 65px;
-        right: 120px;
-        font-size: 22px;
-        font-weight: bold;
-        text-align: left;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-    }
-
-
-</style>
-
-
+<body>
+    <header>
+  <h1>Log in</h1>
+    </header>
+    <main>
 <EditForm FormName="LoginUser" Model="@User" OnValidSubmit="LoginUser">
-	<label for="Username" class="l2">Username:</label>
-	<InputText required @bind-Value="User.Username" />
-	<br>
-	<br>
-	<label for="Password" class="l2">Password:</label>
-	<InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="User.Password" />
-	<br />
-	<span> @errorMessage </span>
+	<div class="input">
+                <label for="Username" class="label">Username:</label>
+                <InputText required @bind-Value="User.Username" />
+    </div>
+    <hr />
+    <div class="input">
+                <label for="Password" class="label">Password:</label>
+                <InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="User.Password" />
+    </div>
+            <hr />
+    <div class="message">
+               <p>@errorMessage</p>  
+    </div>
+            <hr />
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Login</button>
+                <a href="register" class="btn btn-secondary">Register</a>
+                <a href="password" class="btn btn-secondary">Password forgotten?</a>
+            </div>
+    @*
 	<button type="submit" class="b2">Login</button>
 
 	<a href="register">
@@ -105,8 +52,10 @@
 
 	<a href="password">
 		<button class="b3">Password forgotten?</button>
-	</a>
+	</a>*@
 </EditForm>
+</main>
+</body>
 
 @code {
     [SupplyParameterFromForm]

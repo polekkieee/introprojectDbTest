@@ -11,24 +11,16 @@
 @rendermode InteractiveServer
 <head>
     <link href="Stats.razor.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@500&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <PageTitle>Statistics</PageTitle>
 </head>
 
-<PageTitle>Statistics</PageTitle>
+
 <body>
 
+<header>
+        <h1>Workout History</h1>
+</header>
 
-
-<div class="coin">$</div>
-<div class="coin-label">1000</div>
-
-<div class="level-coin">lvl</div>
-<div class="level-label">10</div>
-
-
-<h1>Workout History</h1>
 
 @if(LoggedIn)
 {
@@ -38,12 +30,13 @@
 
     <div class="level-coin">lvl</div>
     <div class="level-label">???</div>
-    <br />
-    <br />
-    <button class="btn btn-primary" @onclick="LoadStats">Load Stats</button>
-    <br />
-    <br />
 
+<br />
+    <button class="btn btn-primary" @onclick="LoadStats">Load Stats</button>
+<br />
+<br />
+
+    <main>
     <h4>@user.Username 's Statistics</h4>
 
     <table class="table">
@@ -69,12 +62,14 @@
             }
         </tbody>
     </table>
+        </main>
 
 }
 else
 {
     <h1>You must be logged in to access this page.</h1>
-    <a href="login">Go to Login</a>
+    <hr />
+        <a href="login" class=" btn btn-primary">Go to Login</a>
 }
 </body>
 
@@ -118,9 +113,6 @@ else
 
                 LoggedIn = true;
             }
-            
         }
-        
-
     }
 }

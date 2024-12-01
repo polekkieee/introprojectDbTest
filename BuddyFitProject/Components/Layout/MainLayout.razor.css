@@ -10,8 +10,9 @@ body {
     background: linear-gradient(to bottom, purple, blue);
     color: #333;
     text-align: center;
-    padding: 20px;
     position: relative;
+    justify-content: center; 
+    align-items: center
 }
 
 main {

@@ -1,13 +1,4 @@
 ﻿
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to bottom, purple, blue);
-    color: #333;
-    text-align: center;
-    padding: 20px;
-    position: relative;
-}
 
 h1 {
     font-size: 4rem;

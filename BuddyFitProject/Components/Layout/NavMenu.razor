@@ -95,12 +95,14 @@
             </div>
    }
     </nav>
-    <a href="logout" class="btn btn-primary">Log out</a>
+  @if(LoggedIn)
+  {
+      <a href="logout" class="btn btn-primary log-out">Log out</a>
+  }
 </div>
 
 
 @code {
-    private List<UserStatistics> userStatistics = new();
     private Users? user;
 
     private bool LoggedIn = false;

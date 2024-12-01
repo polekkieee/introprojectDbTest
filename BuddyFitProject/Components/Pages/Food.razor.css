@@ -1,14 +1,7 @@
-﻿body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to bottom, purple, blue);
-    color: #333;
-    padding: 20px;
-    position: relative;
-}
+﻿
 
 table {
-    font-family: arial, sans-serif;
+    font-family:"Hind", sans-serif;
     border-collapse: collapse;
     width: 100%;
 }
