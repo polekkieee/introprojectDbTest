@@ -34,6 +34,10 @@
 	<a href="password">
 		<button class="b3">Password forgotten?</button>
 	</a>
+
+	<a href="deletingaccount">
+		<button class="b3">Delete your account</button>
+	</a>
 </EditForm>
 
 @code {
@@ -55,7 +59,9 @@
 		{
 			errorMessage = "Your username or password is invalid.";
 			return;
-		} else {
+		}
+		else
+		{
 			User = UserService.GetUserByLogin(User.Username, User.Password);
 		}
 

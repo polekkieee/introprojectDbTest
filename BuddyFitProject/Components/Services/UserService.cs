@@ -56,12 +56,21 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-        public void DeleteUser(Users user)
+        public Users DeleteUser(Users user)
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                dbContext.Users.Remove(user);
+                var userToDelete = dbContext.Users.FirstOrDefault(u => u.Username == user.Username && u.Email == user.Email);
+
+                if (userToDelete == null)
+                {
+                    throw new InvalidOperationException("User not found in the database.");
+                }
+
+                dbContext.Users.Remove(userToDelete); 
                 dbContext.SaveChanges();
+
+                return userToDelete; 
             }
         }
 
@@ -87,6 +96,14 @@ namespace BuddyFitProject.Components.Services
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
                 return dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Email == email) != null;
+            }
+        }
+
+        public bool ValidateUserByEmaiUsernameAndPassword(string username, string email, string password)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Email == email && x.Password == password) != null;
             }
         }
 
