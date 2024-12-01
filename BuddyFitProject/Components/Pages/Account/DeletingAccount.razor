@@ -27,7 +27,7 @@
 	[SupplyParameterFromForm]
 	private Users User { get; set; } = new();
 
-	private string errorMessage;
+	private string errorMessage = string.Empty;
 
 	private async Task DeleteUser()
 	{
@@ -40,7 +40,7 @@
 		}
 		else
 		{
-			User = UserService.DeleteUser(User);
+			UserService.DeleteUser(User);
 		}
 
 		navigationManager.NavigateTo("/login");
