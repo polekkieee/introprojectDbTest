@@ -1,4 +1,4 @@
-﻿@page "/Store"
+﻿@page "/store"
 @inject IJSRuntime JSRuntime
 
 <PageTitle> Store </PageTitle>
@@ -8,25 +8,25 @@
 <body style="background-color: #ffcc99;">
 
 	<div>
-		<a href="https://localhost:7068/Food">
+		<a href="Food">
 			Go to Food
 		</a>
 	</div>
 
 	<div>
-		<a href="https://localhost:7068/costumes">
+		<a href="Costumes">
 			Go to Costumes
 		</a>
 	</div>
 
 	<div>
-		<a href="https://localhost:7068/pets">
+		<a href="Pets">
 			Go to Pets
 		</a>
 	</div>
 
 	<div>
-		<a href="https://localhost:7068/">
+		<a href="Home">
 			Go to Homepage
 		</a>
 	</div>
@@ -52,19 +52,19 @@
 
 	<br/>
 
-	<div style= "display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+	<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; object-fit: contain;">
 		<!--Cat outfits-->
 		<div style = "flex: 1;"> 
 			<h2>Cat outfits</h2>
 			<div id = "outfitDiv" style= "height:300px; overflow-y: auto; border: 1px solid black;">
-				<table style = "width: 100%; border-collapse: collapse;">
+				<table style="width: 100%; border-collapse: collapse;">
 					@foreach (var outfit in VisibleOutfits)
 					{
 						<tr style = "text-align: center;"> 
 							<td>
-								<div style = ""padding: 10px;">
-									<img src= "@outfit.CostumeImage" alt= "@outfit.Name" 
-									style="width:100px; height:100px; border: 1px solid gray;" />
+								<div style = "padding: 10px;">
+									<img src= "@outfit.CostumeImage" alt= "@outfit.Name"
+										 style="width:100px; height:100px; border: 1px solid gray;" />
 									<p>@outfit.Name</p>
 								</div>
 							</td>
@@ -103,10 +103,10 @@
 
 	private List<Outfit> Outfits = new List<Outfit> 
 	{
-		new Outfit {Name = "Military Cat", CostumeImage = "Militair.png", PetImage ="bunny.png"},
-		new Outfit {Name = "Cat in suit", CostumeImage = "CatinSuit.png", PetImage ="bunny.png"},
-		new Outfit {Name = "Cat in tutu", CostumeImage = "CatTutu.png", PetImage ="bunny.png"},
-		new Outfit {Name = "Pajamas Cat", CostumeImage = "PajamasCat.png", PetImage ="bunny.png"}
+		new Outfit {Name = "Military Cat", CostumeImage = "Militair.png"},
+		new Outfit {Name = "Cat in suit", CostumeImage = "CatinSuit.png"},
+		new Outfit {Name = "Cat in tutu", CostumeImage = "CatTutu.png"},
+		new Outfit {Name = "Pajamas Cat", CostumeImage = "PajamasCat.png"}
 	};
 
 	private List<Fruit> Fruits = new List<Fruit> 

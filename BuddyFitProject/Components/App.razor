@@ -14,22 +14,6 @@
 <body>
     <Routes />
     <script src="_framework/blazor.web.js"></script>
-    @* <script> *@
-    @*     function checkDivScrollEnd(elementId, functionName, dotnetReference) { *@
-    @*         var div = document.getElementById(elementId); *@
-
-    @*         div.addEventListener('scroll', function()  *@
-    @*         { *@
-    @*             var isScrolledToBottom = div.scrollHeight - div.clientHeight <= div.scrollTop + 1; *@
-
-    @*             if (isScrolledToBottom) *@
-    @*             { *@
-    @*                 dotnet.Reference.invokeMethodAsync(functionName); *@
-    @*             } *@
-    @*         }); *@
-    @*     } *@
-
-    @* </script> *@
     <script>
         function checkDivScrollEnd(divId, callbackMethodName, dotnetRef) {
             const div = document.getElementById(divId);
