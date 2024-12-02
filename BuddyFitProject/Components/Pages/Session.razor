@@ -1,4 +1,4 @@
-﻿@page "/Session"
+﻿@page "/session"
 @attribute [StreamRendering]
 @rendermode InteractiveServer
 @using BuddyFitProject.Data
@@ -253,28 +253,6 @@
 
 @if (LoggedIn)
 {
-   
-
-    <EditForm method="post" Model="WorkoutSession" OnValidSubmit="LogWorkout">
-        @* <div>
-            <label for="exercise">Select Exercise:</label>
-            <select id="exercise" @bind="WorkoutSession.ExerciseId">
-                <option value="">-- Select an Exercise --</option>
-                @foreach (var exercise in Exercises)
-                {
-                    <option value="@exercise.Id">@exercise.Name</option>
-                }
-            </select>
-        </div>
-
-        <div>
-            <label for="minutes">Duration (minutes):</label>
-            <InputNumber id="minutes" @bind-Value="WorkoutSession.Minutes" />
-        </div>
-
-        <button type="submit" class="btn btn-primary">Log Workout</button> *@
-    </EditForm>
-
     <h1>Workout</h1>
     <p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox</p>
 
@@ -367,38 +345,35 @@ else
     private List<string> WeightExercises = ["Bench Press", "Dumbbell Rows", "Curls", "Leg Press"];
     private List<string> DistanceExercises = ["Walking", "Cycling", "Swimming", "Running", "Sprinting", "Stair Walking"];
 
-    private int PushUpMinutes = 0;
-    private int PlankMinutes = 0;
-    private int BurpeesMinutes = 0;
-    private int JumpingJacksMinutes = 0;
-    private int BenchPressMinutes = 0;
-    private int BenchPressWeight = 0;
-    private int DumbbellRowsMinutes = 0;
-    private int DumbbellRowsWeight = 0;
-    private int CurlsMinutes = 0;
-    private int CurlsWeight = 0;
-    private int PullUpMinutes = 0;
-    private int LegPressMinutes = 0;
-    private int LegPressWeight = 0;
-    private int WalkingMinutes = 0;
-    private int WalkingSpeed = 0;
-    private int CyclingMinutes = 0;
-    private int CyclingSpeed = 0;
-    private int SwimmingMinutes = 0;
-    private int SwimmingSpeed = 0;
-    private int RunningMinutes = 0;
-    private int RunningSpeed = 0;
-    private int SprintingMinutes = 0;
-    private int SprintingSpeed = 0;
-    private int WallsitsMinutes = 0;
-    private int RopeJumpingMinutes = 0;
-    private int StairWalkingMinutes = 0;
-    private int StairWalkingSpeed = 0;
+    // private int PushUpMinutes = 0;
+    // private int PlankMinutes = 0;
+    // private int BurpeesMinutes = 0;
+    // private int JumpingJacksMinutes = 0;
+    // private int BenchPressMinutes = 0;
+    // private int BenchPressWeight = 0;
+    // private int DumbbellRowsMinutes = 0;
+    // private int DumbbellRowsWeight = 0;
+    // private int CurlsMinutes = 0;
+    // private int CurlsWeight = 0;
+    // private int PullUpMinutes = 0;
+    // private int LegPressMinutes = 0;
+    // private int LegPressWeight = 0;
+    // private int WalkingMinutes = 0;
+    // private int WalkingSpeed = 0;
+    // private int CyclingMinutes = 0;
+    // private int CyclingSpeed = 0;
+    // private int SwimmingMinutes = 0;
+    // private int SwimmingSpeed = 0;
+    // private int RunningMinutes = 0;
+    // private int RunningSpeed = 0;
+    // private int SprintingMinutes = 0;
+    // private int SprintingSpeed = 0;
+    // private int WallsitsMinutes = 0;
+    // private int RopeJumpingMinutes = 0;
+    // private int StairWalkingMinutes = 0;
+    // private int StairWalkingSpeed = 0;
 
     private int coinsamount = 0;
-
-
-    [SupplyParameterFromForm] private WorkoutSessions WorkoutSession { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {

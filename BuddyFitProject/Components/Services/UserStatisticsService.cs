@@ -13,6 +13,16 @@ namespace BuddyFitProject.Components.Services
         {
             DbContextFactory = dbContext;
         }
+
+        public void AddUserStatistics(int userid)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                // dbContext.Users.Add(user);
+                dbContext.SaveChanges();
+            }
+        }
+
         public List<UserStatistics> GetStatisticsByUser(int id)
         {
             using (var dbContext = DbContextFactory.CreateDbContext())
@@ -36,15 +46,6 @@ namespace BuddyFitProject.Components.Services
                 return stats;
             }
         }
-
-        //public void DeleteUser(Users user)
-        //{
-        //    using (var dbContext = this.DbContextFactory.CreateDbContext())
-        //    {
-        //        dbContext.Users.Remove(user);
-        //        dbContext.SaveChanges();
-        //    }
-        //}
 
         public void UpdateUserStatistics(int userId)
         {
@@ -78,14 +79,7 @@ namespace BuddyFitProject.Components.Services
                         else
                         {
                             // Create a new statistics entry if one doesn't exist
-                            var newStat = new UserStatistics
-                            {
-                                UserId = userId,
-                                ExerciseId = exercise.Id,
-                                Total_minutes = totalMinutes,
-                                Total_coins = totalCoins
-                            };
-                            dbContext.UserStatistics.Add(newStat);
+                            AddUserStatistic(userId, exercise.Id);
                         }
                     }
                 }
@@ -100,19 +94,6 @@ namespace BuddyFitProject.Components.Services
                 // Save changes to the database
                 dbContext.SaveChanges();
             }
-        }
-
-
-
-
-
-
-        public bool ValidateUser(string username, string password)
-        {
-            using (var dbContext = this.DbContextFactory.CreateDbContext())
-           {
-               return (dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Password == password) != null);
-          }
         }
 
         public void AddUserStatistic(int userId, int exerciseId)
