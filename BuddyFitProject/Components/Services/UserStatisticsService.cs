@@ -107,13 +107,13 @@ namespace BuddyFitProject.Components.Services
 
 
 
-        //public bool ValidateUser(string username, string password)
-        //{
-        //    using (var dbContext = this.DbContextFactory.CreateDbContext())
-        //    {
-        //        return (dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Password == password) != null);
-        //    }
-        //}
+        public bool ValidateUser(string username, string password)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+           {
+               return (dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Password == password) != null);
+          }
+        }
 
         public void AddUserStatistic(int userId, int exerciseId)
         {

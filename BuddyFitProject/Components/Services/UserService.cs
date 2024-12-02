@@ -7,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System;
 using Azure.Identity;
+using SendGrid.Helpers.Mail;
+using BuddyFitProject.Components.Pages.Account;
 
 namespace BuddyFitProject.Components.Services
 {
@@ -55,12 +57,21 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-        public void DeleteUser(Users user)
+        public Users DeleteUser(Users user)
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                dbContext.Users.Remove(user);
+                var userToDelete = dbContext.Users.FirstOrDefault(u => u.Username == user.Username && u.Email == user.Email);
+
+                if (userToDelete == null)
+                {
+                    throw new InvalidOperationException("User not found in the database.");
+                }
+
+                dbContext.Users.Remove(userToDelete); 
                 dbContext.SaveChanges();
+
+                return userToDelete; 
             }
         }
 
@@ -81,6 +92,55 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
+        public bool ValidateUserByEmailAndUsername(string username, string email)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Email == email) != null;
+            }
+        }
+
+        public bool ValidateUserByEmaiUsernameAndPassword(string username, string email, string password)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Email == email && x.Password == password) != null;
+            }
+        }
+
+        public bool ValidateUserByEmail(string email)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault<Users>(x => x.Email == email) != null;
+            }
+        }
+
+        public Users GetUserByUsernameAndEmail(string username, string email)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault<Users>(x => x.Username == username && x.Email == email);
+
+            }
+        }
+
+        public Users GetUserByEmail(string email)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault<Users>(x => x.Email == email);
+
+            }
+        }
+
+        public bool NewUser(string username, string startcondition)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.SingleOrDefault(x =>x.Username == username &&  x.Start_condition == "new")!= null;
+            }
+        }
         public void AddWorkout(Users user, WorkoutSessions workout)
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
@@ -91,6 +151,5 @@ namespace BuddyFitProject.Components.Services
                 dbContext.SaveChanges();
             }
         }
-
     }
 }

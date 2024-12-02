@@ -1,87 +1,90 @@
 ﻿@page "/"
 @page "/home"
+@using BuddyFitProject.Data.Models
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
+@inject NavigationManager navigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject Services.UserService UserService
+@inject Services.UserStatisticsService UserStatisticsService
+@inject Services.ExerciseService ExerciseService
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
+<head>
+    <link href="Session.razor.css" rel="stylesheet" />
 
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom, purple, blue);
-        color: #333;
-        padding: 20px;
-        position: relative;
+</head>
+
+<body>
+    @if (LoggedIn == false)
+    {
+        <header>
+            <h1>Welcome to BuddyFit!</h1>
+            <br />
+            <h2>How to be fit with <strong>BuddyFit</strong>?</h2>
+        </header>
+
+        <main>
+            <div class="step">
+                <h3>STEP 1: REGISTER</h3>
+                <p>Make an account</p>
+            </div>
+            <div class="step">
+                <h3>STEP 2: START</h3>
+                <p>Tell us about yourself and select a fit buddy to accompany you on your fit journey</p>
+            </div>
+            <div class="step">
+                <h3>STEP 3: GO</h3>
+                <p>
+                    Work out! Log your exercises after each workout session in order to collect coins.<br />
+                    These coins will be used to keep your pet happy. If you don't keep your pet happy, it will be very sad :(
+                </p>
+            </div>
+            <div class="message">
+                <p>That's it! Have fun and stay fit ;)</p>
+            </div>
+        </main>
     }
 
-    .coin {
-        position: absolute;
-        top: 10px;
-        right: 200px;
-        width: 40px;
-        height: 40px;
-        background-color: gold;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #fff;
-        font-size: 18px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    @if(LoggedIn)
+    {
+        <header>
+            <h1>Welcome Back, @user.Username!</h1>
+            <br />
+        </header>
+        <!--kijken of je hier een overzichtje van alles kan plaatsen, dus verkort stats en pet health etc.-->
+        <main>
+        </main>
+   
     }
+</body>
 
-    /* Coin label styling */
-    .coin-label {
-        position: absolute;
-        top: 15px;
-        right: 120px;
-        font-size: 22px;
-        font-weight: bold;
-        text-align: left;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+@code {
+    private Users? user;
+
+    private bool LoggedIn = false;
+
+    protected override async void OnInitialized()
+    {
+        await base.OnInitializedAsync();
+
+        var httpContext = HttpContextAccessor.HttpContext;
+
+        if (httpContext?.User.Identity?.IsAuthenticated == true)
+        {
+            // Extract user ID from claims
+            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+            {
+                user = UserService.GetUserById(loggedInUserId);
+                LoggedIn = true;
+            }
+        }
     }
-
-    /* Level Coin styling */
-    .level-coin {
-        position: absolute;
-        top: 60px;
-        right: 200px;
-        width: 40px;
-        height: 40px;
-        background-color: green;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #fff;
-        font-size: 18px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Level label styling */
-    .level-label {
-        position: absolute;
-        top: 65px;
-        right: 120px;
-        font-size: 22px;
-        font-weight: bold;
-        text-align: left;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-    }
-    /* hier moet uiteindelijk ipv 1000 en 10 coinsamount en Level moeten staan zoals in workoutscherm*/
-
-</style>
-
-<div class="coin">$</div>
-<div class="coin-label">1000</div>
-
-<div class="level-coin">lvl</div>
-<div class="level-label">10</div>
+}
 
 
-<h1>Welcome to BuddyFit!!</h1>
 
-Welcome to your new app.

@@ -1,82 +1,14 @@
-﻿@page "/Store"
+﻿@page "/store"
+@inject IJSRuntime JSRuntime
 
+<PageTitle> Store </PageTitle>
 <head>
-	<PageTitle> Store </PageTitle>
+	<link href="Store.razor.css" rel="stylesheet" />
 
-	<h1 class="h">Store </h1>
 </head>
+<h1 class="h">Store </h1>
 
-<style>
-	body {
-		margin: 0;
-		font-family: Arial, sans-serif;
-		background: linear-gradient(to bottom, purple, blue);
-		color: #333;
-		padding: 20px;
-		position: relative;
-	}
 
-    .coin {
-        position: absolute;
-        top: 10px;
-        right: 200px;
-        width: 40px;
-        height: 40px;
-        background-color: gold;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #fff;
-        font-size: 18px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Coin label styling */
-    .coin-label {
-        position: absolute;
-        top: 15px;
-        right: 120px;
-        font-size: 22px;
-        font-weight: bold;
-        text-align: left;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Level Coin styling */
-    .level-coin {
-        position: absolute;
-        top: 60px;
-        right: 200px;
-        width: 40px;
-        height: 40px;
-        background-color: green;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #fff;
-        font-size: 18px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Level label styling */
-    .level-label {
-        position: absolute;
-        top: 65px;
-        right: 120px;
-        font-size: 22px;
-        font-weight: bold;
-        text-align: left;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-    }
-    /* hier moet uiteindelijk ipv 1000 en 10 coinsamount en Level moeten staan zoals in workoutscherm*/
-
-</style>
 
 <div class="coin">$</div>
 <div class="coin-label">1000</div>
@@ -87,33 +19,13 @@
 
 
 
-<body style="background-color:#ffcc99;">
-
-	<div>
-		<a href="Food">
-			Go to Food
-		</a>
-	</div>
-
-	<div>
-		<a href="Costumes">
-			Go to Costumes
-		</a>
-	</div>
-
-	<div>
-		<a href="MyPet">
-			Go to Pets
-		</a>
-	</div>
-
-	<div>
-		<a href="Home">
-			Go to Homepage
-		</a>
-	</div>
+<body>
 
 	<br />
+
+	<div> Inventory: </div>
+
+	<br/>
 
 	<ul>
 		<li> Dragon outfit</li>
@@ -121,7 +33,7 @@
 		<li> Water outfit</li>
 		<li> Earth outfit</li>
 	</ul>
-		
+
 	<ul>
 		<li> Bananas</li>
 		<li> Apples</li>
@@ -129,13 +41,55 @@
 		<li> Cucumbers </li>
 	</ul>
 
-	<div> Inventory: </div>
-
+	<div id="myDiv" style= "height:300px;overflow-y:auto;border:1px solid black;">	
+		@foreach (var item in Allitems)
+		{
+			<div style= "height: 80px; background-color: pink; margin: 10px; padding: 20px; color: black; text-align: center;">
+				@item
+			</div>
+		}
+	</div>
 
 </body>
 
+@code{
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await JSRuntime.InvokeVoidAsync("checkDivScrollEnd", "myDiv", nameof (OnDivScrolledToEnd), DotNetObjectReference.Create(this));
+		}
+	}
+	protected List<string> Allitems = new List<string>
+	{
+		"Bananas",
+		"Apples",
+		"Pears",
+		"Cucumbers"
+	};
 
+	[JSInvokable]
+	
+	public async Task OnDivScrolledToEnd()
+	{/*
 
-@code {
+		await JSRuntime.InvokeVoidAsync(() =>
+		{
+			Allitems.AddRange(new List<string>
+							{
+							"Dragon outfit",
+							"Fire outfit",
+							"Water outfit",
+							"Earth outfit",
+							"Item5",
+							"Item6",
+							"Item7",
+							"Item8",
+							"Item9",
+							"Item10",
 
+							}), StateHasChanged());
+			}
+		}*/
+	}	
 }

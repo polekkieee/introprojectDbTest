@@ -1,4 +1,4 @@
-﻿@page "/Stats"
+﻿@page "/stats"
 @using BuddyFitProject.Data.Models
 @using System.Security.Claims
 @using Microsoft.EntityFrameworkCore
@@ -9,108 +9,34 @@
 @inject Services.UserStatisticsService UserStatisticsService
 @inject Services.ExerciseService ExerciseService
 @rendermode InteractiveServer
+<head>
+    <link href="Stats.razor.css" rel="stylesheet" />
+    <PageTitle>Statistics</PageTitle>
+</head>
 
 
-<PageTitle>Statistics</PageTitle>
+<body>
 
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom, purple, blue);
-        color: #333;
-        padding: 20px;
-        position: relative;
-    }
+<header>
+        <h1>Workout History</h1>
+</header>
 
-    .coin {
-        position: absolute;
-        top: 10px;
-        right: 200px;
-        width: 40px;
-        height: 40px;
-        background-color: gold;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #fff;
-        font-size: 18px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Coin label styling */
-    .coin-label {
-        position: absolute;
-        top: 15px;
-        right: 120px;
-        font-size: 22px;
-        font-weight: bold;
-        text-align: left;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Level Coin styling */
-    .level-coin {
-        position: absolute;
-        top: 60px;
-        right: 200px;
-        width: 40px;
-        height: 40px;
-        background-color: green;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #fff;
-        font-size: 18px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Level label styling */
-    .level-label {
-        position: absolute;
-        top: 65px;
-        right: 120px;
-        font-size: 22px;
-        font-weight: bold;
-        text-align: left;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-    }
-    /* hier moet uiteindelijk ipv 1000 en 10 coinsamount en Level moeten staan zoals in workoutscherm*/
-
-</style>
-
-<div class="coin">$</div>
-<div class="coin-label">1000</div>
-
-<div class="level-coin">lvl</div>
-<div class="level-label">10</div>
-
-
-<h1>Workout History</h1>
 
 @if(LoggedIn)
 {
-    <a href="logout">
-        <button>Logout</button>
-    </a>
 
     <div class="coin">$</div>
     <div class="coin-label">@user.Coins</div>
 
     <div class="level-coin">lvl</div>
     <div class="level-label">???</div>
-    <br />
-    <br />
-    <button class="btn btn-primary" @onclick="LoadStats">Load Stats</button>
-    <br />
-    <br />
 
+<br />
+    <button class="btn btn-primary" @onclick="LoadStats">Load Stats</button>
+<br />
+<br />
+
+    <main>
     <h4>@user.Username 's Statistics</h4>
 
     <table class="table">
@@ -136,13 +62,16 @@
             }
         </tbody>
     </table>
+        </main>
 
 }
 else
 {
     <h1>You must be logged in to access this page.</h1>
-    <a href="login">Go to Login</a>
+    <hr />
+        <a href="login" class=" btn btn-primary">Go to Login</a>
 }
+</body>
 
 @code {
     private List<UserStatistics> userStatistics = new();
@@ -184,9 +113,6 @@ else
 
                 LoggedIn = true;
             }
-            
         }
-        
-
     }
 }

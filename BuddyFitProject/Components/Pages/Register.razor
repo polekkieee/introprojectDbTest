@@ -6,128 +6,62 @@
 @inject UserService UserService
 @inject NavigationManager navigationManager
 
-<PageTitle>Create</PageTitle>
+<head>
+    <link href="Register.razor.css" rel="stylesheet" />
+    <PageTitle>Create</PageTitle>
+</head>
 
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom, purple, blue);
-        color: #333;
-        padding: 20px;
-        position: relative;
-    }
+<body>
+    <header>
+        <h1>Register</h1>
+    </header>
 
-    .coin {
-        position: absolute;
-        top: 10px;
-        right: 200px;
-        width: 40px;
-        height: 40px;
-        background-color: gold;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #fff;
-        font-size: 18px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
+    <main>
+        <EditForm method="post" Model="User" OnValidSubmit="AddUser" FormName="create">
+            <div class="input">
+                <label for="UserName" class="l">Username:</label>
+                <InputText id="UserName" @bind-Value="User.Username" class="i" />
+            </div>
+            <hr />
+            <div class="input">
+                <label for="Password" class="l">Password:</label>
+                <InputText style="-webkit-text-security: disc; text-security: disc;" id="Password" @bind-Value="User.Password" class="i" />
+            </div>
+            <hr />
+            <div class="input">
+                <label for="input" class="l">Email:</label>
+                <InputText id="Email" @bind-Value="User.Email" class="i" />
+            </div>
 
-    /* Coin label styling */
-    .coin-label {
-        position: absolute;
-        top: 15px;
-        right: 120px;
-        font-size: 22px;
-        font-weight: bold;
-        text-align: left;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Level Coin styling */
-    .level-coin {
-        position: absolute;
-        top: 60px;
-        right: 200px;
-        width: 40px;
-        height: 40px;
-        background-color: green;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #fff;
-        font-size: 18px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Level label styling */
-    .level-label {
-        position: absolute;
-        top: 65px;
-        right: 120px;
-        font-size: 22px;
-        font-weight: bold;
-        text-align: left;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-    }
-    /* hier moet uiteindelijk ipv 1000 en 10 coinsamount en Level moeten staan zoals in workoutscherm*/
-
-</style>
-
-<div class="coin">$</div>
-<div class="coin-label">1000</div>
-
-<div class="level-coin">lvl</div>
-<div class="level-label">10</div>
-
-
-<h1 class="h"> Your Own Account</h1>
-<hr />
-<div class="row">
-	<div class="col-md-3">
-		<EditForm method="post" Model="User" OnValidSubmit="AddUser" FormName="create">
-			<div class="mb-2">
-				<label for="UserName" class="l">Username:</label>
-				<InputText id="UserName" @bind-Value="User.Username" class="i" />
-			</div>
-			<div class="mb-2">
-				<label for="Password" class="l">Password:</label>
-				<InputText style="-webkit-text-security: disc; text-security: disc;" id="Password" @bind-Value="User.Password" class="i" />
-			</div>
-			<div class="mb-2">
-				<label for="Email" class="l">Email:</label>
-				<InputText id="Email" @bind-Value="User.Email" class="i" />
-			</div>
-			<div class="mb-2">
-				<label for="Gender" class="l">Gender:</label>
-				<InputText id="Gender" @bind-Value="User.Gender" class="i" />
-			</div>
-			<div class="mb-2">
+            @*<div class="mb-2">
+                        <label for="Gender" class="l">Gender:</label>
+                        <InputText id="Gender" @bind-Value="User.Gender" class="i" />
+                    </div>
+                    <div class="mb-2">
 				<label for="StartCondition" class="l">Start Condition:</label>
 				<InputText id="StartCondition" @bind-Value="User.Start_condition" class="i" />
-			</div>
-			<button type="submit" class="btn2">Create</button>
-		</EditForm>
-	</div>
-</div>
+			</div>*@
+            <hr />
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a href="login" class="btn btn-secondary">Already have an account?</a>
+            </div>
+           
+        </EditForm>
 
-<img class="absolute" src="RegisterPage.png">
 
-<hr class="hr" />
+    </main>
+</body>
+
 
 @code {
-	[SupplyParameterFromForm]
-	private Users User { get; set; } = new();
+    [SupplyParameterFromForm]
+    private Users User { get; set; } = new();
 
-	private void AddUser()
-	{
-		UserService.AddUser(User);
-		navigationManager.NavigateTo("/login");
+    private void AddUser()
+    {
+        User.Start_condition = "new";
+        UserService.AddUser(User);
+		navigationManager.NavigateTo("/userinfo");
 	}
 }
