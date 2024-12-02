@@ -9,23 +9,36 @@
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="BuddyFitProject.styles.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
-    @* <HeadOutlet @rendermode= "InteractiveAuto" /> *@
 </head>
 
 <body>
     <Routes />
     <script src="_framework/blazor.web.js"></script>
+    @* <script> *@
+    @*     function checkDivScrollEnd(elementId, functionName, dotnetReference) { *@
+    @*         var div = document.getElementById(elementId); *@
+
+    @*         div.addEventListener('scroll', function()  *@
+    @*         { *@
+    @*             var isScrolledToBottom = div.scrollHeight - div.clientHeight <= div.scrollTop + 1; *@
+
+    @*             if (isScrolledToBottom) *@
+    @*             { *@
+    @*                 dotnet.Reference.invokeMethodAsync(functionName); *@
+    @*             } *@
+    @*         }); *@
+    @*     } *@
+
+    @* </script> *@
     <script>
-        function checkDivScrollEnd(elementId, functionName, dotnetReference) {
-            var div = document.getElementById(elementId);
+        function checkDivScrollEnd(divId, callbackMethodName, dotnetRef) {
+            const div = document.getElementById(divId);
 
             div.addEventListener('scroll', function() 
             {
-                var isScrolledToBottom = div.scrollHeight - div.clientHeight <= div.scrollTop + 1;
-
-                if (isScrolledToBottom)
+                if (div.scrollHeight - div.scrollTop <= div.ClientHeight + 1)
                 {
-                    dotnet.Reference.invokeMethodAsync(functionName);
+                    dotnet.Ref.invokeMethodAsync(callbackMethodName);
                 }
             });
         }
