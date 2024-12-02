@@ -302,8 +302,6 @@
         <!-- Exercise container -->
         <div class="exercise-container">
 
-            
-
             @foreach(var workout in WorkoutList){
 
                 if (WeightExercises.Contains(ExerciseService.GetExerciseById(workout.ExerciseId).Name))
@@ -341,96 +339,7 @@
                         <input type="number" @bind="workout.Minutes" />
                     </div>
                 }
-
-
-
-
-
-
-
             }
-
-            @* 
-            <div class="exercise-item">
-                <label>Push-up:</label>
-                <input type="number" />
-            </div>
-            <div class="exercise-item">
-                <label>Plank:</label>
-                <input type="number" />
-            </div>
-            <div class="exercise-item">
-                <label>Burpees:</label>
-                <input type="number" />
-            </div>
-            <div class="exercise-item">
-                <label>Jumping Jacks:</label>
-                <input type="number" />
-            </div>
-            <div class="exercise-item">
-                <label>Pull-up:</label>
-                <input type="number" />
-            </div>
-            <div class="exercise-item">
-                <label>Wallsits:</label>
-                <input type="number" />
-            </div>
-            <div class="exercise-item">
-                <label>Rope jumping:</label>
-                <input type="number" />
-            </div>
-
-            <div class="exercise-item">
-                <label>Bench Press:</label>
-                <input type="number" />
-                <input type="number" class="weight-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Dumbbell Rows:</label>
-                <input type="number"  />
-                <input type="number" class="weight-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Curls:</label>
-                <input type="number"  />
-                <input type="number"  class="weight-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Leg Press:</label>
-                <input type="number"  />
-                <input type="number" class="weight-input" />
-            </div>
-
-            <div class="exercise-item">
-                <label>Walking:</label>
-                <input type="number" />
-                <input type="number" class="speed-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Cycling:</label>
-                <input type="number"/>
-                <input type="number" class="speed-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Swimming:</label>
-                <input type="number" />
-                <input type="number" class="speed-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Running:</label>
-                <input type="number" />
-                <input type="number" class="speed-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Sprinting:</label>
-                <input type="number" />
-                <input type="number" class="speed-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Stair walking:</label>
-                <input type="number" />
-                <input type="number" class="speed-input" />
-            </div> *@
         </div>
     </div>
 
@@ -550,9 +459,7 @@ else
                 }
              );
         }
-        UserStatisticsService.UpdateUserStatistics(user.Id);
-        UserService.UpdateUser(user); 
-        user = UserService.GetUserById(user.Id);
+        UserStatisticsService.UpdateUserStatistics(user.Id); 
         CalculateRewards();
         StateHasChanged();
     }
