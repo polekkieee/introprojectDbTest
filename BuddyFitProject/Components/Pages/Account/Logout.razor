@@ -1,0 +1,36 @@
+﻿@page "/logout"
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject NavigationManager navigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+
+<head>
+    <PageTitle> Logout </PageTitle>
+    <link href="Logout.razor.css" rel="stylesheet" />
+</head>
+
+<body>
+    <header>
+        <h1>Log out</h1>
+    </header>
+    <main>
+        <h2>You've successfully logged out.</h2>
+    </main>
+        
+</body>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var httpContext = HttpContextAccessor.HttpContext;
+
+        if (httpContext?.User.Identity?.IsAuthenticated == true)
+        {
+            await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+        // Redirect to homepage after logout
+        navigationManager.NavigateTo("/home", forceLoad: true);
+    }
+}

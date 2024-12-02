@@ -47,3 +47,14 @@
 </body>
 
 </html>
+
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path switch
+    {
+        var x when x.StartsWithSegments("/login") => null,
+        _ => InteractiveServer
+    };
+}

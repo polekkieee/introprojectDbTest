@@ -1,38 +1,67 @@
 ﻿@page "/register"
-@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using BuddyFitProject.Data.Models
+@using BuddyFitProject.Data;
+@using BuddyFitProject.Components.Services
+@inject UserService UserService
+@inject NavigationManager navigationManager
 
-<PageTitle>Register</PageTitle>
+<head>
+    <link href="Register.razor.css" rel="stylesheet" />
+    <PageTitle>Create</PageTitle>
+</head>
 
-<h1 class="h">Register</h1>
-<br/>
-<label class="l" for="fname">Username:</label>        <!--Make sure that it's visible on the screen that the user can only type 50 characters.-->
-<input class="i" type="text" id="fname" name="fname" @bind="Username"><br><br>
+<body>
+    <header>
+        <h1>Register</h1>
+    </header>
 
-<label class="l" for="fpassword">Password:</label>
-<input class="i" type="password" id="fpassword" name="fpassword"@bind="Password"><br><br>
+    <main>
+        <EditForm method="post" Model="User" OnValidSubmit="AddUser" FormName="create">
+            <div class="input">
+                <label for="UserName" class="l">Username:</label>
+                <InputText id="UserName" @bind-Value="User.Username" class="i" />
+            </div>
+            <hr />
+            <div class="input">
+                <label for="Password" class="l">Password:</label>
+                <InputText style="-webkit-text-security: disc; text-security: disc;" id="Password" @bind-Value="User.Password" class="i" />
+            </div>
+            <hr />
+            <div class="input">
+                <label for="input" class="l">Email:</label>
+                <InputText id="Email" @bind-Value="User.Email" class="i" />
+            </div>
 
-<label class="l" for="femail">E-mail:</label>
-<input class="i" type="email" id="femail" name="femail"@bind="Email"><br><br>
+            @*<div class="mb-2">
+                        <label for="Gender" class="l">Gender:</label>
+                        <InputText id="Gender" @bind-Value="User.Gender" class="i" />
+                    </div>
+                    <div class="mb-2">
+				<label for="StartCondition" class="l">Start Condition:</label>
+				<InputText id="StartCondition" @bind-Value="User.Start_condition" class="i" />
+			</div>*@
+            <hr />
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a href="login" class="btn btn-secondary">Already have an account?</a>
+            </div>
+           
+        </EditForm>
 
-<button class="btn2" @onclick="Save">Make my BuddyFit account</button>
 
-<img class="absolute" src="RegisterPage.png">
-
-<hr class="hr"/>
+    </main>
+</body>
 
 
 @code {
+    [SupplyParameterFromForm]
+    private Users User { get; set; } = new();
 
-
-    private string Username { get; set; } = string.Empty;
-    private string Password { get; set; } = string.Empty;
-    private string Email { get; set; } = string.Empty;
-
-    private void Save()
+    private void AddUser()
     {
-        var insertQuery = "INSERT INTO Product (Username, PassWord, Email) " +
-          "VALUES (@0, @1, @2)";
-        // Database.Execute(insertQuery, Username, Password, Email);
-    }
-
+        User.Start_condition = "new";
+        UserService.AddUser(User);
+		navigationManager.NavigateTo("/userinfo");
+	}
 }

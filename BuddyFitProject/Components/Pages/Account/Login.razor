@@ -1,0 +1,103 @@
+﻿@page "/login"
+@using BuddyFitProject.Data
+@using BuddyFitProject.Data.Models
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using BuddyFitProject.Components.Services;
+@inject UserService UserService
+@inject BuddyFitDbContext appDbContext
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [ExcludeFromInteractiveRouting]
+
+<head>
+    <PageTitle> Login </PageTitle>
+    <link href="Login.razor.css" rel="stylesheet" />
+ 
+</head>
+
+<body>
+    <header>
+  <h1>Log in</h1>
+    </header>
+    <main>
+<EditForm FormName="LoginUser" Model="@User" OnValidSubmit="LoginUser">
+	<div class="input">
+                <label for="Username" class="label">Username:</label>
+                <InputText required @bind-Value="User.Username" />
+    </div>
+    <hr />
+    <div class="input">
+                <label for="Password" class="label">Password:</label>
+                <InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="User.Password" />
+    </div>
+            <hr />
+    <div class="message">
+               <p>@errorMessage</p>  
+    </div>
+            <hr />
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Login</button>
+                <a href="register" class="btn btn-secondary">Register</a>
+                <a href="password" class="btn btn-secondary">Password forgotten?</a>
+            </div>
+    @*
+	<button type="submit" class="b2">Login</button>
+
+	<a href="register">
+		<button class="b2">Register</button>
+	</a>
+
+	<a href="password">
+		<button class="b3">Password forgotten?</button>
+	</a>*@
+</EditForm>
+</main>
+</body>
+
+@code {
+    [SupplyParameterFromForm]
+    private Users User { get; set; } = new();
+
+    [CascadingParameter]
+    public HttpContext httpcontext { get; set; } = default!;
+
+    private string errorMessage;
+
+
+
+    private async Task LoginUser()
+    {
+        bool isUserValid = UserService.ValidateUser(User.Username, User.Password);
+
+        if (!isUserValid)
+        {
+            errorMessage = "Your username or password is invalid.";
+            return;
+        } else {
+            User = UserService.GetUserByLogin(User.Username, User.Password);
+        }
+
+
+        var claims = new List<Claim>
+		{
+			new Claim(ClaimTypes.Name, User.Username),
+			new Claim(ClaimTypes.NameIdentifier, User.Id.ToString())
+		};
+
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+        await httpcontext.SignInAsync(principal);
+
+        bool newUser = UserService.NewUser(User.Username, User.Start_condition);
+        if (newUser)
+        {navigationManager.NavigateTo("/userinfo"); 
+        }
+        else
+        {
+            navigationManager.NavigateTo("/session");
+        }
+	}
+}

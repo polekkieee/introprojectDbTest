@@ -4,6 +4,17 @@
     flex-direction: column;
 }
 
+body {
+    margin: 0;
+    font-family: "Hind", sans-serif;
+    background: linear-gradient(to bottom, purple, blue);
+    color: #333;
+    text-align: center;
+    position: relative;
+    justify-content: center; 
+    align-items: center
+}
+
 main {
     flex: 1;
 }

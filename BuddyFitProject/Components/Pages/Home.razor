@@ -1,7 +1,90 @@
 ﻿@page "/"
+@page "/home"
+@using BuddyFitProject.Data.Models
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
+@inject NavigationManager navigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject Services.UserService UserService
+@inject Services.UserStatisticsService UserStatisticsService
+@inject Services.ExerciseService ExerciseService
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
+<head>
+    <link href="Session.razor.css" rel="stylesheet" />
 
-<h1>Hello, world!</h1>
+</head>
 
-Welcome to your new app.
+<body>
+    @if (LoggedIn == false)
+    {
+        <header>
+            <h1>Welcome to BuddyFit!</h1>
+            <br />
+            <h2>How to be fit with <strong>BuddyFit</strong>?</h2>
+        </header>
+
+        <main>
+            <div class="step">
+                <h3>STEP 1: REGISTER</h3>
+                <p>Make an account</p>
+            </div>
+            <div class="step">
+                <h3>STEP 2: START</h3>
+                <p>Tell us about yourself and select a fit buddy to accompany you on your fit journey</p>
+            </div>
+            <div class="step">
+                <h3>STEP 3: GO</h3>
+                <p>
+                    Work out! Log your exercises after each workout session in order to collect coins.<br />
+                    These coins will be used to keep your pet happy. If you don't keep your pet happy, it will be very sad :(
+                </p>
+            </div>
+            <div class="message">
+                <p>That's it! Have fun and stay fit ;)</p>
+            </div>
+        </main>
+    }
+
+    @if(LoggedIn)
+    {
+        <header>
+            <h1>Welcome Back, @user.Username!</h1>
+            <br />
+        </header>
+        <!--kijken of je hier een overzichtje van alles kan plaatsen, dus verkort stats en pet health etc.-->
+        <main>
+        </main>
+   
+    }
+</body>
+
+@code {
+    private Users? user;
+
+    private bool LoggedIn = false;
+
+    protected override async void OnInitialized()
+    {
+        await base.OnInitializedAsync();
+
+        var httpContext = HttpContextAccessor.HttpContext;
+
+        if (httpContext?.User.Identity?.IsAuthenticated == true)
+        {
+            // Extract user ID from claims
+            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+            {
+                user = UserService.GetUserById(loggedInUserId);
+                LoggedIn = true;
+            }
+        }
+    }
+}
+
+
+
