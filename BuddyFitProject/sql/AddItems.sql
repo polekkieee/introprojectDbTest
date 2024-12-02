@@ -6,4 +6,4 @@
 ('Banana', 'food', 50),
 ('Apple', 'food', 50),
 ('Strawberry', 'food', 150),
-('Tomate', 'food', 100);
+('Tomato', 'food', 100);

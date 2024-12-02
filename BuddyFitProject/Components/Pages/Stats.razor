@@ -9,6 +9,7 @@
 @inject Services.UserStatisticsService UserStatisticsService
 @inject Services.ExerciseService ExerciseService
 @rendermode InteractiveServer
+
 <head>
     <link href="Stats.razor.css" rel="stylesheet" />
     <PageTitle>Statistics</PageTitle>
@@ -17,60 +18,60 @@
 
 <body>
 
-<header>
+    <header>
         <h1>Workout History</h1>
-</header>
+    </header>
 
 
-@if(LoggedIn)
-{
+    @if(LoggedIn)
+    {
 
-    <div class="coin">$</div>
-    <div class="coin-label">@user.Coins</div>
+        <div class="coin">$</div>
+        <div class="coin-label">@user.Coins</div>
 
-    <div class="level-coin">lvl</div>
-    <div class="level-label">???</div>
+        <div class="level-coin">lvl</div>
+        <div class="level-label">???</div>
 
-<br />
-    <button class="btn btn-primary" @onclick="LoadStats">Load Stats</button>
-<br />
-<br />
+        <br />
+        <button class="btn btn-primary" @onclick="LoadStatsRefresh">Load Stats</button>
+        <br />
+        <br />
 
-    <main>
-    <h4>@user.Username 's Statistics</h4>
+        <main>
+            <h4>@user.Username 's Statistics</h4>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <td>    <p>Exercise</p>             </td>
-                <td>    <p>Total Minutes</p>        </td>
-                <td>    <p>Total Coins earned</p>   </td>
-                
-            </tr>
-        </thead>
-        
-        <tbody>
-            @foreach (var s in userStatistics)
-            {
-                <tr>
-                    <td>@ExerciseService.GetExerciseById(s.ExerciseId).Name</td>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>    <p>Exercise</p>             </td>
+                        <td>    <p>Total Minutes</p>        </td>
+                        <td>    <p>Total Coins earned</p>   </td>
 
-                    <td>@s.Total_minutes.ToString()</td>
+                    </tr>
+                </thead>
 
-                    <td>@s.Total_coins.ToString()</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                <tbody>
+                    @foreach (var s in userStatistics)
+                    {
+                        <tr>
+                            <td>@ExerciseService.GetExerciseById(s.ExerciseId).Name</td>
+
+                            <td>@s.Total_minutes.ToString()</td>
+
+                            <td>@s.Total_coins.ToString()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </main>
 
-}
-else
-{
-    <h1>You must be logged in to access this page.</h1>
-    <hr />
+    }
+    else
+    {
+        <h1>You must be logged in to access this page.</h1>
+        <hr />
         <a href="login" class=" btn btn-primary">Go to Login</a>
-}
+    }
 </body>
 
 @code {
@@ -93,6 +94,23 @@ else
             Console.WriteLine($"Error updating stats: {ex.Message}");
         }
     }
+
+    private void LoadStatsRefresh()
+    {
+        try
+        {
+            // Update and fetch user statistics
+            UserStatisticsService.UpdateUserStatistics(user.Id);
+            userStatistics = UserStatisticsService.GetStatisticsByUser(user.Id);
+            navigationManager.NavigateTo(navigationManager.Uri, true);
+        }
+        catch (Exception ex)
+        {
+            // Log error or show a user-friendly message
+            Console.WriteLine($"Error updating stats: {ex.Message}");
+        }
+    }
+
 
     protected override async void OnInitialized()
     {
