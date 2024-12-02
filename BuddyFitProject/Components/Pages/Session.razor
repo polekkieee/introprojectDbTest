@@ -269,7 +269,7 @@
             <label>@coinsamount</label>
 
             <button @onclick="CalculateRewards">Convert given data to coins</button>
-            <button @onclick="LogWorkout">Log your workout</button>
+            <button  @onclick="LogWorkout">Log your workout</button>
 
 
             <label>So @user.Username, what exercises did you do today?</label>
@@ -436,6 +436,6 @@ else
         }
         UserStatisticsService.UpdateUserStatistics(user.Id); 
         CalculateRewards();
-        StateHasChanged();
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
     }
 }
