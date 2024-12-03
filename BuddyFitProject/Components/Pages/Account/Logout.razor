@@ -31,6 +31,6 @@
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
         // Redirect to homepage after logout
-        navigationManager.NavigateTo("/login", forceLoad: true);
+        navigationManager.NavigateTo("/home", forceLoad: true);
     }
 }

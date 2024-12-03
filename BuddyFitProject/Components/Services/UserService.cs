@@ -138,7 +138,7 @@ namespace BuddyFitProject.Components.Services
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                return dbContext.Users.SingleOrDefault(x => x.Username == username && x.Start_condition == "new") != null;
+                return dbContext.Users.SingleOrDefault(x =>x.Username == username &&  x.Start_condition == "new")!= null;
             }
         }
         public void AddWorkout(Users user, WorkoutSessions workout)
