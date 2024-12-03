@@ -10,9 +10,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Authentication.Cookies
 @inject UserService UserService
-@inject BuddyFitDbContext appDbContext
 @inject NavigationManager navigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [ExcludeFromInteractiveRouting]
 
 <head>
@@ -24,119 +22,97 @@
 <h1 class="h">Set up your account</h1>
 <hr />
 
-@*
-<EditForm FormName="infoUser" Model="@User"  OnValidSubmit="AddInfo">
-   <div>
 
-   </div>
-   <label for="Age" class="l2">Age:</label>
-    <InputNumber required @bind-Value="User.Age" />
-    <br>
-    <br>
-    <label for="Gender" class="l2">Gender:</label>
-    <InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="User.Gender" />
-    <br />
-    <br>
-    <label for="StartCondition" class="l2">Start Condition:</label>
-    <InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="User.Start_condition" />
-    <br />
-    <hr />
-    <label>Choose your pet:</label>
-    <!-- hier buutons van de pet image-->
-    <br>
-    <label for="PetName" class="l2">My pet's name is </label>
-    <InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="Pet.Name" />
-    <br />
+<EditForm FormName="infoUser" Model="@User" OnValidSubmit="AddInfo">
+	<div>
+	</div>
+	<label for="Age" class="l2">Age:</label>
+	<InputNumber required @bind-Value="User.Age" />
+	<br>
+	<br>
+	<label for="Gender" class="l2">Gender:</label>
+	<InputText required @bind-Value="User.Gender" />
+	<br />
+	<br>
+	<label for="StartCondition" class="l2">Start Condition:</label>
+	<InputText required @bind-Value="User.Start_condition" />
+	<br />
+	<hr />
+	<label>Choose your pet:</label>
+	<!-- hier buutons van de pet image-->
+	<br>
+	<!--<label for="PetName" class="l2">My pet's name is </label>
+	<InputText required @bind-Value="Pet.Name" />
+	<br />
 
-    <span> @errorMessage </span>
-    <button type="submit" class="b2">Let's start!</button>
-
-    <a href="register">
-        <button class="b2">Register</button>
-    </a>
-
-    <a href="password">
-        <button class="b3">Password forgotten?</button>
-    </a>
+	<span> @errorMessage </span>-->
+	<button type="submit" class="b2">Let's start!</button>
 </EditForm>
 
 
-    <EditForm FormName="infoPet" Model="@Pets" OnValidSubmit ="AddPet">
-        <div>
-            <h3>Choose your pet</h3>
-            <hr />
-            <label for="petName" class ="l2">My pet is called:</label>
-            <InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="Pet.Name" />
-            <br />
-            <button type="button">
-            <img src="bunny.png"
-                 aria-hidden="true"
-                 width="400"> </button>
-<button> <img src="bear.png" aria-hidden="false" width="400"> </button>
-           <button> <img src="cat.png" aria-hidden="true"width="400" </button>
-        </div>
-    </EditForm>
-
-
-@*
-
-
+<!--<EditForm FormName="infoPet" Model="@Pet" OnValidSubmit="AddPet">
+	<div>
+		<h3>Choose your pet</h3>
+		<hr />
+		<label for="petName" class="l2">My pet is called:</label>
+		<InputText required @bind-Value="Pet.Name" />
+		<br />
+		<button type="button"> <img src="bunny.png" aria-hidden="true" width="400"></button>
+		<button> <img src="bear.png" aria-hidden="false" width="400"> </button>
+		<button> <img src="cat.png" aria-hidden="true" width="400" </button>
+	</div>
+</EditForm> -->
 @code {
-    
+	[SupplyParameterFromForm]
+	private Users User { get; set; } = new();
 
-    /*[SupplyParameterFromForm]
-    private Users User { get; set; } = new();
+	[SupplyParameterFromForm]
+	private Pets Pet { get; set; } = new();
 
-    [CascadingParameter]
-    public HttpContext httpcontext { get; set; } = default!;
+	Users? UserDb;
 
-    private string errorMessage;
+	private string errorMessage;
 
+	private void AddInfo()
+	{
+		UserDb.Gender = User.Gender;
+		UserDb.Age = User.Age;
+		UserDb.Start_condition = User.Start_condition;
+		UserService.UpdateUser(UserDb); // Save additional details
+		navigationManager.NavigateTo("/session"); // Redirect to the dashboard or welcome page
+	}
 
+	protected override void OnInitialized()
+	{
+		var httpContext = HttpContextAccessor.HttpContext;
 
-    private async Task LoginUser()
-    {
-        bool isUserValid = UserService.ValidateUser(User.Username, User.Password);
+		if (httpContext?.User.Identity?.IsAuthenticated == true)
+		{
+			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			{
+				UserDb = UserService.GetUserById(loggedInUserId);
+			}
+			else
+			{
+				navigationManager.NavigateTo("/login");
+			}
+		}
+	}
 
-        if (!isUserValid)
-        {
-            errorMessage = "Your username or password is invalid.";
-            return;
-        }
-        else
-        {
-            User = UserService.GetUserByLogin(User.Username, User.Password);
-        }
-
-
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, User.Username),
-            new Claim(ClaimTypes.NameIdentifier, User.Id.ToString())
-        };
-
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
-        await httpcontext.SignInAsync(principal);
-
-        navigationManager.NavigateTo("/session");
-    }
-    */
-
-
-
+	private void AddPet()
+	{
+	}
 }
-*@
+
 
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom, purple, blue);
-        color: #333;
-        padding: 20px;
-        position: relative;
-    }
-
-
+	body {
+		margin: 0;
+		font-family: Arial, sans-serif;
+		background: linear-gradient(to bottom, purple, blue);
+		color: #333;
+		padding: 20px;
+		position: relative;
+	}
 </style>
