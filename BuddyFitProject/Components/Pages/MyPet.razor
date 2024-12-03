@@ -1,44 +1,54 @@
-﻿@page "/pet"
+﻿@page "/MyPet"
 
 <head>
-	<PageTitle>Pet</PageTitle>
-  
-        <link href="MyPet.razor.css" rel="stylesheet" />
-   
+	<PageTitle> Pet </PageTitle>
 </head>
+<body style="background-color:#ffcc99;">
+	<div>
+		<h1 class="h">Pet</h1>
+		<div class="bars">
+			<div class="bar">
+				Health
+				<div/>
+			</div>
+			<div class="bar">
+				Food
+				<div/>
+			</div>
+			<div class="bar">
+				Beauty
+				<div/>
+			</div>
+		</div>
+	</div>
 
+	<div>
+		<a href="Store">
+			Go to Store
+		</a>
+	</div>
 
-<div class="coin">$</div>
-<div class="coin-label">1000</div>
+	<div>
+		<a href="Costumes">
+			Go to Costumes
+		</a>
+	</div>
 
-<div class="level-coin">lvl</div>
-<div class="level-label">10</div>
+	<div>
+		<a href="Food">
+			Go to Food
+		</a>
+	</div>
 
+	<br />
 
-<h1 class="h">Pet</h1>
-
-<body>
-    
-
-	<svg width="600" height="200" xmlns="https://localhost:7068/pets"> </svg>
-		<img src="bunny.png"
-		     aria-hidden = "true"
-			 width="400">
-		<img src="bear.png"
-			 aria-hidden = "false"
-			 width="400">
-		<img src="cat.png"
-			 aria-hidden = "true"
-			 width="400"> 
 	<svg width="1200" height="500" xmlns="MyPet">
 		<polygon points="700, 125, 550, 375, 850, 375" fill="#b35900" stroke="black" stroke-linejoin="round" stroke-width="15" />
 
 	</svg>
-
-
 </body>
 
 
 @code {
-
+	private int Width { get; set; } = 200;
 }

@@ -7,33 +7,33 @@
 @inject NavigationManager navigationManager
 
 <head>
-    <link href="Register.razor.css" rel="stylesheet" />
-    <PageTitle>Create</PageTitle>
+	<link href="Register.razor.css" rel="stylesheet" />
+	<PageTitle>Create</PageTitle>
 </head>
 
 <body>
-    <header>
-        <h1>Register</h1>
-    </header>
+	<header>
+		<h1>Register</h1>
+	</header>
 
-    <main>
-        <EditForm method="post" Model="User" OnValidSubmit="AddUser" FormName="create">
-            <div class="input">
-                <label for="UserName" class="l">Username:</label>
-                <InputText id="UserName" @bind-Value="User.Username" class="i" />
-            </div>
-            <hr />
-            <div class="input">
-                <label for="Password" class="l">Password:</label>
-                <InputText style="-webkit-text-security: disc; text-security: disc;" id="Password" @bind-Value="User.Password" class="i" />
-            </div>
-            <hr />
-            <div class="input">
-                <label for="input" class="l">Email:</label>
-                <InputText id="Email" @bind-Value="User.Email" class="i" />
-            </div>
+	<main>
+		<EditForm method="post" Model="User" OnValidSubmit="AddUser" FormName="create">
+			<div class="input">
+				<label for="UserName" class="l">Username:</label>
+				<InputText id="UserName" @bind-Value="User.Username" class="i" />
+			</div>
+			<hr />
+			<div class="input">
+				<label for="Password" class="l">Password:</label>
+				<InputText style="-webkit-text-security: disc; text-security: disc;" id="Password" @bind-Value="User.Password" class="i" />
+			</div>
+			<hr />
+			<div class="input">
+				<label for="input" class="l">Email:</label>
+				<InputText id="Email" @bind-Value="User.Email" class="i" />
+			</div>
 
-            @*<div class="mb-2">
+			@*<div class="mb-2">
                         <label for="Gender" class="l">Gender:</label>
                         <InputText id="Gender" @bind-Value="User.Gender" class="i" />
                     </div>
@@ -41,27 +41,30 @@
 				<label for="StartCondition" class="l">Start Condition:</label>
 				<InputText id="StartCondition" @bind-Value="User.Start_condition" class="i" />
 			</div>*@
-            <hr />
-            <div class="button-group">
-                <button type="submit" class="btn btn-primary">Create</button>
-                <a href="login" class="btn btn-secondary">Already have an account?</a>
-            </div>
-           
-        </EditForm>
+			<hr />
+			<div class="button-group">
+				<button type="submit" class="btn btn-primary">Create</button>
+				<a href="login" class="btn btn-secondary">Already have an account?</a>
+			</div>
+
+		</EditForm>
 
 
-    </main>
+	</main>
 </body>
 
 
 @code {
-    [SupplyParameterFromForm]
-    private Users User { get; set; } = new();
+	[SupplyParameterFromForm]
+	private Users User { get; set; } = new();
 
-    private void AddUser()
-    {
-        User.Start_condition = "new";
-        UserService.AddUser(User);
-		navigationManager.NavigateTo("/userinfo");
+	private void AddUser()
+	{
+		User.Resetcode = "Empty";
+		User.Validatecode = "Empty";
+		User.Gender = "Empty";
+		User.Start_condition = "new";
+		UserService.AddUser(User);
+		navigationManager.NavigateTo($"/userinfo/{User.Email}/{User.Username}");
 	}
 }
