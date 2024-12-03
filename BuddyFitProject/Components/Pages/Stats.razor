@@ -16,11 +16,12 @@
 </head>
 
 
-<body>
 
-    <header>
-        <h1>Workout History</h1>
-    </header>
+
+    <h1>Workout History</h1>
+
+       
+  
 
 
     @if(LoggedIn)
@@ -31,7 +32,7 @@
 
         <div class="level-coin">lvl</div>
         <div class="level-label">???</div>
-
+    <body>
         <br />
         <button class="btn btn-primary" @onclick="LoadStatsRefresh">Load Stats</button>
         <br />
@@ -64,15 +65,17 @@
                 </tbody>
             </table>
         </main>
+        </body>
 
     }
     else
-    {
+    { <body>
         <h1>You must be logged in to access this page.</h1>
-        <hr />
+        <br />
         <a href="login" class=" btn btn-primary">Go to Login</a>
+    </body>
     }
-</body>
+
 
 @code {
     private List<UserStatistics> userStatistics = new();

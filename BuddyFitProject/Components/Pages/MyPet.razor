@@ -1,44 +1,111 @@
 ﻿@page "/pet"
+@using BuddyFitProject.Data.Models
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
+@inject NavigationManager navigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject Services.UserService UserService
+@inject Services.UserStatisticsService UserStatisticsService
+@inject Services.ExerciseService ExerciseService
+@rendermode InteractiveServer
 
 <head>
 	<PageTitle>Pet</PageTitle>
-  
-        <link href="MyPet.razor.css" rel="stylesheet" />
-   
+	<link href="MyPet.razor.css" rel="stylesheet" />
 </head>
 
 
 <div class="coin">$</div>
-<div class="coin-label">1000</div>
+<div class="coin-label">@user.Coins</div>
 
 <div class="level-coin">lvl</div>
-<div class="level-label">10</div>
+<div class="level-label">???</div>
 
 
-<h1 class="h">Pet</h1>
 
 <body>
-    
+	
+	@if (pet != null)
+	{
+		<h1>Pet</h1>
+		<br />
 
-	<svg width="600" height="200" xmlns="https://localhost:7068/pets"> </svg>
+		<div class="pet-section">
+			<div class="show-pet">
+				<h2>@pet.Name (Level: @pet.Level)</h2>
+				<p>Health: @pet.Health_bar%</p>
+				<p>Food: @pet.Food_bar%</p>
+			</div>
+			<img class="pet-image" src="@($"{pet.Type.ToLower()}.png") alt="@pet.Type" />
+		</div>
+
+		<div class="inventory-section">
+			<h2>@user.Username's Inventory</h2>
+		</div>
+	}
+	else
+	{
+		<p>No pet found. Please adopt a pet in the store!</p>
+	}
+	
+		
+
+		<svg width="600" height="200" xmlns="https://localhost:7068/pets"> </svg>
 		<img src="bunny.png"
-		     aria-hidden = "true"
+			 aria-hidden="true"
 			 width="400">
 		<img src="bear.png"
-			 aria-hidden = "false"
+			 aria-hidden="false"
 			 width="400">
 		<img src="cat.png"
-			 aria-hidden = "true"
-			 width="400"> 
-	<svg width="1200" height="500" xmlns="MyPet">
-		<polygon points="700, 125, 550, 375, 850, 375" fill="#b35900" stroke="black" stroke-linejoin="round" stroke-width="15" />
-
-	</svg>
+			 aria-hidden="true"
+			 width="400">
 
 
 </body>
 
 
 @code {
+	private Users? user;
+	private Pets? pet;
+	private List<UserInventory> userInventory = new();
+
+	private bool LoggedIn = false;
+
+	protected override async void OnInitialized()
+	{
+		await base.OnInitializedAsync();
+
+		var httpContext = HttpContextAccessor.HttpContext;
+
+		if (httpContext?.User.Identity?.IsAuthenticated == true)
+		{
+			// Extract user ID from claims
+			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			{
+
+				user = UserService.GetUserById(loggedInUserId);
+				//hier doen wat er gebeurt als ingelogd?
+				//Services uitvogelen iets fetchen vanuit userinventory
+				LoggedIn = true;
+			}
+		}
+	}
+
+	private async Task UseItem(UserInventory item)
+	{
+		if ( false) //uitvogelen hoe t werkt met die foreign keys om via via bij item type te komen
+		{
+			pet.Food_bar = Math.Min(100, pet.Food_bar + 20);
+		}
+
+
+		await OnInitializedAsync();
+	}
+
 
 }
+
