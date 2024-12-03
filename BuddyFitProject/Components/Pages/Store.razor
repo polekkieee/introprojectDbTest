@@ -1,94 +1,160 @@
-﻿@page "/store"
+﻿@page "/Store"
 @inject IJSRuntime JSRuntime
 
 <PageTitle> Store </PageTitle>
-<head>
-	<link href="Store.razor.css" rel="stylesheet" />
-</head>
 
+<h1 class="h">Store </h1>
 
+<body style="background-color: #ffcc99;">
 
+	<div>
+		<a href="https://localhost:7068/Food">
+			Go to Food
+		</a>
+	</div>
 
-<div class="coin">$</div>
-<div class="coin-label">1000</div>
+	<div>
+		<a href="https://localhost:7068/costumes">
+			Go to Costumes
+		</a>
+	</div>
 
-<div class="level-coin">lvl</div>
-<div class="level-label">10</div>
+	<div>
+		<a href="https://localhost:7068/pets">
+			Go to Pets
+		</a>
+	</div>
 
+	<div>
+		<a href="https://localhost:7068/">
+			Go to Homepage
+		</a>
+	</div>
 
+	<br />
 
+	<div class= "Pet-preview" style= "margin-top: 20px;">
+		<h2> Pet Preview</h2>
+		@if (SelectedOutfit != null)
+		{
+			<img src = "@SelectedOutfit.PetImage" alt = "Pet wearing @SelectedOutfit.Name
+				 style = "width:100px; height: 100px;"/>
+		}
+		else
+		{
+			<p> Select an outfit to see the preview</p>
+		}
+	</div>
 
-<body>
-	<h1 class="h">Store </h1>
 	<br />
 
 	<div> Inventory: </div>
 
 	<br/>
 
-	<ul>
-		<li> Dragon outfit</li>
-		<li> Fire outfit </li>
-		<li> Water outfit</li>
-		<li> Earth outfit</li>
-	</ul>
-
-	<ul>
-		<li> Bananas</li>
-		<li> Apples</li>
-		<li> Pears</li>
-		<li> Cucumbers </li>
-	</ul>
-
-	<div id="myDiv" style= "height:300px;overflow-y:auto;border:1px solid black;">	
-		@foreach (var item in Allitems)
-		{
-			<div style= "height: 80px; background-color: pink; margin: 10px; padding: 20px; color: black; text-align: center;">
-				@item
+	<div style= "display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+		<!--Cat outfits-->
+		<div style = "flex: 1;"> 
+			<h2>Cat outfits</h2>
+			<div id = "outfitDiv" style= "height:300px; overflow-y: auto; border: 1px solid black;">
+				<table style = "width: 100%; border-collapse: collapse;">
+					@foreach (var outfit in VisibleOutfits)
+					{
+						<tr style = "text-align: center;"> 
+							<td>
+								<div style = ""padding: 10px;">
+									<img src= "@outfit.CostumeImage" alt= "@outfit.Name" 
+									style="width:100px; height:100px; border: 1px solid gray;" />
+									<p>@outfit.Name</p>
+								</div>
+							</td>
+						</tr>
+					}
+				</table>
 			</div>
-		}
-	</div>
+		</div>
 
+
+		<!--Fruits -->
+		<div style= "flex: 1;">
+			<h2>Fruits</h2>
+			<div id = "FruitDiv" style= "height:300px; overflow-y: auto; border: 1px solid black;"> 
+				<table style= "width: 100%; border-collapse:collapse;">
+					@foreach (var fruit in Fruits)
+					{
+						<tr style ="text-align: center;"> 
+							<td>
+								<div style= "padding: 10px;">
+									<img src = "@fruit.ImageUrl" alt = "@fruit.Name" 
+									style = "width: 100px; height: 100px; border: 1px solid gray;" />
+									<p> @fruit.Name</p>
+								</div>
+							</td>
+						</tr>
+					}
+				</table>
+			</div>
+		</div>
+	</div>
 </body>
 
+
 @code{
-	protected override async Task OnAfterRenderAsync(bool firstRender)
+
+	private List<Outfit> Outfits = new List<Outfit> 
 	{
-		if (firstRender)
-		{
-			await JSRuntime.InvokeVoidAsync("checkDivScrollEnd", "myDiv", nameof (OnDivScrolledToEnd), DotNetObjectReference.Create(this));
-		}
-	}
-	protected List<string> Allitems = new List<string>
-	{
-		"Bananas",
-		"Apples",
-		"Pears",
-		"Cucumbers"
+		new Outfit {Name = "Military Cat", CostumeImage = "Militair.png", PetImage ="bunny.png"},
+		new Outfit {Name = "Cat in suit", CostumeImage = "CatinSuit.png", PetImage ="bunny.png"},
+		new Outfit {Name = "Cat in tutu", CostumeImage = "CatTutu.png", PetImage ="bunny.png"},
+		new Outfit {Name = "Pajamas Cat", CostumeImage = "PajamasCat.png", PetImage ="bunny.png"}
 	};
 
+	private List<Fruit> Fruits = new List<Fruit> 
+	{
+		new Fruit {Name = "Banana", ImageUrl = "Banana.png"},
+		new Fruit {Name = "Apple", ImageUrl = "Apple.png"},
+		new Fruit {Name = "Strawberry", ImageUrl= "Strawberry.png"},
+		new Fruit {Name = "Tomato", ImageUrl= "Tomato.png"}
+	};
+
+	private List<Outfit> VisibleOutfits = new List<Outfit>();
+	private List<Fruit> VisibleFruits = new List<Fruit>();
+
+	private Outfit? SelectedOutfit = null;
+
+	protected override void OnInitialized()
+	{
+		VisibleOutfits.AddRange(Outfits);
+		VisibleFruits.AddRange(Fruits);
+	}
+
 	[JSInvokable]
+	public async Task LoadMoreOutfits()
+	{
+		VisibleOutfits.AddRange(Outfits);
+		StateHasChanged();
+		await Task.CompletedTask;
+	}
+
+	[JSInvokable]
+	public async Task LoadMoreFruits()
+	{
+		VisibleFruits.AddRange(Fruits);
+		StateHasChanged();
+		await Task.CompletedTask;
+	}
+
+	public class Outfit
+	{
+		public string Name { get; set; } = string.Empty;
+		public string CostumeImage { get; set; } = string.Empty;
+		public string PetImage { get; set; } = string.Empty;
+	}
+
+	public class Fruit
+	{
+		public string Name { get; set; } = string.Empty;
+		public string ImageUrl { get; set; } = string.Empty;
+	}
 	
-	public async Task OnDivScrolledToEnd()
-	{/*
-
-		await JSRuntime.InvokeVoidAsync(() =>
-		{
-			Allitems.AddRange(new List<string>
-							{
-							"Dragon outfit",
-							"Fire outfit",
-							"Water outfit",
-							"Earth outfit",
-							"Item5",
-							"Item6",
-							"Item7",
-							"Item8",
-							"Item9",
-							"Item10",
-
-							}), StateHasChanged());
-			}
-		}*/
-	}	
 }

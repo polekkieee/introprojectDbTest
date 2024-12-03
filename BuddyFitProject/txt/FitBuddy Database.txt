@@ -1,0 +1,65 @@
+Database: FitBuddyDb
+
+
+Tables
+
+1. Users
+o Id (Primary Key): Unique identifier for each user.
+o username: Username chosen by the user.
+o password: Encrypted password for security.
+o email: Email address for account recovery.
+o age: Age of the user.
+o gender: Gender of the user.
+o start_condition: Initial fitness level of the user.
+o coins: Total coins earned by the user.
+o resetcode: Code used for resetting password.
+o validatecode: code used of validating the account when registering.
+
+2. Pets
+o Id (Primary Key): Unique identifier for each pet.
+o userId (Foreign Key): References the user who owns the pet.
+o name: Name of the pet.
+o type: Type of pet chosen (e.g., cat, dog, etc.).
+o level: Current level of the pet.
+o food_bar: Current status of the food bar.
+o health_bar: Current status of the health bar.
+
+3. Exercises
+o Id (Primary Key): Unique identifier for each exercise type.
+o name: Name of the exercise (e.g., Running, Cycling).
+o coins_pm: Number of coins awarded per minute for the exercise.
+4. WorkoutSessions
+o Id (Primary Key): Unique identifier for each workout session.
+o userId (Foreign Key): References the user who logged the session.
+o exerciseId (Foreign Key): References the type of exercise performed.
+o minutes: Duration of the exercise in minutes.
+o reward: Total coins earned in the session.
+o timestamp: Timestamp for when the session was logged.
+
+5. Items
+o Id (Primary Key): Unique identifier for each item.
+o name: Name of the item (e.g., Hat, Food Bowl).
+o type: Type of item (e.g., Clothing, Food).
+o price: Cost of the item in coins.
+
+6. UserInventory
+o Id (Primary Key): Unique identifier for each inventory entry.
+o userId (Foreign Key): References the owner of the inventory.
+o itemId (Foreign Key): References the item in the inventory.
+o quantity: Number of the specific item owned.
+
+7. Statistics
+o Id (Primary Key): Unique identifier for each statistics entry.
+o userId (Foreign Key): References the user.
+o exerciseId (Foreign Key): References the exercise.
+o total_minutes: Total minutes spent on the exercise in the time period.
+o total_coins: Total coins earned for the exercise in the time period.
+
+Relationships
+* Users - Pets: One-to-One (Each user has one pet).
+* Users - WorkoutSessions: One-to-Many (A user can log multiple sessions).
+* Users - UserInventory: One-to-Many (A user owns multiple items).
+* Users - Statistics: One-to-Many (Each user has multiple statistic records).
+* Exercises - WorkoutSessions: One-to-Many (Each session references an exercise).
+* Items - UserInventory: One-to-Many (Users buy items from the store).
+
