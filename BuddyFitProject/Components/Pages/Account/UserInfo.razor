@@ -1,4 +1,4 @@
-﻿@page "/userinfo/{email}/{username}"
+﻿@page "/userinfo"
 @using Microsoft.EntityFrameworkCore
 @using BuddyFitProject.Data.Models
 @using BuddyFitProject.Data;
@@ -66,22 +66,35 @@
 	[SupplyParameterFromForm]
 	private Pets Pet { get; set; } = new();
 
-	[Parameter]
-	public string Email { get; set; } // Define the Email route parameter.
-
-	[Parameter]
-	public string Username { get; set; } // Define the Passowrd route parameter.
+	Users? UserDb;
 
 	private string errorMessage;
 
 	private void AddInfo()
 	{
-		Users UserDb = UserService.GetUserByUsernameAndEmail(Username, Email);
 		UserDb.Gender = User.Gender;
 		UserDb.Age = User.Age;
 		UserDb.Start_condition = User.Start_condition;
 		UserService.UpdateUser(UserDb); // Save additional details
-		navigationManager.NavigateTo("/login"); // Redirect to the dashboard or welcome page
+		navigationManager.NavigateTo("/session"); // Redirect to the dashboard or welcome page
+	}
+
+	protected override void OnInitialized()
+	{
+		var httpContext = HttpContextAccessor.HttpContext;
+
+		if (httpContext?.User.Identity?.IsAuthenticated == true)
+		{
+			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			{
+				UserDb = UserService.GetUserById(loggedInUserId);
+			}
+			else
+			{
+				navigationManager.NavigateTo("/login");
+			}
+		}
 	}
 
 	private void AddPet()

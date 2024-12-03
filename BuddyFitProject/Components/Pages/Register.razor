@@ -65,6 +65,6 @@
 		User.Gender = "Empty";
 		User.Start_condition = "new";
 		UserService.AddUser(User);
-		navigationManager.NavigateTo($"/userinfo/{User.Email}/{User.Username}");
+		navigationManager.NavigateTo("/login");
 	}
 }

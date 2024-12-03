@@ -82,8 +82,10 @@
         await httpcontext.SignInAsync(principal);
 
         bool newUser = UserService.NewUser(User.Username, User.Start_condition);
+        
         if (newUser)
-        {navigationManager.NavigateTo("/userinfo"); 
+        {
+            navigationManager.NavigateTo("/userinfo"); 
         }
         else
         {
