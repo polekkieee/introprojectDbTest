@@ -7,7 +7,24 @@
 <PageTitle>Workout</PageTitle>
 
 @code {
-    // Variabelen voor oefeningen
+    // Variabelen voor oefeninge
+   
+    //Male true als user man is en false als het een vrouw is
+    private bool Male = false;       
+    
+    //Een van de volgende variabelen moet op true op basis van userinfo
+    private bool Terrible = false;
+    private bool Bad = false;
+    private bool Average = false;
+    private bool Good = false;
+    private bool Great = false;
+
+    private double Gender = 1;
+    private int Age = 10;
+    private double Difficulty = 1;
+   
+
+
     private int CurrentMinutes = 0;
     private int Next100mins = 0;
     private int lastBonus100 = 0; // Houdt het laatste honderdtal bij waarvoor bonus is gegeven
@@ -43,12 +60,29 @@
     private int coinsamount = 1000; // De hoeveelheid coins
     private int level = 10; // Hoogte level gebruiker
 
+
     // Methode die wordt aangeroepen bij de knopdruk
     private void UpdateCoinsAmount()
     {
         // Bijwerken van coins hoeveelheid op basis van de minuten voor elke oefening
-        coinsamount = coinsamount
-            + PushUpMinutes * 150
+        if (Male)
+            Gender = 1;
+        else Gender = 1.2;  
+
+
+        if (Terrible)
+            Difficulty = 2;
+        if (Bad)
+            Difficulty = 1.7;
+        if (Average)
+            Difficulty = 1.4;
+        if (Good)
+            Difficulty = 1;
+        if (Great)
+            Difficulty = 0.7;
+
+        coinsamount = (int) (coinsamount + Gender * 0.1 * Age * Difficulty * 
+            ( + PushUpMinutes * 150
             + PlankMinutes * 100
             + BurpeesMinutes * 200
             + JumpingJacksMinutes * 100
@@ -64,7 +98,7 @@
             + SprintingMinutes * 100
             + WallsitsMinutes * 70
             + RopeJumpingMinutes * 120
-            + StairWalkingMinutes * 140;
+            + StairWalkingMinutes * 140));
 
         // Gewicht en snelheid alleen toevoegen als minuten > 0
         if (BenchPressMinutes > 0)
