@@ -17,9 +17,10 @@ builder.Services.AddTransient<WorkoutSessionService>();
 builder.Services.AddTransient<UserStatisticsService>();
 builder.Services.AddTransient<ExerciseService>();
 builder.Services.AddTransient<PetService>();
-
+builder.Services.AddTransient<UserInventoryService>();
 builder.Services.AddTransient<EmailService>();
 builder.Services.AddTransient<ValidateUserService>();
+builder.Services.AddTransient<ItemService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
