@@ -26,7 +26,34 @@
     private bool SprintingSelected = false;
     private bool StairWalkingSelected = false;
 
+    // Lijst van oefeningen die geselecteerd zijn
+    private List<string> selectedExercises = new List<string>();
 
+    // Methode om de geselecteerde oefeningen bij te werken
+    private void UpdateSchema()
+    {
+        selectedExercises.Clear();
+
+        if (PushUpSelected) selectedExercises.Add("Push-up");
+        if (PlankSelected) selectedExercises.Add("Plank");
+        if (BurpeesSelected) selectedExercises.Add("Burpees");
+        if (JumpingJacksSelected) selectedExercises.Add("Jumping Jacks");
+        if (PullUpSelected) selectedExercises.Add("Pull-up");
+        if (WallsitsSelected) selectedExercises.Add("Wallsits");
+        if (RopeJumpingSelected) selectedExercises.Add("Rope Jumping");
+        if (BenchPressSelected) selectedExercises.Add("Bench Press");
+        if (DumbbellRowsSelected) selectedExercises.Add("Dumbbell Rows");
+        if (CurlsSelected) selectedExercises.Add("Curls");
+        if (LegPressSelected) selectedExercises.Add("Leg Press");
+        if (WalkingSelected) selectedExercises.Add("Walking");
+        if (CyclingSelected) selectedExercises.Add("Cycling");
+        if (SwimmingSelected) selectedExercises.Add("Swimming");
+        if (RunningSelected) selectedExercises.Add("Running");
+        if (SprintingSelected) selectedExercises.Add("Sprinting");
+        if (StairWalkingSelected) selectedExercises.Add("Stair Walking");
+
+        StateHasChanged();
+    }
 
     // Variabelen voor oefeningem
    
@@ -229,7 +256,7 @@
 
     p {
         font-size: 1.4rem;
-        margin-bottom: 20px;
+        margin-bottom: 3px;
         color: #fdfdfd;
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
@@ -507,6 +534,19 @@
             border-radius: 5px;
         }
 
+    .schema-container button {
+            margin-bottom: 10px;
+            background-color: #ffcc00;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: white;
+            width: 170px;
+            height: 28px;
+
+    }
+
     .schema-item {
         display: flex;
         align-items: center;
@@ -529,7 +569,7 @@
         text-align: center;
         width: 160px;
         font-weight: bold;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
     }
 
 
@@ -538,7 +578,8 @@
 
 <h2>Current total minutes: @CurrentMinutes </h2>
 <h1>Workout</h1>
-<p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox. Do not forget to fill in the speed or weights if needed</p>
+<p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox. </p>
+<p>Do not forget to fill in the speed or weights if needed</p>
 
 <div class="coin">$</div>
 <div class="coin-label">@coinsamount</div>
@@ -660,9 +701,9 @@
             <label>Exercise to scheme:</label>
         </div>
         <div class="schemaselecter-item">
-            <label>Push-up</label>
-            <input type="checkbox" @bind="@PushUpSelected" />
-        </div>
+           <label>Push-up</label>
+          <input type="checkbox" @bind="@PushUpSelected"/>
+       </div>
         <div class="schemaselecter-item">
             <label>Plank</label>
             <input type="checkbox" @bind="@PlankSelected" />
@@ -729,12 +770,24 @@
         </div>
       </div>
 
-      <div class= "schema-container">
+        <!-- Schema container waar de geselecteerde oefeningen worden weergegeven -->
+        <div class="schema-container">
+            <div class="schematitel">
+                <label>Selected Exercises:</label>
+            </div>
+
+            <!-- Button to update the schema -->
+            <button @onclick="UpdateSchema">Update Exercise </button>
 
 
+            @foreach (var exercise in selectedExercises)
+            {
+                <div class="schema-item">
+                    <label>@exercise</label>
+                </div>
+            }
+        </div>
 
-
-      </div>
 
     </div>
 
