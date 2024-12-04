@@ -26,6 +26,24 @@
     private bool SprintingSelected = false;
     private bool StairWalkingSelected = false;
 
+    private int? PushUpschema = null;
+    private int? Plankschema = null;
+    private int? Burpeesschema = null;
+    private int? JumpingJacksschema = null;
+    private int? PullUpschema = null;
+    private int? Wallsitsschema = null;
+    private int? RopeJumpingschema = null;
+    private int? BenchPressschema = null;
+    private int? DumbbellRowsschema = null;
+    private int? Curlsschema = null;
+    private int? LegPressschema = null;
+    private int? Walkingschema = null;
+    private int? Cyclingschema = null;
+    private int? Swimmingschema = null;
+    private int? Runningschema = null;
+    private int? Sprintingschema = null;
+    private int? StairWalkingschema = null;
+
     // Lijst van oefeningen die geselecteerd zijn
     private List<string> selectedExercises = new List<string>();
 
@@ -34,7 +52,7 @@
     {
         selectedExercises.Clear();
 
-        if (PushUpSelected) selectedExercises.Add("Push-up");
+        if (PushUpSelected) selectedExercises.Add("Push-up"); 
         if (PlankSelected) selectedExercises.Add("Plank");
         if (BurpeesSelected) selectedExercises.Add("Burpees");
         if (JumpingJacksSelected) selectedExercises.Add("Jumping Jacks");
@@ -56,10 +74,10 @@
     }
 
     // Variabelen voor oefeningem
-   
+
     //Male true als user man is en false als het een vrouw is
     private bool Male = false;       
-    
+
     //Een van de volgende variabelen moet op true op basis van userinfo
     private bool Terrible = false;
     private bool Bad = false;
@@ -70,7 +88,7 @@
     private double Gender = 1;
     private int Age = 10;
     private double Difficulty = 1;
-   
+
 
 
     private int CurrentMinutes = 0;
@@ -129,7 +147,111 @@
         if (Great)
             Difficulty = 0.7;
 
-        coinsamount = (int) (coinsamount + Gender * 0.1 * Age * Difficulty * 
+        if (PushUpMinutes >= PushUpschema)
+        {
+            coinsamount += 50;
+            JumpingJacksschema = null;
+        }
+
+        if (PlankMinutes >= Plankschema)
+        {
+            coinsamount += 50;
+            Plankschema = null;
+        }
+
+        if (BurpeesMinutes >= Burpeesschema)
+        {
+            coinsamount += 50;
+            Burpeesschema = null;
+        }
+
+        if (JumpingJacksMinutes >= JumpingJacksschema)
+        {
+            coinsamount += 50;
+            JumpingJacksschema = null;
+        }
+
+        if (BenchPressMinutes >= BenchPressschema)
+        {
+            coinsamount += 50;
+            BenchPressschema = null;
+        }
+
+        if (DumbbellRowsMinutes >= DumbbellRowsschema)
+        {
+            coinsamount += 50;
+            DumbbellRowsschema = null;
+        }
+
+        if (CurlsMinutes >= Curlsschema)
+        {
+            coinsamount += 50;
+            Curlsschema = null;
+        }
+
+        if (PullUpMinutes >= PullUpschema)
+        {
+            coinsamount += 50;
+            PullUpschema = null;
+        }
+
+        if (LegPressMinutes >= LegPressschema)
+        {
+            coinsamount += 50;
+            LegPressschema = null;
+        }
+
+        if (WalkingMinutes >= Walkingschema)
+        {
+            coinsamount += 50;
+            Walkingschema = null;
+        }
+
+        if (CyclingMinutes >= Cyclingschema)
+        {
+            coinsamount += 50;
+            Cyclingschema = null;
+        }
+
+        if (SwimmingMinutes >= Swimmingschema)
+        {
+            coinsamount += 50;
+            Swimmingschema = null;
+        }
+
+        if (RunningMinutes >= Runningschema)
+        {
+            coinsamount += 50;
+            Runningschema = null;
+        }
+
+        if (SprintingMinutes >= Sprintingschema)
+        {
+            coinsamount += 50;
+            Sprintingschema = null;
+        }
+
+        if (WallsitsMinutes >= Wallsitsschema)
+        {
+            coinsamount += 50;
+            Wallsitsschema = null;
+        }
+
+        if (RopeJumpingMinutes >= RopeJumpingschema)
+        {
+            coinsamount += 50;
+            RopeJumpingschema = null;
+        }
+
+        if (StairWalkingMinutes >= StairWalkingschema)
+        {
+            coinsamount += 50;
+            StairWalkingschema = null;
+        }
+
+
+
+        coinsamount = (int) (coinsamount +  0.1 * Age * Difficulty * 
             ( + PushUpMinutes * 150
             + PlankMinutes * 100
             + BurpeesMinutes * 200
@@ -544,7 +666,6 @@
             color: white;
             width: 170px;
             height: 28px;
-
     }
 
     .schema-item {
@@ -558,8 +679,16 @@
             color: #fff;
             font-size: 1rem;
             text-align: left;
-            width: 160px;
+            width: 150px;
             font-weight: bold;
+        }
+
+        .schema-item input {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        text-align: center;
+        width: 43px;
+        height: 25px;
         }
 
     .schematitel label {
@@ -571,9 +700,6 @@
         font-weight: bold;
         margin-bottom: 5px;
     }
-
-
-
 </style>
 
 <h2>Current total minutes: @CurrentMinutes </h2>
@@ -698,7 +824,7 @@
     <div class="schema-wrapper"> 
       <div class="schemaselecter-container">
         <div class="schemaselectertitel">
-            <label>Exercise to scheme:</label>
+            <label>Choose exercise for planning:</label>
         </div>
         <div class="schemaselecter-item">
            <label>Push-up</label>
@@ -772,26 +898,89 @@
 
         <!-- Schema container waar de geselecteerde oefeningen worden weergegeven -->
         <div class="schema-container">
-            <div class="schematitel">
-                <label>Selected Exercises:</label>
-            </div>
-
-            <!-- Button to update the schema -->
-            <button @onclick="UpdateSchema">Update Exercise </button>
-
-
-            @foreach (var exercise in selectedExercises)
-            {
-                <div class="schema-item">
-                    <label>@exercise</label>
-                </div>
-            }
-        </div>
-
-
+    <div class="schematitel">
+        <label>Planning today:</label>
     </div>
 
+    <!-- Button to update the schema -->
+    <button @onclick="UpdateSchema">Update Exercise</button>
 
+    @foreach (var exercise in selectedExercises)
+    {
+        <div class="schema-item">
+            <label>@exercise</label>
+            @if (exercise == "Push-up")
+            {
+                        <input type="number" @bind="@PushUpschema" placeholder="Min." />
+            }
+            @if (exercise == "Plank")
+            {
+                        <input type="number" @bind="@Plankschema" placeholder="Min." />
+            }
+            @if (exercise == "Burpees")
+            {
+                        <input type="number" @bind="@Burpeesschema" placeholder="Min." />
+            }
+            @if (exercise == "Jumping Jacks")
+            {
+                        <input type="number" @bind="@JumpingJacksschema" placeholder="Min." />
+            }
+            @if (exercise == "Pull-up")
+            {
+                        <input type="number" @bind="@PullUpschema" placeholder="Min." />
+            }
+            @if (exercise == "Wallsits")
+            {
+                        <input type="number" @bind="@Wallsitsschema" placeholder="Min." />
+            }
+            @if (exercise == "Rope Jumping")
+            {
+                        <input type="number" @bind="@RopeJumpingschema" placeholder="Min." />
+            }
+            @if (exercise == "Bench Press")
+            {
+                        <input type="number" @bind="@BenchPressschema" placeholder="Min." />
+            }
+            @if (exercise == "Dumbbell Rows")
+            {
+                        <input type="number" @bind="@DumbbellRowsschema" placeholder="Min." />
+            }
+            @if (exercise == "Curls")
+            {
+                        <input type="number" @bind="@Curlsschema" placeholder="Min." />
+            }
+            @if (exercise == "Leg Press")
+            {
+                        <input type="number" @bind="@LegPressschema" placeholder="Min." />
+            }
+            @if (exercise == "Walking")
+            {
+                        <input type="number" @bind="@Walkingschema" placeholder="Min." />
+            }
+            @if (exercise == "Cycling")
+            {
+                        <input type="number" @bind="@Cyclingschema" placeholder="Min." />
+            }
+            @if (exercise == "Swimming")
+            {
+                        <input type="number" @bind="@Swimmingschema" placeholder="Min." />
+            }
+            @if (exercise == "Running")
+            {
+                        <input type="number" @bind="@Runningschema" placeholder="Min." />
+            }
+            @if (exercise == "Sprinting")
+            {
+                        <input type="number" @bind="@Sprintingschema" placeholder="Min." />
+            }
+            @if (exercise == "Stair Walking")
+            {
+                        <input type="number" @bind="@StairWalkingschema" placeholder="Min." />
+            }
+        </div>
+    }
+</div>
+    </div>
 </div>
 
 
