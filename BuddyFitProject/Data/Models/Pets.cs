@@ -1,4 +1,6 @@
-﻿namespace BuddyFitProject.Data.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BuddyFitProject.Data.Models
 {
     public class Pets
     {

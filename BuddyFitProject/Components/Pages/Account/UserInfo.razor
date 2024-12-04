@@ -20,51 +20,44 @@
 <hr />
 
 
-<EditForm FormName="infoUser" Model="@User" OnValidSubmit="AddInfo">
+<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo">
 	<div>
 	</div>
 	<label for="Age" class="l2">Age:</label>
-	<InputNumber required @bind-Value="User.Age" />
+	<InputNumber required @bind-Value="UserAndPet.User.Age" />
 	<br>
 	<br>
 	<label for="Gender" class="l2">Gender:</label>
-	<InputText required @bind-Value="User.Gender" />
+	<InputText required @bind-Value="UserAndPet.User.Gender" />
 	<br />
 	<br>
 	<label for="StartCondition" class="l2">Start Condition:</label>
-	<InputText required @bind-Value="User.Start_condition" />
+	<InputText required @bind-Value="UserAndPet.User.Start_condition" />
 	<br />
 	<hr />
 	<label>Choose your pet:</label>
 	<!-- hier buutons van de pet image-->
 	<br>
-	<!--<label for="PetName" class="l2">My pet's name is </label>
-	<InputText required @bind-Value="Pet.Name" />
+	<label for="PetName" class="l2">My pet's name is </label>
+	<InputText required @bind-Value="UserAndPet.Pet.Name" />
 	<br />
 
-	<span> @errorMessage </span>-->
-	<button type="submit" class="b2">Let's start!</button>
-</EditForm>
-
-
-<!--<EditForm FormName="infoPet" Model="@Pet" OnValidSubmit="AddPet">
+	<!--<span> @errorMessage </span>
 	<div>
-		<h3>Choose your pet</h3>
 		<hr />
-		<label for="petName" class="l2">My pet is called:</label>
-		<InputText required @bind-Value="Pet.Name" />
 		<br />
 		<button type="button"> <img src="bunny.png" aria-hidden="true" width="400"></button>
 		<button> <img src="bear.png" aria-hidden="false" width="400"> </button>
 		<button> <img src="cat.png" aria-hidden="true" width="400" </button>
-	</div>
-</EditForm> -->
+	</div>-->
+	<button type="submit" class="b2">Let's start!</button>
+</EditForm>
+
+
+
 @code {
 	[SupplyParameterFromForm]
-	private Users User { get; set; } = new();
-
-	[SupplyParameterFromForm]
-	private Pets Pet { get; set; } = new();
+	private UserAndPet UserAndPet { get; set; } = new();
 
 	Users? UserDb;
 
@@ -72,11 +65,35 @@
 
 	private void AddInfo()
 	{
-		UserDb.Gender = User.Gender;
-		UserDb.Age = User.Age;
-		UserDb.Start_condition = User.Start_condition;
-		UserService.UpdateUser(UserDb); // Save additional details
-		navigationManager.NavigateTo("/session"); // Redirect to the dashboard or welcome page
+		if (UserDb != null)
+		{
+			UserDb.Gender = UserAndPet.User.Gender;
+			UserDb.Age = UserAndPet.User.Age;
+			UserDb.Start_condition = UserAndPet.User.Start_condition;
+
+			UserService.UpdateUser(UserDb); // Save additional user details
+
+			if (UserAndPet.Pet != null)
+			{
+				var pet = new Pets
+					{
+						UserId = UserDb.Id,
+						Name = UserAndPet.Pet.Name,
+						Type = "DefaultType", // Replace with user-selected pet type
+						Level = 1,
+						Food_bar = 100,
+						Health_bar = 100
+					};
+
+				UserService.AddPet(pet); // Save the pet
+			}
+
+			navigationManager.NavigateTo("/session"); // Redirect to the dashboard or welcome page
+		}
+		else
+		{
+			errorMessage = "Unable to update user information.";
+		}
 	}
 
 	protected override void OnInitialized()
@@ -95,10 +112,6 @@
 				navigationManager.NavigateTo("/login");
 			}
 		}
-	}
-
-	private void AddPet()
-	{
 	}
 }
 
