@@ -22,16 +22,19 @@
 				<label for="Username">Username:</label>
 				<InputText required @bind-Value="User.Username" />
 			</div>
+			<br />
 			<div class="input">
 				<label for="Password">Password:</label>
 				<InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="User.Password" />
 			</div>
+			<br />
 			<div class="input">
 				<label for="Email">E-mail:</label>
 				<InputText required @bind-Value="User.Email" />
 			</div>
 			<br />
 			<span> @errorMessage </span>
+			<br />
 			<button class="btn btn-primary" type="submit">Delete</button>
 		</EditForm>
 	</main>
