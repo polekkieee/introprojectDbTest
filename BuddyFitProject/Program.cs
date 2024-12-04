@@ -16,7 +16,7 @@ builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<WorkoutSessionService>();
 builder.Services.AddTransient<UserStatisticsService>();
 builder.Services.AddTransient<ExerciseService>();
-
+builder.Services.AddTransient<PetService>();
 
 builder.Services.AddTransient<EmailService>();
 builder.Services.AddTransient<ValidateUserService>();
