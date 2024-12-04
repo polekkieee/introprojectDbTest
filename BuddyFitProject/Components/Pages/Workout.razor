@@ -7,7 +7,28 @@
 <PageTitle>Workout</PageTitle>
 
 @code {
-    // Variabelen voor oefeninge
+    //checkboxen voor in schema
+    private bool PushUpSelected = false;
+    private bool PlankSelected = false;
+    private bool BurpeesSelected = false;
+    private bool JumpingJacksSelected = false;
+    private bool PullUpSelected = false;
+    private bool WallsitsSelected = false;
+    private bool RopeJumpingSelected = false;
+    private bool BenchPressSelected = false;
+    private bool DumbbellRowsSelected = false;
+    private bool CurlsSelected = false;
+    private bool LegPressSelected = false;
+    private bool WalkingSelected = false;
+    private bool CyclingSelected = false;
+    private bool SwimmingSelected = false;
+    private bool RunningSelected = false;
+    private bool SprintingSelected = false;
+    private bool StairWalkingSelected = false;
+
+
+
+    // Variabelen voor oefeningem
    
     //Male true als user man is en false als het een vrouw is
     private bool Male = false;       
@@ -225,7 +246,6 @@
         height: 450px;
         background-color: rgba(0,0,0,0.3);
         margin-right: 2px;
-        margin-left: 70px;
         border-radius: 8px;
         padding: 20px;
         color: #fff;
@@ -256,8 +276,7 @@
     .exercise-container {
         width: 700px;
         height: 450px;
-        margin-left: auto;
-        margin-right: 100px;
+        margin-right: 10px;
         overflow-y: scroll;
         border: 2px solid #fff;
         border-radius: 8px;
@@ -414,6 +433,107 @@
         color: #fff;
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
+
+    .schema-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .schemaselecter-container {
+        width: 220px;
+        height: 220px;
+        margin-bottom: 10px;
+        margin-right: 10px;
+        overflow-y: scroll;
+        border: 2px solid #fff;
+        border-radius: 8px;
+        background: rgba(100, 255, 255, 0);
+        padding: 10px;
+    }
+
+        .schemaselecter-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .schemaselecter-container::-webkit-scrollbar-thumb {
+            background: #fff;
+            border-radius: 5px;
+        }
+
+    .schemaselecter-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+        .schemaselecter-item label {
+            flex: none;
+            color: #fff;
+            font-size: 1rem;
+            text-align: left;
+            width: 160px;
+            font-weight: bold;
+        }
+
+    .schemaselectertitel label {
+        flex: none;
+        color: #fff;
+        font-size: 1rem;
+        text-align: center;
+        width: 160px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .schema-container {
+        width: 220px;
+        height: 220px;
+        margin-bottom: 10px;
+        margin-right: 10px;
+        overflow-y: scroll;
+        border: 2px solid #fff;
+        border-radius: 8px;
+        background: rgba(100, 255, 255, 0);
+        padding: 10px;
+    }
+
+        .schema-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .schema-container::-webkit-scrollbar-thumb {
+            background: #fff;
+            border-radius: 5px;
+        }
+
+    .schema-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+        .schema-item label {
+            flex: none;
+            color: #fff;
+            font-size: 1rem;
+            text-align: left;
+            width: 160px;
+            font-weight: bold;
+        }
+
+    .schematitel label {
+        flex: none;
+        color: #fff;
+        font-size: 1rem;
+        text-align: center;
+        width: 160px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+
+
 </style>
 
 <h2>Current total minutes: @CurrentMinutes </h2>
@@ -528,11 +648,97 @@
             <input type="number" @bind="@SprintingSpeed" class="speed-input"  />
         </div>
         <div class="exercise-item">
-            <label>Stair walking:</label>
+            <label>Stairwalking:</label>
             <input type="number" @bind="@StairWalkingMinutes" />
             <input type="number" @bind="@StairWalkingSpeed" class="speed-input"  />
         </div>
     </div>
+
+    <div class="schema-wrapper"> 
+      <div class="schemaselecter-container">
+        <div class="schemaselectertitel">
+            <label>Exercise to scheme:</label>
+        </div>
+        <div class="schemaselecter-item">
+            <label>Push-up</label>
+            <input type="checkbox" @bind="@PushUpSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Plank</label>
+            <input type="checkbox" @bind="@PlankSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Burpees</label>
+            <input type="checkbox" @bind="@BurpeesSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Jumping Jacks</label>
+            <input type="checkbox" @bind="@JumpingJacksSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Pull-up</label>
+            <input type="checkbox" @bind="@PullUpSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Wallsits</label>
+            <input type="checkbox" @bind="@WallsitsSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Rope jumping</label>
+            <input type="checkbox" @bind="@RopeJumpingSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Bench press</label>
+            <input type="checkbox" @bind="@BenchPressSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Dumbbell Rows</label>
+            <input type="checkbox" @bind="@DumbbellRowsSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Curls</label>
+            <input type="checkbox" @bind="@CurlsSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Leg Press</label>
+            <input type="checkbox" @bind="@LegPressSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Walking</label>
+            <input type="checkbox" @bind="@WalkingSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Cycling</label>
+            <input type="checkbox" @bind="@CyclingSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Swimming</label>
+            <input type="checkbox" @bind="@SwimmingSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Running</label>
+            <input type="checkbox" @bind="@RunningSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Sprinting</label>
+            <input type="checkbox" @bind="@SprintingSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Stairwalking</label>
+            <input type="checkbox" @bind="@StairWalkingSelected" />
+        </div>
+      </div>
+
+      <div class= "schema-container">
+
+
+
+
+      </div>
+
+    </div>
+
+
 </div>
 
 
