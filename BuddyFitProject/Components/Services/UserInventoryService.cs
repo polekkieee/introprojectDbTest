@@ -31,6 +31,15 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
+        public UserInventory GetInventoryItem(int userId, int itemId)
+        {
+            List<UserInventory> inventory = new();
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.UserInventory.SingleOrDefault(x => x.UserId == userId && x.ItemId == itemId);
+            }
+        }
+
         public List<UserInventory> GetInventoryOfType(int userId, string type)
         {
             List<UserInventory> inventory = new();
@@ -51,6 +60,15 @@ namespace BuddyFitProject.Components.Services
                     throw new Exception("User Inventory does not exist!");
                 return inventory;
 
+            }
+        }
+
+        public void AddUserInventory(UserInventory userInventory)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                dbContext.UserInventory.Add(userInventory);
+                dbContext.SaveChanges();
             }
         }
 
