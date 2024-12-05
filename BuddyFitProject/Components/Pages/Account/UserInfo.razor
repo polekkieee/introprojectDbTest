@@ -13,53 +13,67 @@
 @inject NavigationManager navigationManager
 @attribute [ExcludeFromInteractiveRouting]
 
-<PageTitle>User Info</PageTitle>
+<head>
+	<PageTitle>User Info</PageTitle>
+	<link href="UserInfo.razor.css" rel="stylesheet" />
+</head>
 
-
-<h1 class="h">Set up your account</h1>
-<hr />
-
-
-<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo">
-	<div>
-	</div>
-	<label for="Age" class="l2">Age:</label>
-	<InputNumber required @bind-Value="UserAndPet.User.Age" />
-	<br>
-	<br>
-	<label for="Gender" class="l2">Gender:</label>
-	<InputText required @bind-Value="UserAndPet.User.Gender" />
-	<br />
-	<br>
-	<label for="StartCondition" class="l2">Start Condition:</label>
-	<InputText required @bind-Value="UserAndPet.User.Start_condition" />
-	<br />
-	<hr />
-	<label>Choose your pet:</label>
+<body>
+	<h1>Set up your account</h1>
 	<br />
 
-	<label>
-		<InputCheckbox @bind-Value="UserAndPet.bear" />
-		<img src="bear.png" aria-hidden="true" width="200">
-	</label>
-	<br />
-	<label>
-		<InputCheckbox @bind-Value="UserAndPet.cat" />
-		<img src="cat.png" aria-hidden="true" width="200">
-	</label>
-	<br />
-	<label>
-		<InputCheckbox @bind-Value="UserAndPet.bunny" />
-		<img src="bunny.png" aria-hidden="true" width="200">
-	</label>
 
-	<br>
-	<label for="PetName" class="l2">My pet's name is </label>
-	<InputText required @bind-Value="UserAndPet.Pet.Name" />
-	<br />
+	<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo">
+		<h2>About you:</h2><div class="input"> 
+			<label for="Age" class="l2">Age:</label>
+			<InputNumber required @bind-Value="UserAndPet.User.Age" />
+		</div>
+		
+		<br />
+		
+		<div class="input">
+			<label for="Gender" class="l2">Gender:</label>
+			<InputText required @bind-Value="UserAndPet.User.Gender" />
+		</div>
+		
+		<div class="input">
+			<label for="StartCondition" class="l2">Start Condition:</label>
+			<InputText required @bind-Value="UserAndPet.User.Start_condition" />
+		</div>
+		<br />
+		<br />
 
-	<button type="submit" class="b2">Let's start!</button>
-</EditForm>
+		<h2>Choose your Fit Buddy:</h2>
+		<div class="input">
+			<label for="PetName" class="l2">My pet's name is </label>
+			<InputText required @bind-Value="UserAndPet.Pet.Name" />
+		</div>
+		<br />
+
+		<label>
+			<InputCheckbox @bind-Value="UserAndPet.bear" />
+			<img src="bear.png" aria-hidden="true" width="200">
+		</label>
+		<br />
+		<label>
+			<InputCheckbox @bind-Value="UserAndPet.cat" />
+			<img src="cat.png" aria-hidden="true" width="200">
+		</label>
+		<br />
+		<label>
+			<InputCheckbox @bind-Value="UserAndPet.bunny" />
+			<img src="bunny.png" aria-hidden="true" width="200">
+		</label>
+
+		<br>
+	
+	
+		<br />
+
+		<button type="submit" class="b2">Let's start!</button>
+	</EditForm>
+</body>
+
 
 @code {
 	[SupplyParameterFromForm]
@@ -120,32 +134,75 @@
 
 	private string determinePetType()
 	{
-		if (UserAndPet.bear)
+		switch (true)
 		{
-			return "bear";
+			case bool _ when UserAndPet.bear:
+				return "bear";
+			case bool _ when UserAndPet.cat:
+				return "cat";
+			case bool _ when UserAndPet.bunny:
+				return "bunny";
+			default:
+				return "";
 		}
 
-		if (UserAndPet.cat)
-		{
-			return "cat";
-		}
 
-		if (UserAndPet.bunny)
-		{
-			return "bunny";
-		}
+		// if (UserAndPet.bear)
+		// {
+		// 	return "bear";
+		// }
 
-		return "";
+		// if (UserAndPet.cat)
+		// {
+		// 	return "cat";
+		// }
+
+		// if (UserAndPet.bunny)
+		// {
+		// 	return "bunny";
+		// }
+
+		// return "";
+	
 	}
 }
 
 <style>
-	body {
-		margin: 0;
-		font-family: Arial, sans-serif;
-		background: linear-gradient(to bottom, purple, blue);
-		color: #333;
-		padding: 20px;
-		position: relative;
+	header {
+		text-align: center;
+		margin-bottom: 40px;
 	}
+
+	 h1 {
+			font-family: "Montserrat", sans-serif;
+			font-size: 4rem;
+			color: #ffffff;
+			text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+			margin: 0px 20px 0px 0px;
+		}
+
+	main {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 20px;
+	}
+
+	div.input {
+		background: rgba(255, 255, 255, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		border-radius: 10px;
+		padding: 20px;
+		width: 80%;
+		box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+		transition: transform 0.3s ease, box-shadow 0.3s ease;
+	}
+
+		div.input label {
+			font-size: 1.8rem;
+			color: #ffe1e6;
+			text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+			margin-bottom: 10px;
+		}
+
 </style>
