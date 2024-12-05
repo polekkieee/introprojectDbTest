@@ -1,5 +1,4 @@
 ﻿	@page "/store"
-	@inject IJSRuntime JSRuntime
 	@inject BuddyFitDbContext DbContext
 	@using BuddyFitProject.Data
 	@using BuddyFitProject.Data.Models
@@ -8,12 +7,15 @@
 
 <PageTitle> Store </PageTitle>
 
+@if (LoggedIn)
+{
+
 <h1 class="h">Store </h1>
 
 <!-- Display Coin Balance -->
 <div class="top-right-coins">
 	<div class="coin">$</div>
-	<div class="coin-label">@CoinsAmount</div>
+	<div class="coin-label">@User.Coins</div>
 </div>
 
 <!-- Display Store Items-->
@@ -45,33 +47,6 @@ else
 
 
 <body style="background-color: #ffcc99;">
-
-	<!-- Links to different store sections (Food, Costumes, Pets, Homepage) -->
-	<div>
-		<a href="Food">
-			Go to Food
-		</a>
-	</div>
-
-	<div>
-		<a href="Costumes">
-			Go to Costumes
-		</a>
-	</div>
-
-	<div>
-		<a href="Pets">
-			Go to Pets
-		</a>
-	</div>
-
-	<div>
-		<a href="Home">
-			Go to Homepage
-		</a>
-	</div>
-
-	<br />
 
 	<!-- Pet Preview section -->
 	<div class= "Pet-preview" style= "margin-top: 20px;">
@@ -152,322 +127,67 @@ else
 			</div>
 		</div>
 	</div>
+
 </body>
 
+}
+else
+{
+	<h1>You must be logged in to access this page.</h1>
+	<a href="login">Go to Login</a>
+}
 
 @code{
 
-	// CoinsAmount to hold the user's current coin balance
-	private int CoinsAmount { get; set; }
-
-	// CurrentUserId represents the user that is logged in
-	private int CurrentUserId { get; set; } = 1;
-
-	// Store items fetched from the database
+	private Users? User { get; set; }
 	private List<Items> storeItems = new ();
+	private bool LoggedIn = false;
 
-	// The selected item that a user may wish to unlock
-	// private Items? SelectedItem = null;
 
-	// Displays a purchase confirmation dialog for unlocking an item
-	private async Task ShowPurchaseConfirmation(string itemName, string ImageUrl, int price)
+	private async Task ShowPurchaseConfirmation(Items item)
 	{
-		var confirmed = await JSRuntime.InvokeAsync<bool>
-		("confirmed purchase", $"Would you like to buy {itemName} for {price} coins?");
-
-		// If the user confirms, proceed with unlocking the item
-		if (confirmed)
-		{
-			var item = storeItems.FirstOrDefault(i => i.Name == itemName);
-			if (item != null)
-			{
-				await UnlockItem(item);
-			}
-		}
+		
 	}
 
-	// A predefined list of outfits (could be extended in future)
-	private List<Outfit> Outfits = new List<Outfit> 
-	{
-			new Outfit {Name = "Military Cat", CostumeImage = "Military Outfit.png"},
-			new Outfit {Name = "Cat in Suit", CostumeImage = "Cat In Suit.png"},
-			new Outfit {Name = "Cat in Tutu", CostumeImage = "Cat In Tutu.png"},
-			new Outfit {Name = "Pajamas Cat", CostumeImage = "Pyjamas Cat.png"}
-	};
+	private List<Items> Outfits = new();
+	private List<Items> Fruits = new();
 
-	// A list of fruits available in the store (could be extended in the future)
-	private List<Fruit> InventoryFruits = new List<Fruit> 
-	{
-			new Fruit {Name = "Banana", ImageUrl = "Banana.png"},
-			new Fruit {Name = "Apple", ImageUrl = "Apple.png"},
-			new Fruit {Name = "Strawberry", ImageUrl= "Strawberry.png"},
-			new Fruit {Name = "Tomato", ImageUrl= "Tomato.png"}
-	};
+	private List<Items> UnlockedOutfits = new();
+	private List<Items> OwnedFruits = new();
 
-	// A list of outfits that are visible in the store based on availability
-	private List<Outfit> VisibleOutfits = new ();
-
-	// A list of fruits that are visible in the store
-	private List<Fruit> VisibleFruits = new ();
-
-	// List of unlocked outfits for the user
-	private List<Outfit> UnlockedOutfits = new List<Outfit>();
-
-	// The user's inventory of fruit items
-	private List<Fruit> Inventory { get; set; } = new List<Fruit>();
-
-	// Selected outfit for preview
-	private Outfit? SelectedOutfit = null;
+	private Items? SelectedOutfit;
 
 	// Loads inventory data from the database
 	private async Task LoadInventory()
 	{
-		var inventoryItems = await DbContext.UserInventory
-			.Join(DbContext.Items, 
-				ui => ui.ItemId,
-				item => item.Id,
-				(ui, item) => new {ui, item})
-			.Where(joined => joined.ui.UserId == CurrentUserId && joined.item.Type == "food") 
-			.ToListAsync();
-
-		// Convert the fetched data into a list of Fruit objects for display
-		Inventory = inventoryItems
-			.Select(joined => new Fruit
-				{
-					Name = joined.item.Name,
-					ImageUrl = $"{joined.item.Name}.png"
-				}).ToList();
-	}
-
-	// Updates the user's coins and gives them the purchased item
-	private async Task UpdateCoinsAmountAndGiveItem()
-	{
-		var user = await DbContext.Users.FindAsync(CurrentUserId);
-		if (user != null)
-		{
-			user.Coins -= 10; 
-			await DbContext.SaveChangesAsync();
-			CoinsAmount = user.Coins;
-		}
-	}
-
-	// Adds a fruit item to the user's inventory
-	private async Task AddToInventory(Fruit fruit)
-	{
-		var item = await DbContext.Items.FirstOrDefaultAsync(i => i.Name == fruit.Name);
-		if (item == null) return;
-
-		// Check if the item is already in the inventory; if not, add it
-		var inventoryItem = await DbContext.UserInventory.
-		FirstOrDefaultAsync(ui => ui.UserId == CurrentUserId && ui.ItemId == item.Id);
-
-		if (inventoryItem == null)
-		{
-			DbContext.UserInventory.Add(new UserInventory
-				{
-					UserId = CurrentUserId,
-					ItemId = item.Id,
-					Quantity = 1
-				});
-
-		}
-
-		else
-		{
-			inventoryItem.Quantity += 1;
-		}
-
-		await DbContext.SaveChangesAsync();
-		await LoadInventory();
+		
 	}
 
 	// Loads the user's coin balance from the database
 	private async Task LoadUserCoins()
 	{
-		var user = await DbContext.Users.FindAsync(CurrentUserId);
-		CoinsAmount = user?.Coins ?? 0;
+		
 	}
 
 	// Handles the purchase of an outfit
-	private async Task PurchaseOutfit(Outfit outfit)
+	private async Task PurchaseItem(Items item)
 	{
-		var item= await DbContext.Items.FirstOrDefaultAsync(i => i.Name== outfit.Name);
-		if (item== null || CoinsAmount < item.Price) 
-		{
-			await JSRuntime.InvokeVoidAsync("alert", $"not enough coins to unlock {outfit.Name}");
-			return;
-		}
-
-		if (CoinsAmount >= outfit.Price)
-		{
-			await UpdateCoinsAmountAndGiveItem();
-			UnlockedOutfits.Add(outfit);
-			await JSRuntime.InvokeVoidAsync("alert", $"You have unlocked the {outfit.Name}!");
-			await LoadUserCoins(); // Reload the coin balance after the purchase
-			StateHasChanged();
-		}
-
-		var user= await DbContext.Users.FindAsync(CurrentUserId);
-		if (user!= null)
-		{
-			user.Coins = CoinsAmount;
-			await DbContext.SaveChangesAsync();
-		}
-
-		var inventoryItem = new UserInventory
-			{
-				UserId = CurrentUserId,
-				ItemId = item.Id,
-				Quantity = 1
-			};
-
-		DbContext.UserInventory.Add(inventoryItem);
-		await DbContext.SaveChangesAsync();
-
-		await JSRuntime.InvokeVoidAsync("alert", $"{outfit.Name} has been unlocked");
-		StateHasChanged();
+		
 	}
 
 	// Calls to load all store data when the page initializes
 	protected override async Task OnInitializedAsync()
 	{
-		await LoadUserCoins();
-		storeItems = await DbContext.Items.ToListAsync();
-
-		// var items = await DbContext.Items.ToListAsync();
-		// VisibleOutfits = storeItems
-		// 	.Where(item => item.Type == "outfit")
-		// 	.Select(item => new Outfit
-		// 		{
-		// 			Name = item.Name,
-		// 			CostumeImage = $"{item.Name}.png"
-
-		// 		}).ToList();
-
-		// VisibleFruits = storeItems
-		// 	.Where(item => item.Type == "fruit")
-		// 	.Select(item => new Fruit
-		// 		{
-		// 			Name = item.Name,
-		// 			ImageUrl = $"{item.Name}.png"
-		// 		}).ToList();
-
-		// VisibleOutfits.AddRange(Outfits);
-		// VisibleFruits.AddRange(InventoryFruits);
-
-		// Inventory = await DbContext.UserInventory
-		// 	.Join(DbContext.Items,
-		// 		ui => ui.ItemId,
-		// 		item => item.Id,
-		// 		(ui, item) => new { ui, item })
-		// 	.Where(joined => joined.ui.UserId == CurrentUserId && joined.item.Type == "fruit")
-		// 	.Select(joined => new Fruit
-		// 			{
-		// 				Name = joined.item.Name,
-		// 				ImageUrl = $"{joined.item.Name}.png"
-		// 			})
-		// 	.ToListAsync();
+		
 	}
 
-	[JSInvokable]
-	public async Task LoadMoreOutfits()
-	{
-		VisibleOutfits.AddRange(Outfits);
-		StateHasChanged();
-		await Task.CompletedTask;
-	}
-
-	[JSInvokable]
-	public async Task LoadMoreFruits()
-	{
-		VisibleFruits.AddRange(InventoryFruits);
-		StateHasChanged();
-		await Task.CompletedTask;
-
-	}
-
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (firstRender)
-		{
-			await JSRuntime.InvokeVoidAsync(
-				"checkDivScrollEnd",
-				"outfitDiv",
-				nameof(LoadMoreOutfits),
-				DotNetObjectReference.Create(this)
-			);
-			await JSRuntime.InvokeVoidAsync(
-				"checkDivScrollEnd",
-				"FruitDiv",
-				nameof(LoadMoreFruits),
-				DotNetObjectReference.Create(this)
-			);
-		}
-	}
-
-
-	public class Outfit
-	{
-		public string Name { get; set; } = string.Empty;
-		public string CostumeImage { get; set; } = string.Empty;
-		public string PetImage { get; set; } = string.Empty;
-		public int Price { get; set; }
-	}
-
-	public class Fruit
-	{
-		public string Name { get; set; } = string.Empty;
-		public string ImageUrl { get; set; } = string.Empty;
-	}
-
-	[JSInvokable]
 	private async Task ConfirmUnlock (Items item)
 	{
-		if (item.Price > CoinsAmount)
-		{
-			await JSRuntime.InvokeVoidAsync
-			("Alert", $"You dont have enough coins to unlock {item.Name}");
-			return;
-		}
-
-		else
-		{
-			var confirmed = await JSRuntime.InvokeAsync<bool>
-			("confirm", $"Unlock {item.Name} for {item.Price} coins?");
-			if (confirmed)
-			{
-				await UnlockItem(item);
-			}
-		}
 		
 	}
 
 	private async Task UnlockItem(Items item)
 	{
-		CoinsAmount -= item.Price;
-
-		var user = await DbContext.Users.FindAsync(CurrentUserId);
-		if (user != null)
-		{
-			user.Coins = CoinsAmount;
-			await DbContext.SaveChangesAsync();
-		}
-
-		var userInventory = new UserInventory
-		{
-			UserId = CurrentUserId,
-			ItemId = item.Id,
-			Quantity = 1
-		};
-
-		DbContext.UserInventory.Add(userInventory);
-		await DbContext.SaveChangesAsync();
-
-		await JSRuntime.InvokeVoidAsync("alert", $"{item.Name} has been unlocked!");
-		StateHasChanged();
-
-		
-
 		
 	}
 

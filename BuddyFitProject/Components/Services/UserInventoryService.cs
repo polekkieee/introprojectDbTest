@@ -30,5 +30,28 @@ namespace BuddyFitProject.Components.Services
 
             }
         }
+
+        public List<UserInventory> GetInventoryOfType(int userId, string type)
+        {
+            List<UserInventory> inventory = new();
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                inventory = dbContext.UserInventory
+                            .Where
+                                    (
+                                    x => 
+                                        x.UserId == userId && 
+                                        x.ItemId == dbContext.Items.FirstOrDefault
+                                                    (y => y.Id == x.ItemId && y.Type == type)
+                                                    .Id
+                                    )
+                            .ToList();
+
+                if (!inventory.Any())
+                    throw new Exception("User Inventory does not exist!");
+                return inventory;
+
+            }
+        }
     }
 }
