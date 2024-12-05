@@ -10,139 +10,125 @@
 @rendermode InteractiveServer
 ﻿
 <div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BuddyFitProject</a>
-    </div>
+	<div class="container-fluid">
+		<a class="navbar-brand" href="">BuddyFitProject</a>
+	</div>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
+	<nav class="flex-column">
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="home" Match="NavLinkMatch.All" data-enhance-nav="false">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-    @if(LoggedIn == false)
-    {
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="login" data-enhance-nav="false">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Login
-                </NavLink>
-            </div>
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="home" Match="NavLinkMatch.All" data-enhance-nav="false">
+				<span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+			</NavLink>
+		</div>
+		@if (LoggedIn == false)
+		{
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="login" data-enhance-nav="false">
+					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Login
+				</NavLink>
+			</div>
 
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="register" data-enhance-nav="false">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Register
-                </NavLink>
-            </div>
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="register" data-enhance-nav="false">
+					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Register
+				</NavLink>
+			</div>
 
-            <!--pagina om username en email in te vullen-->
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="password">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Password Forgotten
-                </NavLink>
-            </div>
+			<!--pagina om username en email in te vullen-->
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="password">
+					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Reset Password
+				</NavLink>
+			</div>
 
-            @*
+			@*
             <!-- om resetcode in te vullen-->
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="resetPassword/{username}/{email}">
                     <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> ResetPassword
                 </NavLink>
-               
+
             </div>
              *@
-    }
-      
-   @if (LoggedIn == true)
-        {
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="session" data-enhance-nav="false">
-                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Session
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="workout" data-enhance-nav="false">
-                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Workout
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="stats" data-enhance-nav="false">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Stats
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="pet" data-enhance-nav="false">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> My Pet
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="userinfo" data-enhance-nav="false">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> User Information
-                </NavLink>
-            </div>
+		}
 
+		@if (LoggedIn == true)
+		{
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="session" data-enhance-nav="false">
+					<span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Session
+				</NavLink>
+			</div>
 
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="costumes" data-enhance-nav="false">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Costumes
-                </NavLink>
-            </div>
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="stats" data-enhance-nav="false">
+					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Stats
+				</NavLink>
+			</div>
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="pet" data-enhance-nav="false">
+					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> My Pet
+				</NavLink>
+			</div>
 
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="food" data-enhance-nav="false">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Food
-                </NavLink>
-            </div>
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="costumes" data-enhance-nav="false">
+					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Costumes
+				</NavLink>
+			</div>
 
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="store" data-enhance-nav="false">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Store
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="password">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Reset Password
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="deletingaccount" data-enhance-nav="false">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Delete account
-                </NavLink>
-            </div>
-   }
-    </nav>
-  @if(LoggedIn)
-  {
-      <a href="logout" class="btn btn-primary log-out">Log out</a>
-  }
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="food" data-enhance-nav="false">
+					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Food
+				</NavLink>
+			</div>
+
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="store" data-enhance-nav="false">
+					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Store
+				</NavLink>
+			</div>
+
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="deletingaccount">
+					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Delete Your Account
+				</NavLink>
+			</div>
+		}
+	</nav>
+	@if (LoggedIn)
+	{
+		<a href="logout" class="btn btn-primary log-out">Log out</a>
+	}
 </div>
 
 
 @code {
-    private Users? user;
+	private Users? user;
 
-    private bool LoggedIn = false;
+	private bool LoggedIn = false;
 
-    protected override async void OnInitialized()
-    {
-        await base.OnInitializedAsync();
+	protected override async void OnInitialized()
+	{
+		await base.OnInitializedAsync();
 
-        var httpContext = HttpContextAccessor.HttpContext;
+		var httpContext = HttpContextAccessor.HttpContext;
 
-        if (httpContext?.User.Identity?.IsAuthenticated == true)
-        {
-            // Extract user ID from claims
-            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+		if (httpContext?.User.Identity?.IsAuthenticated == true)
+		{
+			// Extract user ID from claims
+			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
-            {
-                user = UserService.GetUserById(loggedInUserId);
-                LoggedIn = true;
-            }
-        }
-    }
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			{
+				user = UserService.GetUserById(loggedInUserId);
+				LoggedIn = true;
+			}
+		}
+	}
 }
