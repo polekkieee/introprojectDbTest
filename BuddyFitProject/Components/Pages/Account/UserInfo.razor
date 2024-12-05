@@ -36,28 +36,35 @@
 	<br />
 	<hr />
 	<label>Choose your pet:</label>
-	<!-- hier buutons van de pet image-->
+	<br />
+
+	<label>
+		<InputCheckbox @bind-Value="UserAndPet.bear" />
+		<img src="bear.png" aria-hidden="true" width="200">
+	</label>
+	<br />
+	<label>
+		<InputCheckbox @bind-Value="UserAndPet.cat" />
+		<img src="cat.png" aria-hidden="true" width="200">
+	</label>
+	<br />
+	<label>
+		<InputCheckbox @bind-Value="UserAndPet.bunny" />
+		<img src="bunny.png" aria-hidden="true" width="200">
+	</label>
+
 	<br>
 	<label for="PetName" class="l2">My pet's name is </label>
 	<InputText required @bind-Value="UserAndPet.Pet.Name" />
 	<br />
 
-	<!--<span> @errorMessage </span>
-	<div>
-		<hr />
-		<br />
-		<button type="button"> <img src="bunny.png" aria-hidden="true" width="400"></button>
-		<button> <img src="bear.png" aria-hidden="false" width="400"> </button>
-		<button> <img src="cat.png" aria-hidden="true" width="400" </button>
-	</div>-->
 	<button type="submit" class="b2">Let's start!</button>
 </EditForm>
-
-
 
 @code {
 	[SupplyParameterFromForm]
 	private UserAndPet UserAndPet { get; set; } = new();
+
 
 	Users? UserDb;
 
@@ -73,23 +80,19 @@
 
 			UserService.UpdateUser(UserDb); // Save additional user details
 
-			if (UserAndPet.Pet != null)
-			{
-				var pet = new Pets
-					{
-						UserId = UserDb.Id,
-						Name = UserAndPet.Pet.Name,
-						// type = UserAndPet.Pet.Type, Save the chosen type
-						// type = UserAndPet.Pet.Type, Save the chosen type
-						Level = 1,
-						Food_bar = 100,
-						Health_bar = 100
-					};
+			var pet = new Pets
+				{
+					UserId = UserDb.Id,
+					Name = UserAndPet.Pet.Name,
+					Type = this.determinePetType(),
+					Level = 1,
+					Food_bar = 100,
+					Health_bar = 100
+				};
 
-				UserService.AddPet(pet); // Save the pet
-			}
+			UserService.AddPet(pet); // Save the pet
 
-			navigationManager.NavigateTo("/session"); // Redirect to the dashboard or welcome page
+			navigationManager.NavigateTo("/pet"); // Redirect to the pet page
 		}
 		else
 		{
@@ -114,8 +117,27 @@
 			}
 		}
 	}
-}
 
+	private string determinePetType()
+	{
+		if (UserAndPet.bear)
+		{
+			return "bear";
+		}
+
+		if (UserAndPet.cat)
+		{
+			return "cat";
+		}
+
+		if (UserAndPet.bunny)
+		{
+			return "bunny";
+		}
+
+		return "";
+	}
+}
 
 <style>
 	body {
