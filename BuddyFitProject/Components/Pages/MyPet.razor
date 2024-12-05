@@ -12,6 +12,8 @@
 @rendermode InteractiveServer
 
 
+@*VOOR DE MIDTERM PRESENTATION ALLEEN BEAR EN TUTU GEBRUIKEN WANT DE REST WERKT NIET*@
+
 <head>
 	<PageTitle>Pet</PageTitle>
 	<link href="MyPet.razor.css" rel="stylesheet" />
@@ -47,6 +49,11 @@
 					<div class="bar">
 						<div class="bar-filled" style="width:@pet.Food_bar%;"></div>
 					</div>
+
+					@* de staminabar is voor de games<p>Stamina: @pet.Stamina_bar %</p>
+					<div class="bar">
+						<div class="bar-filled" style="width:@pet.Stamina_bar%;"></div>
+					</div> *@
 				</div>
 				<br />
 				<div class="img-wrapper">
@@ -71,7 +78,7 @@
 					@foreach (var inventoryItem in userInventory)
 					{
 						<li class="inventory-item">
-							<img src=" =" @($"{item.Item.Type()}.png") class="img-item" />
+							<img src="@($"Food/{ItemService.GetItemById(inventoryItem.ItemId).Name}.png")" class="img-item" />
 							<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
 							<p>Quantity: @inventoryItem.Quantity</p>
 							<button @onclick="() => UseItem(inventoryItem)">Use</button>
