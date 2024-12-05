@@ -15,19 +15,26 @@
     <Routes />
     <script src="_framework/blazor.web.js"></script>
     <script>
-        function checkDivScrollEnd(divId, callbackMethodName, dotnetRef) {
+        window.confirmPurchase = function (message)
+        {
+            return confirm(message);
+        };
+        function checkDivScrollEnd(divId, callbackMethodName, dotnetObjectRef) {
             const div = document.getElementById(divId);
 
-            div.addEventListener('scroll', function() 
+            div.addEventListener('scroll', () => 
             {
-                if (div.scrollHeight - div.scrollTop <= div.ClientHeight + 1)
+                if (div.scrollTop + div.clientHeight >= div.scrollHeight)
                 {
-                    dotnet.Ref.invokeMethodAsync(callbackMethodName);
+                    dotnetObjectRef.invokeMethodAsync(callbackMethodName);
                 }
-            });
+            });               
         }
 
     </script>
+
+
+
 </body>
 
 </html>
