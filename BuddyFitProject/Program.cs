@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using BuddyFitProject.Components.Services;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextFactory<BuddyFitDbContext>(options =>
@@ -22,6 +24,7 @@ builder.Services.AddTransient<EmailService>();
 builder.Services.AddTransient<ValidateUserService>();
 builder.Services.AddTransient<ItemService>();
 
+builder.WebHost.UseStaticWebAssets();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
