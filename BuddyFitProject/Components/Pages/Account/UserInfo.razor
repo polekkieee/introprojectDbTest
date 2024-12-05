@@ -3,6 +3,7 @@
 @using BuddyFitProject.Data.Models
 @using BuddyFitProject.Data;
 @using BuddyFitProject.Components.Services
+@using static BuddyFitProject.Data.Models.UserAndPet.TypesOfPets;
 @inject UserService UserService
 @inject NavigationManager navigationManager
 @using System.Security.Claims
@@ -24,18 +25,18 @@
 
 
 	<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo">
-		<h2>About you:</h2><div class="input"> 
+		<h2>About you:</h2><div class="input">
 			<label for="Age" class="l2">Age:</label>
 			<InputNumber required @bind-Value="UserAndPet.User.Age" />
 		</div>
-		
+
 		<br />
-		
+
 		<div class="input">
 			<label for="Gender" class="l2">Gender:</label>
 			<InputText required @bind-Value="UserAndPet.User.Gender" />
 		</div>
-		
+
 		<div class="input">
 			<label for="StartCondition" class="l2">Start Condition:</label>
 			<InputText required @bind-Value="UserAndPet.User.Start_condition" />
@@ -50,27 +51,24 @@
 		</div>
 		<br />
 
-		<label>
-			<InputCheckbox @bind-Value="UserAndPet.bear" />
-			<img src="bear.png" aria-hidden="true" width="200">
-		</label>
-		<br />
-		<label>
-			<InputCheckbox @bind-Value="UserAndPet.cat" />
-			<img src="cat.png" aria-hidden="true" width="200">
-		</label>
-		<br />
-		<label>
-			<InputCheckbox @bind-Value="UserAndPet.bunny" />
-			<img src="bunny.png" aria-hidden="true" width="200">
-		</label>
+		<InputRadioGroup @bind-Value="UserAndPet.Pet.Type">
+				<label>
+					<InputRadio Value="Bear" />
+					<img src="bear.png" aria-hidden="true" width="200">
+				</label>
+				<br />
+				<label>
+				<InputRadio Value="Cat" />
+					<img src="cat.png" aria-hidden="true" width="200">
+				</label>
+				<br />
+				<label>
+				<InputRadio Value="Rabbit" />
+					<img src="bunny.png" aria-hidden="true" width="200">
+				</label>
+		</InputRadioGroup>
 
-		<br>
-	
-	
-		<br />
-
-		<button type="submit" class="b2">Let's start!</button>
+				<button type="submit" class="b2">Let's start!</button>
 	</EditForm>
 </body>
 
@@ -98,7 +96,7 @@
 				{
 					UserId = UserDb.Id,
 					Name = UserAndPet.Pet.Name,
-					Type = this.determinePetType(),
+					Type = UserAndPet.Pet.Type,
 					Level = 1,
 					Food_bar = 100,
 					Health_bar = 100
@@ -131,40 +129,6 @@
 			}
 		}
 	}
-
-	private string determinePetType()
-	{
-		switch (true)
-		{
-			case bool _ when UserAndPet.bear:
-				return "bear";
-			case bool _ when UserAndPet.cat:
-				return "cat";
-			case bool _ when UserAndPet.bunny:
-				return "bunny";
-			default:
-				return "";
-		}
-
-
-		// if (UserAndPet.bear)
-		// {
-		// 	return "bear";
-		// }
-
-		// if (UserAndPet.cat)
-		// {
-		// 	return "cat";
-		// }
-
-		// if (UserAndPet.bunny)
-		// {
-		// 	return "bunny";
-		// }
-
-		// return "";
-	
-	}
 }
 
 <style>
@@ -173,13 +137,13 @@
 		margin-bottom: 40px;
 	}
 
-	 h1 {
-			font-family: "Montserrat", sans-serif;
-			font-size: 4rem;
-			color: #ffffff;
-			text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-			margin: 0px 20px 0px 0px;
-		}
+	h1 {
+		font-family: "Montserrat", sans-serif;
+		font-size: 4rem;
+		color: #ffffff;
+		text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+		margin: 0px 20px 0px 0px;
+	}
 
 	main {
 		display: flex;
