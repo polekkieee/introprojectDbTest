@@ -15,4 +15,6 @@ public class Users
     public int Coins { get; set; } = 0;
     public string Resetcode { get; set; } = "Empty";
     public string Validatecode { get; set; } = "Empty";
+
+    
 }

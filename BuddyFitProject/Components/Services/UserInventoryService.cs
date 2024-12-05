@@ -20,7 +20,7 @@ namespace BuddyFitProject.Components.Services
             List<UserInventory> inventory = new();
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                inventory = dbContext.UserInventorys
+                inventory = dbContext.UserInventory
                             .Where(x => x.UserId == userId)
                             .ToList();
 

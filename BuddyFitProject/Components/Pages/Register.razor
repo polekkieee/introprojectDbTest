@@ -46,9 +46,10 @@
                 <button type="submit" class="btn btn-primary">Create</button>
                 <a href="login" class="btn btn-secondary">Already have an account?</a>
             </div>
-           
+
         </EditForm>
 
+        <p>@errorMessage</p>
 
     </main>
 </body>
@@ -57,11 +58,19 @@
 @code {
     [SupplyParameterFromForm]
     private Users User { get; set; } = new();
+    private string errorMessage;
 
     private void AddUser()
     {
-        User.Start_condition = "new";
-        UserService.AddUser(User);
-		navigationManager.NavigateTo("/userinfo");
-	}
+        if (!UserService.UserExists(User.Username, User.Email))
+        {
+            User.Start_condition = "new";
+            User.Gender = "new";
+            User.Resetcode = "12345678";
+            User.Validatecode = "0000";
+            UserService.AddUser(User);
+            navigationManager.NavigateTo("/login");
+        }
+        errorMessage = "User bestaat al";
+    }
 }

@@ -152,6 +152,14 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
+        public bool UserExists(string username, string email)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Users.Any(x => x.Username == username || x.Email == email);
+            }
+        }
+
         public void AddPet(Pets pet)
         {
             
