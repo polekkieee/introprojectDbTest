@@ -1,4 +1,31 @@
-﻿
+﻿h1 {
+    font-size: 4rem;
+    margin-top: 5px;
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+    font-size: 1.5rem;
+    position: absolute;
+    left: 247px;
+    top: 50px;
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+p {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    color: #fdfdfd;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+}
 .top-right-coins {
     position: fixed;
     top: 10px;
@@ -7,6 +34,14 @@
     align-items: center;
     gap: 5px;
     font-size: 16px;
+}
+
+.choosestore{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
 }
 
 .coin {
@@ -26,7 +61,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Coin label styling */
+ /*Coin label styling*/ 
 .coin-label {
     position: absolute;
     top: 15px;
@@ -56,7 +91,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Level label styling */
+ /*Level label styling */
 .level-label {
     position: absolute;
     top: 65px;

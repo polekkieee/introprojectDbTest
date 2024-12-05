@@ -3,38 +3,40 @@
 @using System.Security.Claims
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
+@using BuddyFitProject.Components.Services
 @inject NavigationManager navigationManager
 @inject IHttpContextAccessor HttpContextAccessor
-@inject Services.UserService UserService
-@inject Services.UserStatisticsService UserStatisticsService
+@inject UserService UserService
+@inject UserStatisticsService UserStatisticsService
+@inject PetService PetService
 @inject Services.ExerciseService ExerciseService
 @rendermode InteractiveServer
 @inject IHttpContextAccessor HttpContextAccessor
 
 
 <head>
-@*     <link href="Stats.razor.css" rel="stylesheet" />  *@
+    <link href="Stats.razor.css" rel="stylesheet" />
     <PageTitle>Statistics</PageTitle>
 </head>
-<body>
+
     <h1>Workout History</h1>
 
     @if(LoggedIn)
     {
 
         <div class="coin">$</div>
-        <div class="coin-label">@user.Coins</div>
+        <div class="coin-label">@User.Coins</div>
 
         <div class="level-coin">lvl</div>
-        <div class="level-label">???</div>
-    
+        <div class="level-label">@Pet.Level</div>
+
         <br />
         <button class="btn btn-primary" @onclick="LoadStatsRefresh">Load Stats</button>
         <br />
         <br />
 
         <main>
-            <h4>@user.Username 's Statistics</h4>
+            <h4>@User.Username 's Statistics</h4>
 
             <table class="table">
                 <thead>
@@ -47,7 +49,7 @@
                 </thead>
 
                 <tbody>
-                    @foreach (var s in userStatistics)
+                    @foreach (var s in UserStatistics)
                     {
                         <tr>
                             <td>@ExerciseService.GetExerciseById(s.ExerciseId).Name</td>
@@ -60,7 +62,7 @@
                 </tbody>
             </table>
         </main>
-       
+
 
     }
     else
@@ -68,13 +70,14 @@
         <h1>You must be logged in to access this page.</h1>
         <br />
         <a href="login" class=" btn btn-primary">Go to Login</a>
-    
+
     }
-</body>
+
 
 @code {
-    private List<UserStatistics> userStatistics = new();
-    private Users? user;
+    private List<UserStatistics> UserStatistics = new();
+    private Users? User;
+    private Pets? Pet;
 
     private bool LoggedIn = false;
 
@@ -82,13 +85,13 @@
     {
         try
         {
-            // Update and fetch user statistics
-            UserStatisticsService.UpdateUserStatistics(user.Id);
-            userStatistics = UserStatisticsService.GetStatisticsByUser(user.Id);
+            // Update and fetch User statistics
+            UserStatisticsService.UpdateUserStatistics(User.Id);
+            UserStatistics = UserStatisticsService.GetStatisticsByUser(User.Id);
         }
         catch (Exception ex)
         {
-            // Log error or show a user-friendly message
+            // Log error or show a User-friendly message
             Console.WriteLine($"Error updating stats: {ex.Message}");
         }
     }
@@ -97,14 +100,14 @@
     {
         try
         {
-            // Update and fetch user statistics
-            UserStatisticsService.UpdateUserStatistics(user.Id);
-            userStatistics = UserStatisticsService.GetStatisticsByUser(user.Id);
+            // Update and fetch User statistics
+            UserStatisticsService.UpdateUserStatistics(User.Id);
+            UserStatistics = UserStatisticsService.GetStatisticsByUser(User.Id);
             navigationManager.NavigateTo(navigationManager.Uri, true);
         }
         catch (Exception ex)
         {
-            // Log error or show a user-friendly message
+            // Log error or show a User-friendly message
             Console.WriteLine($"Error updating stats: {ex.Message}");
         }
     }
@@ -118,13 +121,14 @@
 
         if (httpContext?.User.Identity?.IsAuthenticated == true)
         {
-            // Extract user ID from claims
-            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            // Extract User ID from claims
+            var UserIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+            if (UserIdClaim != null && int.TryParse(UserIdClaim.Value, out int loggedInUserId))
             {
 
-                user = UserService.GetUserById(loggedInUserId);
+                User = UserService.GetUserById(loggedInUserId);
+                Pet = PetService.GetPet(User.Id);
                 LoadStats();
 
                 LoggedIn = true;

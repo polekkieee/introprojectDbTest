@@ -53,5 +53,13 @@ namespace BuddyFitProject.Components.Services
 
             }
         }
+
+        public bool UserInventoryExists(int userId)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.UserInventory.Any(x => x.UserId == userId);
+            }
+        }
     }
 }

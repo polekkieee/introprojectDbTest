@@ -1,205 +1,361 @@
-﻿	@page "/store"
-	@inject BuddyFitDbContext DbContext
-	@using BuddyFitProject.Data
-	@using BuddyFitProject.Data.Models
-	@using Microsoft.EntityFrameworkCore
-
+﻿@page "/store"
+@inject BuddyFitDbContext DbContext
+@using BuddyFitProject.Data
+@using BuddyFitProject.Data.Models
+@using Microsoft.EntityFrameworkCore
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@using BuddyFitProject.Components.Services
+@using System.Security.Claims
+@inject UserService UserService
+@inject UserStatisticsService UserStatisticsService
+@inject UserInventoryService UserInventoryService
+@inject WorkoutSessionService WorkoutService
+@inject ExerciseService ExerciseService
+@inject ItemService ItemService
+@inject PetService PetService
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager NavigationManager
 
 <PageTitle> Store </PageTitle>
 
-@if (LoggedIn)
-{
+<body>
+    @if (LoggedIn)
+    {
+        <h1 class="h">Store</h1>
 
-<h1 class="h">Store </h1>
+        <div class="coin">$</div>
+        <div class="coin-label">@User.Coins</div>
 
-<!-- Display Coin Balance -->
-<div class="top-right-coins">
-	<div class="coin">$</div>
-	<div class="coin-label">@User.Coins</div>
-</div>
+        <div class="level-coin">lvl</div>
+        <div class="level-label">@Pet.Level</div>
 
-<!-- Display Store Items-->
-@foreach (var item in storeItems)
-{
-	<div class="store-item">
-		<p>@item.Name - @item.Type</p>
-		<p> Price: $@item.Price</p>
-		<button @onclick="() => ConfirmUnlock(item)"> Unlock</button>
-		<br>
+        <div class="storepagebox">
+            <h3>What do you want to buy?</h3>
 
-	</div>
-}
+            <div class="choosestore">
+                <span class="@foodbutton" @onclick='() => ToggleStore("food")'>Food</span>
+                <span class="@outfitsbutton" @onclick='() => ToggleStore("outfit")'>Outfits</span>
+            </div>
 
+            @if (foodSelected)
+            {
+                <div class="storebox">
+                    <p>Buy Food:</p>
+                    <div style="color: white;">
+                        @foreach (var item in Food)
+                        {
+                            <input type="radio" name="food" value="@item.Name" @onchange="() => SelectFood(item)" />
+                            <label for="@item.Name">@item.Name</label>
+                        }
+                    </div>
+                </div>
+            }
+            else if (outfitSelected)
+            {
+                <div class="storebox">
+                    <p>Buy Outfits</p>
+                    <div style="color: white;">
+                        @foreach (var item in Outfits)
+                        {
+                            @if(item == Outfits[0]){
+                                <input type="radio" name="outfits" value="@item.Name" @onchange="() => UpdateSelectedOutfit(item)" checked/>
+                            } else
+                            {
+                                <input type="radio" name="outfits" value="@item.Name" @onchange="() => UpdateSelectedOutfit(item)" />
+                            }
+                            <label for="@item.Name">@item.Name</label>
+                        }
+                    </div>
+                </div>
+                @if (SelectedOutfit != null)
+                {
+                    <p>Selected Outfit: @SelectedOutfit.Name</p>
+                }
+            }
+        </div>
 
-<h2> Your Inventory</h2>
-@if (Inventory.Count > 0)
-{
-	@foreach (var fruit in InventoryFruits)
-	{
-		<FruitItem Fruit ="@fruit" />
-	}
-}
-
-else
-{
-	<p> No items in inventory. </p>
-}
-
-
-<body style="background-color: #ffcc99;">
-
-	<!-- Pet Preview section -->
-	<div class= "Pet-preview" style= "margin-top: 20px;">
-		<h2> Pet Preview</h2>
-		@if (SelectedOutfit != null)
-		{
-			<img src = "@($"{SelectedOutfit?.Name}.png")" alt = "Pet wearing @SelectedOutfit?.Name"
-			style = "width:100px; height: 100px;"/>
-		}
-		else
-		{
-			<p> Select an outfit to see the preview</p>
-		}
-
-	</div>
-
-	<br />
-
-	<!-- Inventory display section -->
-	<div> Inventory: </div>
-
-	<br/>
-
-	<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; object-fit: contain;">
-		<!--Cat outfits section-->
-		<div style = "flex: 1;"> 
-			<h2>Cat outfits</h2>
-			<div id = "outfitDiv" style= "height:300px; overflow-y: auto; border: 1px solid black;">
-				<table style="width: 100%; border-collapse: collapse;">
-					@foreach (var outfit in VisibleOutfits)
-					{
-						<tr style = "text-align: center;"> 
-							<td>
-								<div style = "padding: 10px;">
-									<img src= "@outfit.CostumeImage" alt= "@outfit.Name"
-									style="width:100px; height:100px; border: 1px solid gray;" />
-									<p>@outfit.Name</p>
-									@if (Inventory.Any(i => i.Name == outfit.Name))
-									{
-										<button @onclick = "() => SelectedOutfit= outfit"> Preview</button>
-									}
-
-									else 
-									{
-										<button @onclick = "() => ShowPurchaseConfirmation
-										(outfit.Name, outfit.CostumeImage, outfit.Price)"> Unlock </button>
-									}
-
-
-								</div>
-							</td>
-						</tr>
-					}
-				</table>
-			</div>
-		</div>
-
-
-		<!--Fruits section-->
-		<div style= "flex: 1;">
-			<h2>Fruits</h2>
-			<div id = "FruitDiv" style= "height:300px; overflow-y: auto; border: 1px solid black;"> 
-				<table style= "width: 100%; border-collapse:collapse;">
-					@foreach (var fruit in InventoryFruits)
-					{
-						<tr style ="text-align: center;"> 
-							<td>
-								<div style= "padding: 10px;">
-									<img src = "@fruit.ImageUrl" alt = "@fruit.Name" 
-									style = "width: 100px; height: 100px; border: 1px solid gray;" />
-									<p> @fruit.Name</p>
-									<button @onclick = "() => AddToInventory(fruit)"> Add to Inventory </button>
-								</div>
-							</td>
-						</tr>
-					}
-				</table>
-			</div>
-		</div>
-	</div>
-
+    }
+    else
+    {
+        <h1>You must be logged in to access this page.</h1>
+        <a href="login">Go to Login</a>
+    }
 </body>
 
+@code {
+    private Users? User { get; set; }
+    private Pets? Pet { get; set; }
+
+    private List<Items> storeItems = new();
+    private bool LoggedIn = false;
+
+    private List<Items> Outfits = new();
+    private List<Items> Food = new();
+
+    private List<UserInventory> userInventory = new();
+
+    private List<Items> UnlockedOutfits = new();
+    private List<Items> OwnedFood = new();
+
+    private bool foodSelected = true;
+    private bool outfitSelected = false;
+
+    private string foodbutton = "foodbutton active";
+    private string outfitsbutton = "outfitsbutton";
+
+    private Items? SelectedOutfit;
+
+    private void ToggleStore(string section)
+    {
+        if (section == "food")
+        {
+            foodSelected = true;
+            outfitSelected = false;
+            foodbutton = "foodbutton active";
+            outfitsbutton = "outfitsbutton";
+        }
+        else
+        {
+            outfitSelected = true;
+            foodSelected = false;
+            foodbutton = "foodbutton";
+            outfitsbutton = "outfitsbutton active";
+        }
+    }
+
+    private void SelectFood(Items item)
+    {
+        // Logic for selecting food
+    }
+
+    private void UpdateSelectedOutfit(Items item)
+    {
+        SelectedOutfit = item;
+    }
+
+    private async Task ShowPurchaseConfirmation(Items item)
+    {
+        // Logic for showing purchase confirmation
+    }
+
+    private async Task BuyItem(Items item)
+    {
+        // Logic for buying an item
+    }
+
+    // Calls to load all store data when the page initializes
+    protected override async Task OnInitializedAsync()
+    {
+        var httpContext = HttpContextAccessor.HttpContext;
+
+        if (httpContext?.User.Identity?.IsAuthenticated == true)
+        {
+            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+            {
+                User = UserService.GetUserById(loggedInUserId);
+                Pet = PetService.GetPet(User.Id);
+                LoggedIn = true;
+                storeItems = ItemService.LoadItems();
+
+                if (UserInventoryService.UserInventoryExists(User.Id))
+                {
+                    userInventory = UserInventoryService.GetInventory(User.Id);
+
+                    foreach (var userInventoryItem in userInventory)
+                    {
+                        if (ItemService.GetItemById(userInventoryItem.ItemId).Type == "outfit")
+                        {
+                            UnlockedOutfits.Add(ItemService.GetItemById(userInventoryItem.ItemId));
+                        }
+                        else if (ItemService.GetItemById(userInventoryItem.ItemId).Type == "food")
+                        {
+                            OwnedFood.Add(ItemService.GetItemById(userInventoryItem.ItemId));
+                        }
+                    }
+                }
+
+                foreach (var item in storeItems)
+                {
+                    if (item.Type == "outfit")
+                    {
+                        Outfits.Add(ItemService.GetItemById(item.Id));
+                    }
+                    else if (item.Type == "food")
+                    {
+                        Food.Add(ItemService.GetItemById(item.Id));
+                    }
+                }
+
+                SelectedOutfit = Outfits.FirstOrDefault();
+            }
+        }
+    }
 }
-else
-{
-	<h1>You must be logged in to access this page.</h1>
-	<a href="login">Go to Login</a>
-}
-
-@code{
-
-	private Users? User { get; set; }
-	private List<Items> storeItems = new ();
-	private bool LoggedIn = false;
 
 
-	private async Task ShowPurchaseConfirmation(Items item)
-	{
-		
-	}
+<style>
+    .storepagebox {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
 
-	private List<Items> Outfits = new();
-	private List<Items> Fruits = new();
+    body {
+        background-color: revert;
+    }
 
-	private List<Items> UnlockedOutfits = new();
-	private List<Items> OwnedFruits = new();
+    h1 {
+        font-size: 4rem;
+        margin-top: 5px;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
 
-	private Items? SelectedOutfit;
+    h2 {
+        font-size: 1.5rem;
+        position: absolute;
+        left: 247px;
+        top: 50px;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
 
-	// Loads inventory data from the database
-	private async Task LoadInventory()
-	{
-		
-	}
+    h3 {
+        color: #fff;
+    }
 
-	// Loads the user's coin balance from the database
-	private async Task LoadUserCoins()
-	{
-		
-	}
+    p {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+        color: #fdfdfd;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
 
-	// Handles the purchase of an outfit
-	private async Task PurchaseItem(Items item)
-	{
-		
-	}
+    .wrapper {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+    }
 
-	// Calls to load all store data when the page initializes
-	protected override async Task OnInitializedAsync()
-	{
-		
-	}
+    .top-right-coins {
+        position: fixed;
+        top: 10px;
+        right: 20px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 16px;
+    }
 
-	private async Task ConfirmUnlock (Items item)
-	{
-		
-	}
+    /* Styling for store category buttons (Food/Outfits) */
+    .choosestore {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        background-color: azure;
+        padding: 10px 0;
+        border-radius: 10px;
+        gap: 20px;
+    }
 
-	private async Task UnlockItem(Items item)
-	{
-		
-	}
+    .foodbutton,
+    .outfitsbutton {
+        font-size: 1.4rem;
+        padding: 10px 20px;
+        cursor: pointer;
+        background-color: #fff;
+        color: #333;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.2s;
+        text-align: center;
+    }
+
+        /* Style for active buttons */
+        .foodbutton.active,
+        .outfitsbutton.active {
+            background-color: gold;
+            color: white;
+            font-weight: bold;
+            transform: scale(1.1);
+        }
+
+        .foodbutton:hover,
+        .outfitsbutton:hover {
+            background-color: #ffcc00;
+            transform: scale(1.05);
+        }
+
+    .coin {
+        position: absolute;
+        top: 10px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: gold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Coin label styling */
+    .coin-label {
+        position: absolute;
+        top: 15px;
+        right: 120px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Level Coin styling */
+    .level-coin {
+        position: absolute;
+        top: 60px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: green;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Level label styling */
+    .level-label {
+        position: absolute;
+        top: 65px;
+        right: 120px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+</style>
 
 
-}
 
 
 
 
 
 
-
-
-
-		

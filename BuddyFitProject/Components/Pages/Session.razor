@@ -9,6 +9,7 @@
 @inject UserStatisticsService UserStatisticsService
 @inject WorkoutSessionService WorkoutService
 @inject ExerciseService ExerciseService
+@inject PetService PetService
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager NavigationManager
 
@@ -18,97 +19,95 @@
 </head>
 
 <body>
+@if (LoggedIn) {
 
-
-
-@if (LoggedIn)
-{
         <h1>Workout</h1>
         <p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox</p>
-          
-    <div class="coin">$</div>
-    <div class="coin-label">@user.Coins</div>
 
-    <div class="level-coin">lvl</div>
-    <div class="level-label">@user.</div>
+        <div class="coin">$</div>
+        <div class="coin-label">@User.Coins</div>
 
-    <div class="wrapper">
-        <!-- Left white frame with Coins amount label -->
-        <div class="left-frame">
-            <label>Current coins amount:</label>
-            <label>@coinsamount</label>
+        <div class="level-coin">lvl</div>
+        <div class="level-label">@Pet.Level</div>
 
-            <button @onclick="CalculateRewards">Convert given data to coins</button>
-            <button  @onclick="LogWorkout">Log your workout</button>
+        <div class="wrapper">
+            <!-- Left white frame with Coins amount label -->
+            <div class="left-frame">
+                <label>Current coins amount:</label>
+                <label>@coinsamount</label>
+
+                <button @onclick="CalculateRewards">Convert given data to coins</button>
+                <button  @onclick="LogWorkout">Log your workout</button>
 
 
-            <label>So @user.Username, what exercises did you do today?</label>
+                <label>So @User.Username, what exercises did you do today?</label>
+            </div>
+
+
+
+            <!-- Exercise container -->
+            <div class="exercise-container">
+
+                @foreach(var workout in WorkoutList){
+
+                    if (WeightExercises.Contains(ExerciseService.GetExerciseById(workout.ExerciseId).Name))
+                    {
+                        <div class="onderdeel-item2">
+                            <label>Minutes</label>
+                            <label>Weights(kg)</label>
+                        </div>
+
+                        <div class="exercise-item">
+                            <label>@ExerciseService.GetExerciseById(workout.ExerciseId).Name</label>
+                            <input type="number" @bind="workout.Minutes" />
+                            <input type="number" class="weight-input" />
+                        </div>
+                    }
+                    else if (DistanceExercises.Contains(ExerciseService.GetExerciseById(workout.ExerciseId).Name))
+                    {
+                        <div class="onderdeel-item2">
+                            <label>Minutes</label>
+                            <label>Distance(m)</label>
+                        </div>
+
+                        <div class="exercise-item">
+                            <label>@ExerciseService.GetExerciseById(workout.ExerciseId).Name</label>
+                            <input type="number" @bind="workout.Minutes" />
+                            <input type="number" class="speed-input" />
+                        </div>
+                    } else {
+                        <div class="onderdeel-item">
+                            <label>Minutes</label>
+                        </div>
+
+                        <div class="exercise-item">
+                            <label>@ExerciseService.GetExerciseById(workout.ExerciseId).Name</label>
+                            <input type="number" @bind="workout.Minutes" />
+                        </div>
+                    }
+                }
+            </div>
         </div>
 
 
 
-        <!-- Exercise container -->
-        <div class="exercise-container">
-
-            @foreach(var workout in WorkoutList){
-
-                if (WeightExercises.Contains(ExerciseService.GetExerciseById(workout.ExerciseId).Name))
-                {
-                    <div class="onderdeel-item2">
-                        <label>Minutes</label>
-                        <label>Weights(kg)</label>
-                    </div>
-
-                    <div class="exercise-item">
-                        <label>@ExerciseService.GetExerciseById(workout.ExerciseId).Name</label>
-                        <input type="number" @bind="workout.Minutes" />
-                        <input type="number" class="weight-input" />
-                    </div>
-                }
-                else if (DistanceExercises.Contains(ExerciseService.GetExerciseById(workout.ExerciseId).Name))
-                {
-                    <div class="onderdeel-item2">
-                        <label>Minutes</label>
-                        <label>Distance(m)</label>
-                    </div>
-
-                    <div class="exercise-item">
-                        <label>@ExerciseService.GetExerciseById(workout.ExerciseId).Name</label>
-                        <input type="number" @bind="workout.Minutes" />
-                        <input type="number" class="speed-input" />
-                    </div>
-                } else {
-                    <div class="onderdeel-item">
-                        <label>Minutes</label>
-                    </div>
-
-                    <div class="exercise-item">
-                        <label>@ExerciseService.GetExerciseById(workout.ExerciseId).Name</label>
-                        <input type="number" @bind="workout.Minutes" />
-                    </div>
-                }
-            }
-        </div>
-    </div>
 
 
-
-
-
-    @if (!string.IsNullOrEmpty(RewardMessage))
-    {
-        <p class="text-success">@RewardMessage</p>
+        @if (!string.IsNullOrEmpty(RewardMessage))
+        {
+            <p class="text-success">@RewardMessage</p>
+        }
     }
-}
-else
-{
-    <h1>You must be logged in to access this page.</h1>
-    <a href="login">Go to Login</a>
-}
+    else
+    {
+        <h1>You must be logged in to access this page.</h1>
+        <a href="login">Go to Login</a>
+    }
 
 </body>
 @code {
-    private Users? user;
+    private Users? User;
+    private Pets? Pet;
     private List<Exercises> Exercises = new();
     private bool LoggedIn = false;
     private string RewardMessage = string.Empty;
@@ -116,7 +115,7 @@ else
     private List<string> WeightExercises = ["Bench Press", "Dumbbell Rows", "Curls", "Leg Press"];
     private List<string> DistanceExercises = ["Walking", "Cycling", "Swimming", "Running", "Sprinting", "Stair Walking"];
 
-    
+
 
     private int coinsamount = 0;
 
@@ -129,14 +128,15 @@ else
             var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
             {
-                user = UserService.GetUserById(loggedInUserId);
+                User= UserService.GetUserById(loggedInUserId);
+                Pet = PetService.GetPet(User.Id);
                 LoggedIn = true;
                 Exercises = ExerciseService.LoadExercises();
 
                 foreach(var exercise in Exercises){
                     WorkoutList.Add(new WorkoutSessions
                         {
-                            UserId = user.Id,
+                            UserId = User.Id,
                             ExerciseId = exercise.Id
                         }
                      );
@@ -174,12 +174,12 @@ else
         {
             WorkoutList.Add(new WorkoutSessions
                 {
-                    UserId = user.Id,
+                    UserId = User.Id,
                     ExerciseId = exercise.Id
                 }
              );
         }
-        UserStatisticsService.UpdateUserStatistics(user.Id); 
+        UserStatisticsService.UpdateUserStatistics(User.Id); 
         CalculateRewards();
         NavigationManager.NavigateTo(NavigationManager.Uri, true);
 
