@@ -68,10 +68,10 @@ namespace BuddyFitProject.Components.Services
                     throw new InvalidOperationException("User not found in the database.");
                 }
 
-                dbContext.Users.Remove(userToDelete); 
+                dbContext.Users.Remove(userToDelete);
                 dbContext.SaveChanges();
 
-                return userToDelete; 
+                return userToDelete;
             }
         }
 
@@ -138,7 +138,7 @@ namespace BuddyFitProject.Components.Services
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                return dbContext.Users.SingleOrDefault(x =>x.Username == username &&  x.Start_condition == "new")!= null;
+                return dbContext.Users.SingleOrDefault(x => x.Username == username && x.Start_condition == "new") != null;
             }
         }
         public void AddWorkout(Users user, WorkoutSessions workout)
@@ -150,6 +150,11 @@ namespace BuddyFitProject.Components.Services
                 dbContext.Users.Update(user);
                 dbContext.SaveChanges();
             }
+        }
+
+        public void AddPet(Pets pet)
+        {
+            
         }
     }
 }

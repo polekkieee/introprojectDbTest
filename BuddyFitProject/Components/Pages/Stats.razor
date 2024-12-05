@@ -9,19 +9,15 @@
 @inject Services.UserStatisticsService UserStatisticsService
 @inject Services.ExerciseService ExerciseService
 @rendermode InteractiveServer
+@inject IHttpContextAccessor HttpContextAccessor
+
 
 <head>
-    <link href="Stats.razor.css" rel="stylesheet" />
+    @*<link href="Stats.razor.css" rel="stylesheet" />*@ 
     <PageTitle>Statistics</PageTitle>
 </head>
-
-
 <body>
-
-    <header>
-        <h1>Workout History</h1>
-    </header>
-
+    <h1>Workout History</h1>
 
     @if(LoggedIn)
     {
@@ -31,7 +27,7 @@
 
         <div class="level-coin">lvl</div>
         <div class="level-label">???</div>
-
+    
         <br />
         <button class="btn btn-primary" @onclick="LoadStatsRefresh">Load Stats</button>
         <br />
@@ -64,13 +60,15 @@
                 </tbody>
             </table>
         </main>
+       
 
     }
     else
-    {
+    { 
         <h1>You must be logged in to access this page.</h1>
-        <hr />
+        <br />
         <a href="login" class=" btn btn-primary">Go to Login</a>
+    
     }
 </body>
 
