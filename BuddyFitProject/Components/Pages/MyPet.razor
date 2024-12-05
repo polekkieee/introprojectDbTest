@@ -72,7 +72,7 @@
 					{
 						<li class="inventory-item">
 							<img src=" =" @($"{item.Item.Type()}.png") class="img-item" />
-							<p>@ItemService.GetItemsById(inventoryItem.ItemId)</p>
+							<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
 							<p>Quantity: @inventoryItem.Quantity</p>
 							<button @onclick="() => UseItem(inventoryItem)">Use</button>
 						</li>
@@ -137,7 +137,7 @@
 	{
 		if ( false) //uitvogelen hoe t werkt met die foreign keys om via via bij item type te komen
 		{
-			pet.Food_bar = Math.Min(100, pet.Food_bar + 20);
+			
 		}
 
 

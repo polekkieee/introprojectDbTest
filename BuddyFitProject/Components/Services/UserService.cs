@@ -162,7 +162,13 @@ namespace BuddyFitProject.Components.Services
 
         public void AddPet(Pets pet)
         {
-            
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                dbContext.Pets.Add(pet);
+                dbContext.SaveChanges();
+            }
         }
+
+       
     }
 }
