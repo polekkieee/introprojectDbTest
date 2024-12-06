@@ -51,14 +51,14 @@ namespace BuddyFitProject.Components.Services
                 var items = dbContext.Items.ToList();
                 foreach (var item in items)
                 {
-                    if (UserInventoryItemExists(userId, item.Id))
+                    if (!UserInventoryItemExists(userId, item.Id))
                     {
                         AddUserInventory(new UserInventory
-                        {
-                            UserId = userId,
-                            ItemId = item.Id,
-                            Quantity = 0
-                        });
+                                        {
+                                            UserId = userId,
+                                            ItemId = item.Id,
+                                            Quantity = 0
+                                        });
                     }
                 }
             }

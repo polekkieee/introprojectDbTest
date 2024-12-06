@@ -40,15 +40,36 @@
 
 			@if (foodSelected)
 			{
-				<div class="storebox">
 
-					<div style="color: white;">
+				<div class="storebox">
+					<div class="product-container">
 						@foreach (var item in Food)
 						{
+							<div class="productbox" tabindex="@Food.IndexOf(item)" @onclick="() => UpdateSelectedFood(item)">
+								<div class="product">
+									<img style="width: inherit; object-fit:cover;" src=@($"{item.Name}.png") />
+								</div>
+							</div>
+						}
+					</div>
+
+					<div class="previewbox">
+						@if (SelectedFood != null)
+						{
+							<div class="previewoutfit">
+								<p>Buy @SelectedFood.Name </p>
+								<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"{SelectedFood.Name}.png") />
+							</div>
 							<div>
-								<img src=@($"{item.Name}.png") width="50" height="50" />
-								<input type="radio" name="food" value="@item.Name" @onchange="() => SelectFood(item)" />
-								<label for="@item.Name">@item.Name</label>
+								@SelectedFood.Price coins per piece
+							</div>
+
+							<div>
+								<InputNumber @bind-Value=SelectedFoodQuantity>Quantity</InputNumber>
+								<button class="buybutton" @onclick="BuyFood">Buy</button>
+							</div>
+							<div>
+								@responseMessage
 							</div>
 						}
 					</div>
@@ -84,15 +105,17 @@
 								Price: @SelectedOutfit.Price
 							</div>
 							<div>
-								@if(UnlockedOutfits.Any(x => x.Id == SelectedOutfit.Id))
+								@if (UnlockedOutfits.Any(x => x.Id == SelectedOutfit.Id))
 								{
 									<button disabled class="buybutton">Owned</button>
-								} else {
+								}
+								else
+								{
 									<button class="buybutton" @onclick="BuyOutfit">Buy</button>
 								}
 							</div>
 							<div>
-								@errorMessage
+								@responseMessage
 							</div>
 						}
 					</div>
@@ -114,7 +137,7 @@
 	private Users? User { get; set; }
 	private Pets? Pet { get; set; }
 
-	private string errorMessage = string.Empty;
+	private string responseMessage = string.Empty;
 
 	private List<Items> storeItems = new();
 
@@ -136,6 +159,8 @@
 
 	private Items? SelectedOutfit;
 	private Items? SelectedFood;
+	private int SelectedFoodQuantity;
+	private int SelectedFoodTotalPrice;
 
 
 	private void ToggleStore(string section)
@@ -156,40 +181,71 @@
 		}
 	}
 
-	private void SelectFood(Items item)
-	{
-		// Logic for selecting food
-	}
 
-	private void UpdateFoodQuantity(Items item)
+	private void UpdateSelectedFood(Items item)
 	{
-		// Logic for updating food quantity when changed
+		SelectedFood = item;
+		SelectedFoodQuantity = 0;
+		responseMessage = string.Empty;
 	}
 
 	private void UpdateSelectedOutfit(Items item)
 	{
 		SelectedOutfit = item;
-		errorMessage = string.Empty;
+		responseMessage = string.Empty;
 	}
+
+	private async Task BuyFood()
+	{
+		responseMessage = string.Empty;
+		if (SelectedFoodQuantity > 0)
+		{
+			SelectedFoodTotalPrice = SelectedFood.Price * SelectedFoodQuantity;
+			if (User.Coins >= SelectedFoodTotalPrice)
+			{
+				UserInventory existingInventoryItem = UserInventoryService.GetInventoryItem(User.Id, SelectedFood.Id);
+				existingInventoryItem.Quantity += SelectedFoodQuantity;
+				UserInventoryService.UpdateUserInventoryItem(existingInventoryItem);
+
+				User.Coins -= SelectedFoodTotalPrice;
+				UserService.UpdateUser(User);
+
+				LoadUserInventory();
+				SelectedFoodQuantity = 0;
+				responseMessage = "Succesfully bought";
+			}
+			else
+			{
+				responseMessage = "Not enough coins!";
+			}
+		}
+		else
+		{
+			responseMessage = "Enter a valid value";
+		}
+
+
+	}
+
 
 	private async Task BuyOutfit()
 	{
-		if(User.Coins >= SelectedOutfit.Price)
+		responseMessage = string.Empty;
+		if (User.Coins >= SelectedOutfit.Price)
 		{
-			UserInventory userinv = new UserInventory
-											{
-												UserId = User.Id,
-												ItemId = SelectedOutfit.Id,
-												Quantity = 1
-											};
-			UserInventoryService.UpdateUserInventoryItem(userinv);
+			UserInventory existingInventoryItem = UserInventoryService.GetInventoryItem(User.Id, SelectedOutfit.Id);
+			existingInventoryItem.Quantity = 1;
+			UserInventoryService.UpdateUserInventoryItem(existingInventoryItem);
+
 			User.Coins -= SelectedOutfit.Price;
 			UserService.UpdateUser(User);
 			LoadUserInventory();
-		} 
+			responseMessage = "Succesfully bought";
+
+		}
 		else
 		{
-			errorMessage = "Not enough coins!";
+			responseMessage = "Not enough coins!";
 		}
 
 	}
@@ -197,22 +253,21 @@
 	private void LoadUserInventory()
 	{
 		UserInventoryService.UpdateUserInventory(User.Id);
-		if (UserInventoryService.UserInventoryExists(User.Id))
-		{
-			userInventory = UserInventoryService.GetInventory(User.Id);
 
-			foreach (var userInventoryItem in userInventory)
+		userInventory = UserInventoryService.GetInventory(User.Id);
+
+		foreach (var userInventoryItem in userInventory)
+		{
+			if (ItemService.GetItemById(userInventoryItem.ItemId).Type == "outfit")
 			{
-				if (ItemService.GetItemById(userInventoryItem.ItemId).Type == "outfit")
-				{
-					UnlockedOutfits.Add(ItemService.GetItemById(userInventoryItem.ItemId));
-				}
-				else if (ItemService.GetItemById(userInventoryItem.ItemId).Type == "food")
-				{
-					OwnedFood.Add(ItemService.GetItemById(userInventoryItem.ItemId));
-				}
+				UnlockedOutfits.Add(ItemService.GetItemById(userInventoryItem.ItemId));
+			}
+			else if (ItemService.GetItemById(userInventoryItem.ItemId).Type == "food")
+			{
+				OwnedFood.Add(ItemService.GetItemById(userInventoryItem.ItemId));
 			}
 		}
+
 	}
 
 	private void DistributeStoreItemsByType()
@@ -251,6 +306,7 @@
 
 				SelectedOutfit = Outfits.FirstOrDefault();
 				SelectedFood = Food.FirstOrDefault();
+				SelectedFoodQuantity = 0;
 			}
 		}
 	}
@@ -274,7 +330,7 @@
 		padding: 20px;
 	}
 
-	.previewbox{
+	.previewbox {
 		margin-top: 3vh;
 		width: 320px;
 		display: flex;
@@ -284,7 +340,7 @@
 		background-color: #258cfb;
 	}
 
-	.previewoutfit{
+	.previewoutfit {
 		width: 90%;
 		display: flex;
 		flex-direction: column;
@@ -313,11 +369,12 @@
 			background-color: #e9e9e9;
 			cursor: pointer;
 		}
+
 		.productbox:focus {
 			background-color: #258cfb;
 		}
 
-		
+
 
 	.product {
 		width: 28vh;
