@@ -31,7 +31,8 @@ namespace BuddyFitProject.Components.Services
         {    
             using (var dbContext = DbContextFactory.CreateDbContext())
             {
-                return 50;
+                int HealthBarPercentage = 30;
+                return HealthBarPercentage;
             }
         }
 

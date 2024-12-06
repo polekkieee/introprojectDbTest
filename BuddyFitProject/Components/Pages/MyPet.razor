@@ -1,7 +1,9 @@
 ﻿@page "/pet"
 @using BuddyFitProject.Data.Models
 @using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc
 @using Microsoft.EntityFrameworkCore
+
 @inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
 @inject NavigationManager navigationManager
 @inject IHttpContextAccessor HttpContextAccessor
@@ -38,9 +40,10 @@
 				<div class="show-pet">
 					<h2>@pet.Name (Level: @pet.Level)</h2>
 					<br />
-					<p>Health: @pet.Health_bar %</p>
+					<p>Health: healthBar %</p>
+					<p>Health: @HealthBar %</p>
 					<div class="bar">
-						<div class="bar-filled" style="width:@pet.Health_bar;"></div>
+						<div class="bar-filled" style="width:@HealthBar%;"></div>
 					</div>
 					<br />
 					<p>Food: @pet.Food_bar %</p>
@@ -75,7 +78,8 @@
 				<ul class="inventory-list">
 					@foreach (var inventoryItem in userInventory)
 					{
-						if(ItemService.GetItemById(inventoryItem.ItemId).Type == "food" && inventoryItem.Quantity>0){
+						if (ItemService.GetItemById(inventoryItem.ItemId).Type == "food" && inventoryItem.Quantity > 0)
+						{
 							<li class="inventory-item">
 								<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
 								<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
@@ -83,7 +87,7 @@
 								<button @onclick="() => UseItem(inventoryItem)">Use</button>
 							</li>
 						}
-						
+
 					}
 				</ul>
 			}
@@ -115,6 +119,8 @@
 	private bool LoggedIn = false;
 	private int Id { get; set; }
 
+	private int HealthBar { get; set; }
+
 	protected override async void OnInitialized()
 	{
 		await base.OnInitializedAsync();
@@ -132,26 +138,25 @@
 				user = UserService.GetUserById(loggedInUserId);
 				//hier doen wat er gebeurt als ingelogd?
 				//Services uitvogelen iets fetchen vanuit userinventory
+				HealthBar = PetService.ChangeHealthBar(user.Id);
 				LoggedIn = true;
 			}
 
 			pet = PetService.GetPet(user.Id);
 			userInventory = UserInventoryService.GetInventory(user.Id);
 		}
-		
+
 	}
 
 	private async Task UseItem(UserInventory item)
 	{
-		if ( false) //uitvogelen hoe t werkt met die foreign keys om via via bij item type te komen
+		if (false) //uitvogelen hoe t werkt met die foreign keys om via via bij item type te komen
 		{
-			
+
 		}
 
 
 		await OnInitializedAsync();
 	}
-
-
 }
 
