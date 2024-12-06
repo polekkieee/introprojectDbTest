@@ -15,7 +15,8 @@ namespace BuddyFitProject.Components.Services
         {
             DbContextFactory = dbContext;
         }
-        public List<UserInventory> GetInventory(int userId)
+
+        public List<UserInventory> GetFullInventory(int userId)
         {
             List<UserInventory> inventory = new();
             using (var dbContext = this.DbContextFactory.CreateDbContext())
@@ -25,9 +26,41 @@ namespace BuddyFitProject.Components.Services
                             .ToList();
 
                 if (!inventory.Any())
-                    throw new Exception("User Inventory does not exist!");
+                    UpdateUserInventory(userId);
                 return inventory;
 
+            }
+        }
+
+        public List<UserInventory> GetInventory(int userId)
+        {
+            List<UserInventory> inventory = new();
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                inventory = dbContext.UserInventory
+                            .Where(x => x.UserId == userId && x.Quantity > 0)
+                            .ToList();
+                return inventory;
+            }
+        }
+
+        public void UpdateUserInventory(int userId)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                var items = dbContext.Items.ToList();
+                foreach (var item in items)
+                {
+                    if (UserInventoryItemExists(userId, item.Id))
+                    {
+                        AddUserInventory(new UserInventory
+                        {
+                            UserId = userId,
+                            ItemId = item.Id,
+                            Quantity = 0
+                        });
+                    }
+                }
             }
         }
 
@@ -48,8 +81,8 @@ namespace BuddyFitProject.Components.Services
                 inventory = dbContext.UserInventory
                             .Where
                                     (
-                                    x => 
-                                        x.UserId == userId && 
+                                    x =>
+                                        x.UserId == userId &&
                                         x.ItemId == dbContext.Items.FirstOrDefault
                                                     (y => y.Id == x.ItemId && y.Type == type)
                                                     .Id
@@ -60,6 +93,15 @@ namespace BuddyFitProject.Components.Services
                     throw new Exception("User Inventory does not exist!");
                 return inventory;
 
+            }
+        }
+
+        public void UpdateUserInventoryItem(UserInventory userinv)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                dbContext.UserInventory.Update(userinv);
+                dbContext.SaveChanges();
             }
         }
 
@@ -77,6 +119,14 @@ namespace BuddyFitProject.Components.Services
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
                 return dbContext.UserInventory.Any(x => x.UserId == userId);
+            }
+        }
+
+        public bool UserInventoryItemExists(int userId, int itemId)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                return dbContext.UserInventory.Any(x => x.UserId == userId && x.ItemId == itemId);
             }
         }
     }
