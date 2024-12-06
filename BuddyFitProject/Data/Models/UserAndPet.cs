@@ -4,6 +4,6 @@
     {
         public Users User { get; set; } = new Users();
         public Pets Pet { get; set; } = new Pets();
-        public enum TypesOfPets {Bear, Rabbit, Cat }
+        public enum TypesOfPets {Bear, Bunny, Cat }
     }
 }

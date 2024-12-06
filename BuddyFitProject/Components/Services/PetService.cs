@@ -27,5 +27,13 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
+        public int ChangeHealthBar(int userId)
+        {    
+            using (var dbContext = DbContextFactory.CreateDbContext())
+            {
+                return 50;
+            }
+        }
+
     }
 }
