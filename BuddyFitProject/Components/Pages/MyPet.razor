@@ -24,12 +24,12 @@
 <div class="coin-label">@user.Coins</div>
 
 <div class="level-coin">lvl</div>
-<div class="level-label">???</div>
+<div class="level-label">@pet.Level</div>
 
 
 <body>
 	<header>
-		<h1>Pet</h1>
+		<h1>@user.Username's Fit Buddy</h1>
 	</header>
 
 	<br />
@@ -40,7 +40,6 @@
 				<div class="show-pet">
 					<h2>@pet.Name (Level: @pet.Level)</h2>
 					<br />
-					<p>Health: healthBar %</p>
 					<p>Health: @HealthBar %</p>
 					<div class="bar">
 						<div class="bar-filled" style="width:@HealthBar%;"></div>
@@ -75,21 +74,44 @@
 			<h2>@user.Username's inventory</h2>
 			@if (userInventory.Any())
 			{
-				<ul class="inventory-list">
-					@foreach (var inventoryItem in userInventory)
-					{
-						if (ItemService.GetItemById(inventoryItem.ItemId).Type == "food" && inventoryItem.Quantity > 0)
-						{
-							<li class="inventory-item">
-								<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
-								<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
-								<p>Quantity: @inventoryItem.Quantity</p>
-								<button @onclick="() => UseItem(inventoryItem)">Use</button>
-							</li>
-						}
+				<div class="food-items">
+					<h3>Food</h3>
+					<ul class="inventory-list">
 
-					}
-				</ul>
+						@foreach (var inventoryItem in userInventory)
+						{
+							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "food" && inventoryItem.Quantity > 0)
+							{
+								<li class="inventory-item">
+									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
+									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
+									<p>Quantity: @inventoryItem.Quantity</p>
+									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
+								</li>
+							}
+						}
+					</ul>
+					
+				</div>
+
+				<div class="clothing-items">
+					<h3>Clothing</h3>
+					<ul class="inventory-list">
+						@foreach (var inventoryItem in userInventory)
+						{
+							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "outfit" && inventoryItem.Quantity > 0)
+							{ 
+								<li class="inventory-item">
+									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
+									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
+									<p>Quantity: @inventoryItem.Quantity</p>
+									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
+								</li>
+							}
+							
+						}
+					</ul>
+				</div>
 			}
 			else
 			{
@@ -136,8 +158,6 @@
 			{
 
 				user = UserService.GetUserById(loggedInUserId);
-				//hier doen wat er gebeurt als ingelogd?
-				//Services uitvogelen iets fetchen vanuit userinventory
 				HealthBar = PetService.ChangeHealthBar(user.Id);
 				LoggedIn = true;
 			}
@@ -150,10 +170,6 @@
 
 	private async Task UseItem(UserInventory item)
 	{
-		if (false) //uitvogelen hoe t werkt met die foreign keys om via via bij item type te komen
-		{
-
-		}
 
 
 		await OnInitializedAsync();

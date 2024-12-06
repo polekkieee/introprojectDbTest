@@ -20,27 +20,29 @@
 </head>
 
 <body>
-	<h1>Set up your account</h1>
+	<header>
+		<h1>Set up your account</h1>
+	</header>
+	
 	<br />
 
-
+	<main>
 	<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo">
 		<h2>About you:</h2><div class="input">
 			<label for="Age" class="l2">Age:</label>
 			<InputNumber required @bind-Value="UserAndPet.User.Age" />
 		</div>
-
 		<br />
-
 		<div class="input">
 			<label for="Gender" class="l2">Gender:</label>
 			<InputText required @bind-Value="UserAndPet.User.Gender" />
 		</div>
-
+		<br />
 		<div class="input">
 			<label for="StartCondition" class="l2">Start Condition:</label>
 			<InputText required @bind-Value="UserAndPet.User.Start_condition" />
 		</div>
+
 		<br />
 		<br />
 
@@ -50,26 +52,28 @@
 			<InputText required @bind-Value="UserAndPet.Pet.Name" />
 		</div>
 		<br />
-
-		<InputRadioGroup @bind-Value="UserAndPet.Pet.Type">
-				<label>
+		<div class="radio-group">
+			<InputRadioGroup @bind-Value="UserAndPet.Pet.Type">
+				<label class="radio">
 					<InputRadio Value="Bear" />
 					<img src="bear.png" aria-hidden="true" width="200">
 				</label>
-				<br />
-				<label>
-				<InputRadio Value="Cat" />
+
+				<label class="radio">
+					<InputRadio Value="Cat" />
 					<img src="cat.png" aria-hidden="true" width="200">
 				</label>
-				<br />
-				<label>
-				<InputRadio Value="Bunny" />
+
+				<label class="radio">
+					<InputRadio Value="Bunny" />
 					<img src="bunny.png" aria-hidden="true" width="200">
 				</label>
-		</InputRadioGroup>
+			</InputRadioGroup>
 
-				<button type="submit" class="b2">Let's start!</button>
+		</div>
+	<button type="submit" class="b2">Let's start!</button>
 	</EditForm>
+	</main>
 </body>
 
 
@@ -132,42 +136,3 @@
 	}
 }
 
-<style>
-	header {
-		text-align: center;
-		margin-bottom: 40px;
-	}
-
-	h1 {
-		font-family: "Montserrat", sans-serif;
-		font-size: 4rem;
-		color: #ffffff;
-		text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-		margin: 0px 20px 0px 0px;
-	}
-
-	main {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 20px;
-	}
-
-	div.input {
-		background: rgba(255, 255, 255, 0.1);
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: 10px;
-		padding: 20px;
-		width: 80%;
-		box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-		transition: transform 0.3s ease, box-shadow 0.3s ease;
-	}
-
-		div.input label {
-			font-size: 1.8rem;
-			color: #ffe1e6;
-			text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
-			margin-bottom: 10px;
-		}
-
-</style>
