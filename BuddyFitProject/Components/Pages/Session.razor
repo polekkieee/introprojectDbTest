@@ -12,25 +12,255 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager NavigationManager
 
-<head>
-    <link href="Session.razor.css" rel="stylesheet" />
-    <PageTitle> Workout Session </PageTitle>
-</head>
+<PageTitle>Workout Session</PageTitle>
 
-<body>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, purple, blue);
+        color: #333;
+        text-align: center;
+        padding: 20px;
+        position: relative;
+    }
+
+    h1 {
+        font-size: 4rem;
+        margin-top: 5px;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        position: absolute;
+        left: 247px;
+        top: 50px;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
 
 
+    p {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+        color: #fdfdfd;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .wrapper {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .left-frame {
+        width: 300px;
+        height: 450px;
+        background-color: rgba(0,0,0,0.3);
+        margin-right: 2px;
+        margin-left: 70px;
+        border-radius: 8px;
+        padding: 20px;
+        color: #fff;
+    }
+
+        .left-frame label {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .left-frame button {
+            margin-bottom: 15px;
+            padding: 10px 20px;
+            background-color: #ffcc00;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+            .left-frame button:hover {
+                background-color: #ff9900;
+            }
+
+    .exercise-container {
+        width: 700px;
+        height: 450px;
+        margin-left: auto;
+        margin-right: 100px;
+        overflow-y: scroll;
+        border: 2px solid #fff;
+        border-radius: 8px;
+        background: rgba(100, 255, 255, 0);
+        padding: 10px;
+    }
+
+        .exercise-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .exercise-container::-webkit-scrollbar-thumb {
+            background: #fff;
+            border-radius: 5px;
+        }
+
+    .exercise-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+        .exercise-item label {
+            flex: none;
+            color: #fff;
+            font-size: 1rem;
+            text-align: left;
+            width: 160px;
+            font-weight: bold;
+        }
+
+    .onderdeel-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        margin-left: 370px;
+    }
+
+        .onderdeel-item label {
+            flex: none;
+            color: #fff;
+            font-size: 1rem;
+            text-align: right;
+            width: 70px;
+            font-weight: bold;
+        }
+
+    .onderdeel-item2 {
+        display: flex;
+        gap: 180px;
+        margin-bottom: 10px;
+        margin-left: 270px;
+    }
+
+        .onderdeel-item2 label {
+            flex: none;
+            color: #fff;
+            font-size: 1rem;
+            text-align: right;
+            width: 70px;
+            font-weight: bold;
+        }
+
+    .onderdeel-item3 {
+        display: flex;
+        gap: 180px;
+        margin-bottom: 10px;
+        margin-left: 270px;
+    }
+
+        .onderdeel-item3 label {
+            flex: none;
+            color: #fff;
+            font-size: 1rem;
+            text-align: right;
+            width: 70px;
+            font-weight: bold;
+        }
+
+
+    .exercise-item input {
+        flex-grow: 1;
+        margin-left: 10px;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 40px;
+        text-align: center;
+        display: block;
+    }
+
+    .exercise-item .weight-input,
+    .exercise-item .speed-input {
+        width: 100px;
+    }
+
+    /* Coin styling (right top corner) */
+    .coin {
+        position: absolute;
+        top: 10px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: gold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Coin label styling */
+    .coin-label {
+        position: absolute;
+        top: 15px;
+        right: 120px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Level Coin styling */
+    .level-coin {
+        position: absolute;
+        top: 60px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: green;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Level label styling */
+    .level-label {
+        position: absolute;
+        top: 65px;
+        right: 120px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+</style>
 
 @if (LoggedIn)
 {
-        <h1>Workout</h1>
-        <p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox</p>
-          
+    <h1>Workout</h1>
+    <p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox</p>
+
     <div class="coin">$</div>
     <div class="coin-label">@user.Coins</div>
 
     <div class="level-coin">lvl</div>
-    <div class="level-label">@user.</div>
+    <div class="level-label">???</div>
 
     <div class="wrapper">
         <!-- Left white frame with Coins amount label -->
@@ -39,7 +269,7 @@
             <label>@coinsamount</label>
 
             <button @onclick="CalculateRewards">Convert given data to coins</button>
-            <button  @onclick="LogWorkout">Log your workout</button>
+            <button @onclick="LogWorkout">Log your workout</button>
 
 
             <label>So @user.Username, what exercises did you do today?</label>
@@ -50,7 +280,8 @@
         <!-- Exercise container -->
         <div class="exercise-container">
 
-            @foreach(var workout in WorkoutList){
+            @foreach (var workout in WorkoutList)
+            {
 
                 if (WeightExercises.Contains(ExerciseService.GetExerciseById(workout.ExerciseId).Name))
                 {
@@ -77,7 +308,9 @@
                         <input type="number" @bind="workout.Minutes" />
                         <input type="number" class="speed-input" />
                     </div>
-                } else {
+                }
+                else
+                {
                     <div class="onderdeel-item">
                         <label>Minutes</label>
                     </div>
@@ -106,7 +339,6 @@ else
     <a href="login">Go to Login</a>
 }
 
-</body>
 @code {
     private Users? user;
     private List<Exercises> Exercises = new();
@@ -116,7 +348,33 @@ else
     private List<string> WeightExercises = ["Bench Press", "Dumbbell Rows", "Curls", "Leg Press"];
     private List<string> DistanceExercises = ["Walking", "Cycling", "Swimming", "Running", "Sprinting", "Stair Walking"];
 
-    
+    // private int PushUpMinutes = 0;
+    // private int PlankMinutes = 0;
+    // private int BurpeesMinutes = 0;
+    // private int JumpingJacksMinutes = 0;
+    // private int BenchPressMinutes = 0;
+    // private int BenchPressWeight = 0;
+    // private int DumbbellRowsMinutes = 0;
+    // private int DumbbellRowsWeight = 0;
+    // private int CurlsMinutes = 0;
+    // private int CurlsWeight = 0;
+    // private int PullUpMinutes = 0;
+    // private int LegPressMinutes = 0;
+    // private int LegPressWeight = 0;
+    // private int WalkingMinutes = 0;
+    // private int WalkingSpeed = 0;
+    // private int CyclingMinutes = 0;
+    // private int CyclingSpeed = 0;
+    // private int SwimmingMinutes = 0;
+    // private int SwimmingSpeed = 0;
+    // private int RunningMinutes = 0;
+    // private int RunningSpeed = 0;
+    // private int SprintingMinutes = 0;
+    // private int SprintingSpeed = 0;
+    // private int WallsitsMinutes = 0;
+    // private int RopeJumpingMinutes = 0;
+    // private int StairWalkingMinutes = 0;
+    // private int StairWalkingSpeed = 0;
 
     private int coinsamount = 0;
 
@@ -133,7 +391,8 @@ else
                 LoggedIn = true;
                 Exercises = ExerciseService.LoadExercises();
 
-                foreach(var exercise in Exercises){
+                foreach (var exercise in Exercises)
+                {
                     WorkoutList.Add(new WorkoutSessions
                         {
                             UserId = user.Id,
@@ -145,26 +404,32 @@ else
         }
     }
 
-    private void CalculateRewards(){
+    private void CalculateRewards()
+    {
         coinsamount = 0;
-        foreach(var workout in WorkoutList){
+        foreach (var workout in WorkoutList)
+        {
             if (workout.Minutes > 0)
             {
                 coinsamount += workout.Minutes * ExerciseService.GetExerciseById(workout.ExerciseId).Coins_pm;
             }
         }
-        if(coinsamount == 0){
+        if (coinsamount == 0)
+        {
             return;
         }
     }
 
     private async Task LogWorkout()
     {
-        if(coinsamount == 0){
+        if (coinsamount == 0)
+        {
             return;
         }
-        foreach (var workout in WorkoutList){
-            if(workout.Minutes > 0){
+        foreach (var workout in WorkoutList)
+        {
+            if (workout.Minutes > 0)
+            {
                 workout.Reward = workout.Minutes * ExerciseService.GetExerciseById(workout.ExerciseId).Coins_pm;
                 await WorkoutService.AddWorkoutSessionAsync(workout);
             }
@@ -179,36 +444,8 @@ else
                 }
              );
         }
-        UserStatisticsService.UpdateUserStatistics(user.Id); 
+        UserStatisticsService.UpdateUserStatistics(user.Id);
         CalculateRewards();
         NavigationManager.NavigateTo(NavigationManager.Uri, true);
-
-        // private int PushUpMinutes = 0;
-        // private int PlankMinutes = 0;
-        // private int BurpeesMinutes = 0;
-        // private int JumpingJacksMinutes = 0;
-        // private int BenchPressMinutes = 0;
-        // private int BenchPressWeight = 0;
-        // private int DumbbellRowsMinutes = 0;
-        // private int DumbbellRowsWeight = 0;
-        // private int CurlsMinutes = 0;
-        // private int CurlsWeight = 0;
-        // private int PullUpMinutes = 0;
-        // private int LegPressMinutes = 0;
-        // private int LegPressWeight = 0;
-        // private int WalkingMinutes = 0;
-        // private int WalkingSpeed = 0;
-        // private int CyclingMinutes = 0;
-        // private int CyclingSpeed = 0;
-        // private int SwimmingMinutes = 0;
-        // private int SwimmingSpeed = 0;
-        // private int RunningMinutes = 0;
-        // private int RunningSpeed = 0;
-        // private int SprintingMinutes = 0;
-        // private int SprintingSpeed = 0;
-        // private int WallsitsMinutes = 0;
-        // private int RopeJumpingMinutes = 0;
-        // private int StairWalkingMinutes = 0;
-        // private int StairWalkingSpeed = 0;
     }
 }
