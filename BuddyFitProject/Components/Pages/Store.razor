@@ -1,5 +1,6 @@
 ﻿	@page "/store"
 	@inject IJSRuntime JSRuntime
+	@rendermode InteractiveServer
 	@inject BuddyFitDbContext DbContext
 	@using BuddyFitProject.Data
 	@using BuddyFitProject.Data.Models
@@ -8,7 +9,7 @@
 
 <PageTitle> Store </PageTitle>
 
-<h1 class="h">Store </h1>
+<h1> Store </h1>
 
 <!-- Display Coin Balance -->
 <div class="top-right-coins">
@@ -103,7 +104,7 @@ else
 				<table style="width: 100%; border-collapse: collapse;">
 					@foreach (var outfit in VisibleOutfits)
 					{
-						<tr style = "text-align: center;"> 
+						<tr style = "text-align: center;">	
 							<td>
 								<div style = "padding: 10px;">
 									<img src= "@outfit.CostumeImage" alt= "@outfit.Name"
@@ -117,7 +118,9 @@ else
 									else 
 									{
 										<button @onclick = "() => ShowPurchaseConfirmation
-										(outfit.Name, outfit.CostumeImage, outfit.Price)"> Unlock </button>
+											(outfit.Name, outfit.CostumeImage, outfit.Price)"> Unlock </button>
+											
+										//Achter outfit.CostumeImage moet .png erachter worden geplakt.
 									}
 
 
@@ -411,7 +414,7 @@ else
 		public string Name { get; set; } = string.Empty;
 		public string CostumeImage { get; set; } = string.Empty;
 		public string PetImage { get; set; } = string.Empty;
-		public int Price { get; set; }
+		public int Price { get; set; } 
 	}
 
 	public class Fruit
@@ -465,9 +468,6 @@ else
 
 		await JSRuntime.InvokeVoidAsync("alert", $"{item.Name} has been unlocked!");
 		StateHasChanged();
-
-		
-
 		
 	}
 
