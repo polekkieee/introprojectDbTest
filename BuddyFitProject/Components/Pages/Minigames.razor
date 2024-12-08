@@ -1,0 +1,194 @@
+﻿@page "/Minigames"
+@using System.Timers;
+
+<h3>Minigames</h3>
+
+<div class ="game-container">
+	<!-- Static bird -->
+	<div class = "bird" style="top: @($"{Birdie.Y}px");"></div>
+
+	<!-- Pipes -->
+	@foreach (var pipe in Pipes)
+	{
+		<div class="pipe-top" style=" top: 0; left:@($"{pipe.X}px"); height:@($"{pipe.TopHeight}px");"> </div>
+		<div class="pipe-bottom" style="top: @($"{600-pipe.BottomHeight}px"); left:@($"{pipe.X}px"); height:@($"{pipe.BottomHeight}px");"> </div>
+	}
+
+	<!-- Background elements -->
+	<div class= "sun"></div>
+	@foreach (var cloud in Clouds)
+	{
+		<div class="cloud" style=" height: @($"{cloud.Y}px"); left: @($"{cloud.X}px");"> </div>
+	}
+
+	<div class="score"> Score: @Score </div>
+</div>
+
+<button class="start-button" @onclick="StartGame" disabled="@IsGameRunning"> Start Game </button>
+
+@code {
+
+	private bool IsGameRunning = false;
+	private Bird Birdie = new Bird {X = 100, Y= 200, Width= 20, Height= 20, Velocity = 0};
+	private List <Pipe> Pipes = new();
+	private List <Cloud> Clouds = new();
+	private int Score= 0;
+	private const int Gravity = 1;
+	private const int PipeSpeed = 2;
+	private const int CloudSpeed = 1;
+	private int GroundLevel = 600;
+	private PeriodicTimer GameTimer;
+
+	protected override void OnInitialized()
+	{
+		ResetGame();
+		GenerateClouds();
+	}
+
+	private void ResetGame()
+	{
+		Birdie = new Bird {X = 100, Y= 200, Width = 20, Height = 20, Velocity = 0};
+		Pipes.Clear();
+		for (int i= 0; i < 3; i++)
+		{
+			Pipes.Add(GeneratePipe(i * 300 + 400));
+		}
+		Score = 0;
+
+	}
+
+	private void StartGame()
+	{
+		if (IsGameRunning) return;
+
+		IsGameRunning = true;
+		GameTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(16));
+		_ = Gameloop();
+	}
+
+	private async Task Gameloop()
+	{
+		while (await GameTimer.WaitForNextTickAsync() && IsGameRunning)
+		{
+			UpdateGame();
+			StateHasChanged();
+		}
+	}
+
+	private void UpdateGame()
+	{
+		// if (!IsGameRunning) return;
+
+		Birdie.Velocity += Gravity;
+		Birdie.Y += Birdie.Velocity;
+
+		for (int i = 0; i < Pipes.Count; i++)
+		{
+			Pipes[i].X -= PipeSpeed;
+
+			if (Pipes[i].X + Pipes[i].Width < 0)
+			{
+				Pipes[i] = GeneratePipe(800);
+				Score++;
+			}
+
+			if (IsCollision(Birdie, Pipes[i]))
+			{
+				EndGame();
+				return;
+			}
+
+		}
+
+		foreach (var cloud in Clouds)
+		{
+			cloud.X -= CloudSpeed;
+			if (cloud.X < - 100) //Reset for when cloud leaves screen
+			{
+				cloud.X = 800+ new Random().Next(100,300);
+				cloud.Y = new Random().Next(50, 300);
+			}
+		}
+
+		if (Birdie.Y <= 0 || Birdie.Y + Birdie.Height >= GroundLevel)
+		{
+			EndGame();
+		}
+
+	}
+
+	private void EndGame()
+	{
+		IsGameRunning = false;
+		GameTimer?.Dispose();
+	}
+
+	private Pipe GeneratePipe(int xPosition)
+	{
+		const int gap = 100;
+		int topHeight = new Random().Next(50, 300);
+		return new Pipe
+		{
+			X = xPosition,
+			Width = 50,
+			TopHeight = topHeight,
+			BottomHeight = 600 - gap - topHeight
+		};
+	}
+
+	private void GenerateClouds()
+	{
+		var random = new Random();
+		for (int i=0; i < 5; i++)
+		{
+			Clouds.Add(new Cloud
+			{
+				X = random.Next(0, 800),
+				Y = random.Next(50, 300),
+				Width = random.Next(60, 120),
+				Height = random.Next(30, 60),
+			});
+		}
+	}
+
+	private bool IsCollision(Bird bird, Pipe pipe)
+	{
+		return bird.X < pipe.X + pipe.Width &&
+						bird.X + bird.Width > pipe.X &&
+						(bird.Y < pipe.TopHeight || bird.Y + bird.Height > GroundLevel - pipe.BottomHeight);
+	}
+
+	private void Flap()
+	{
+		if (IsGameRunning)
+		{
+			Birdie.Velocity = -8;
+		}
+
+	}
+
+	private class Bird
+	{
+		public int X { get; set; }
+		public int Y { get; set; }
+		public int Width { get; set; }
+		public int Height { get; set; }
+		public int Velocity { get; set; }
+	}
+
+	private class Pipe
+	{
+		public int X { get; set; }
+		public int Width { get; set; }
+		public int TopHeight { get; set; }
+		public int BottomHeight { get; set; }
+	}
+
+	private class Cloud
+	{
+		public int X { get; set; }
+		public int Y { get; set; }
+		public int Width { get; set; }
+		public int Height { get; set; }
+	}
+}
