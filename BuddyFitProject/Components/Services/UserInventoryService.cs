@@ -102,8 +102,17 @@ namespace BuddyFitProject.Components.Services
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                dbContext.UserInventory.Update(userinv);
-                dbContext.SaveChanges();
+                var item = dbContext.UserInventory
+            .FirstOrDefault(x => x.UserId == userinv.UserId && x.ItemId == userinv.ItemId);
+
+                if (item != null)
+                {
+                    item.Quantity = userinv.Quantity;
+                    dbContext.SaveChanges();
+                }
+
+                //dbContext.UserInventory.Update(userinv);
+                //dbContext.SaveChanges();
             }
         }
 
