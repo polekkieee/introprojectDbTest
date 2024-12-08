@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace BuddyFitProject.Components.Services
 {
@@ -27,13 +28,22 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-        public int ChangeHealthBar(int userId)
-        {    
-            using (var dbContext = DbContextFactory.CreateDbContext())
+        public int ChangeHealth(Pets pet, List<WorkoutSessions> Workouts)
+        {
+            int totalMinutes = 0;
+            foreach (var session in Workouts)
             {
-                int HealthBarPercentage = 30;
-                return HealthBarPercentage;
+                totalMinutes += session.Minutes;
             }
+            if (pet.Health_bar <= 100)
+            {
+                pet.Health_bar = totalMinutes / 2;
+            }
+            if (pet.Health_bar > 100)
+            {
+                pet.Health_bar = 100;
+            }
+            return pet.Health_bar;
         }
 
     }

@@ -12,6 +12,5 @@ namespace BuddyFitProject.Data.Models
         public int Food_bar { get; set; }
         public int Health_bar { get; set; }
         public int Stamina_bar { get; set; }
-
     }
 }

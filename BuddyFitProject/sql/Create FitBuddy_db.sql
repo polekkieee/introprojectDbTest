@@ -32,6 +32,7 @@ CREATE TABLE Pets (
     level INT DEFAULT 1,
     food_bar INT DEFAULT 100,
     health_bar INT DEFAULT 100,
+    stamina_bar INT DEFAULT 100,
     FOREIGN KEY (userId) REFERENCES Users(Id) ON DELETE CASCADE
 );
 GO

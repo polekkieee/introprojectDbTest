@@ -11,6 +11,7 @@
 @inject Services.ItemService ItemService
 @inject Services.PetService PetService
 @inject Services.UserInventoryService UserInventoryService
+@inject Services.WorkoutSessionService WorkoutSessionService
 @rendermode InteractiveServer
 
 
@@ -40,7 +41,6 @@
 				<div class="show-pet">
 					<h2>@pet.Name (Level: @pet.Level)</h2>
 					<br />
-					<p>Health: healthBar %</p>
 					<p>Health: @HealthBar %</p>
 					<div class="bar">
 						<div class="bar-filled" style="width:@HealthBar%;"></div>
@@ -115,6 +115,7 @@
 	private Users? user;
 	private Pets? pet;
 	private List<UserInventory> userInventory = new();
+	private List<WorkoutSessions> allWorkouts = new();
 
 	private bool LoggedIn = false;
 	private int Id { get; set; }
@@ -138,11 +139,12 @@
 				user = UserService.GetUserById(loggedInUserId);
 				//hier doen wat er gebeurt als ingelogd?
 				//Services uitvogelen iets fetchen vanuit userinventory
-				HealthBar = PetService.ChangeHealthBar(user.Id);
+				pet = PetService.GetPet(user.Id);
+				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
+				HealthBar = PetService.ChangeHealth(pet, allWorkouts);
 				LoggedIn = true;
 			}
 
-			pet = PetService.GetPet(user.Id);
 			userInventory = UserInventoryService.GetInventory(user.Id);
 		}
 
