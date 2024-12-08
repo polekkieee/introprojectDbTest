@@ -17,10 +17,22 @@
 <h3>Minigames</h3>
 
 @if(LoggedIn){
-    <p>hello @pet.Type</p>
     <div class="game-container" @onclick="Flap">
+
+        <!-- Background elements -->
+        <div class="sun"></div>
+        @foreach (var cloud in Clouds)
+        {
+            <div class="cloud"
+                 style="top: @($"{cloud.Y}px");
+                left: @($"{cloud.X}px");
+                width: @($"{cloud.Width}px");
+                height: @($"{cloud.Height}px");">
+            </div>
+        }
+
         <!-- Static bird -->
-        <img class="bird" style="top: @($"{Birdie.Y}px"); left: @($"{Birdie.X}px");" src="@(petimg)" />
+        <img class="bird" style="top: @($"{Birdie.Y}px"); left: @($"{Birdie.X}px"); width: @($"{Birdie.Width}px"); height: @($"{Birdie.Height}px");" src="@(petimg)" />
 
         <!-- Pipes -->
         @foreach (var pipe in Pipes)
@@ -29,12 +41,8 @@
             <div class="pipe-bottom" style="bottom: 0; left:@($"{pipe.X}px"); height:@($"{pipe.BottomHeight}px");"> </div>
         }
 
-        <!-- Background elements -->
-        <div class="sun"></div>
-        @foreach (var cloud in Clouds)
-        {
-            <div class="cloud" style="bottom: @($"{cloud.Y}px"); left: @($"{cloud.X}px"); width: @($"{cloud.Width}px"); height: @($"{cloud.Height}px");"> </div>
-        }
+        
+
 
         <div class="score"> Score: @Score </div>
     </div>
@@ -57,7 +65,7 @@ else {
 
     private bool IsGameRunning = false;
     private bool GameEnded = false;
-    private Bird Birdie = new Bird { X = 100, Y = 200, Width = 20, Height = 20, Velocity = 0 };
+    private Bird Birdie = new Bird { X = 100, Y = 200, Width = 50, Height = 50, Velocity = 0 };
     private List<Pipe> Pipes = new();
     private List<Cloud> Clouds = new();
     private int Score = 0;
@@ -94,12 +102,18 @@ else {
 
         ResetGame();
         GenerateClouds();
+
     }
 
     private void ResetGame()
     {
+
         GameEnded = false;
-        Birdie = new Bird { X = 50, Y = 200, Width = 50, Height = 50, Velocity = 0 }; // Starting Y position (200)
+        Birdie.X = 50;
+        Birdie.Y = 200;
+        Birdie.Width = 50;
+        Birdie.Height = 50;
+        Birdie.Velocity = 0;
         Pipes.Clear();
         for (int i = 0; i < 3; i++)
         {
@@ -112,7 +126,7 @@ else {
     {
         if (IsGameRunning) return;
         IsGameRunning = true;
-        GameTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(8)); // 30 FPS
+        GameTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(16)); // 30 FPS
         _ = Gameloop();
     }
 
@@ -157,8 +171,8 @@ else {
             cloud.X -= CloudSpeed;
             if (cloud.X < -100) // Reset when cloud goes off screen
             {
-                cloud.X = 800 + RandomGenerator.Next(100, 300);
-                cloud.Y = RandomGenerator.Next(50, 300);
+                cloud.X = 800;
+                cloud.Y = RandomGenerator.Next(0, 400);
             }
         }
 
@@ -195,25 +209,31 @@ else {
         {
             Clouds.Add(new Cloud
                 {
-                    X = RandomGenerator.Next(0, 700),
-                    Y = RandomGenerator.Next(50, 200),
-                    Width = RandomGenerator.Next(60, 120),
-                    Height = RandomGenerator.Next(30, 50), // Use Height if rendering the cloud with it
+                    X = RandomGenerator.Next(0, 800), // Game width
+                    Y = RandomGenerator.Next(0, 400), // Within visible height range
+                    Width = RandomGenerator.Next(80, 120),
+                    Height = RandomGenerator.Next(30, 50)
                 });
         }
     }
 
+
     private bool IsCollision(Bird bird, Pipe pipe)
     {
-        bool horizontalhit = bird.X < pipe.X + pipe.Width && bird.X + bird.Width > pipe.X;
-        bool verticalhit; 
-        if (pipe.TopHeight > 100) { verticalhit = bird.Y < pipe.TopHeight; } else { verticalhit = bird.Y + bird.Height > GroundLevel - pipe.BottomHeight; }
+        // Check horizontal overlap
+        bool horizontalHit = bird.X < pipe.X + pipe.Width && bird.X + bird.Width > pipe.X;
 
-        // bool horizontalOverlap = bird.X < pipe.X + pipe.Width && bird.X + bird.Width > pipe.X;
-        // bool verticalOverlap = bird.Y < pipe.TopHeight || bird.Y + bird.Height > GroundLevel - pipe.BottomHeight;
+        // Check vertical position of the bird
+        bool inTopPipe = bird.Y < pipe.TopHeight;
+        bool inBottomPipe = bird.Y + bird.Height > (GroundLevel - pipe.BottomHeight);
 
-        return horizontalhit && verticalhit /* horizontalOverlap && verticalOverlap */;
+        // Vertical hit occurs if the bird is outside the gap
+        bool verticalHit = inTopPipe || inBottomPipe;
+
+        // Return true if there's both horizontal and vertical overlap
+        return horizontalHit && verticalHit;
     }
+
 
 
 

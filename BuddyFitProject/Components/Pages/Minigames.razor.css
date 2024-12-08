@@ -18,21 +18,11 @@
 
 .bird {
     position: absolute;
-    width: 50px;
-    height: 50px;
     object-fit: cover;
 }
 
-.pipe-top {
+.pipe-top, .pipe-bottom {
     background-color: green; /* Top pipe color */
-    border-bottom: 5px solid darkgreen; /* Accent to make it visually distinct */
-    position: absolute;
-    width: 50px;
-}
-
-.pipe-bottom {
-    background-color: lightgreen; /* Bottom pipe color */
-    border-top: 5px solid darkgreen; /* Accent to differentiate */
     position: absolute;
     width: 50px;
 }
