@@ -101,7 +101,7 @@
 						@foreach (var inventoryItem in userInventory)
 						{
 							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "outfit" && inventoryItem.Quantity > 0)
-							{ 
+							{
 								<li class="inventory-item">
 									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
 									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
@@ -144,6 +144,7 @@
 	private int Id { get; set; }
 
 	private int HealthBar { get; set; }
+	private int StaminaBar { get; set; }
 
 	protected override async void OnInitialized()
 	{
@@ -165,6 +166,7 @@
 				pet = PetService.GetPet(user.Id);
 				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
 				HealthBar = PetService.ChangeHealth(user, pet, allWorkouts);
+				StaminaBar = PetService.ChangeStamina(user, pet, allWorkouts);
 				LoggedIn = true;
 			}
 
@@ -178,16 +180,16 @@
 	{
 		// try
 		// {
-		// 	
-		// 	var currentItem = userInventory.FirstOrDefault(i => i.Id == item.Id);
-		// 	if (currentItem != null && currentItem.Quantity > 0)
-		// 	{
-		// 		currentItem.Quantity--;
+		//
+		//var currentItem = userInventory.FirstOrDefault(i => i.Id == item.Id);
+		//if (currentItem != null && currentItem.Quantity > 0)
+		//{
+		//currentItem.Quantity--;
 
-		// 		Update the inventory in the database
-		// 		UserInventoryService.UpdateInventoryItem(item);
-
-		// 		
+		//Update the inventory in the database
+		//UserInventoryService.UpdateInventoryItem(item);
+		//}
+		//
 		// 	}
 		// 	else
 		// 	{
@@ -196,12 +198,12 @@
 		// }
 		// catch (Exception ex)
 		// {
-		
+
 		// }
 
 		userInventory = UserInventoryService.GetInventory(user.Id);
 
-	
+
 		await InvokeAsync(StateHasChanged);
 	}
 
