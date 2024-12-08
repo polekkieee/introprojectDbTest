@@ -28,7 +28,16 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-        public int ChangeHealth(Pets pet, List<WorkoutSessions> Workouts)
+        public void UpdatePet(Pets pet)
+        {
+            using (var dbContext = this.DbContextFactory.CreateDbContext())
+            {
+                dbContext.Pets.Update(pet);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public int ChangeHealth(Users user,Pets pet, List<WorkoutSessions> Workouts)
         {
             int totalMinutes = 0;
             foreach (var session in Workouts)
@@ -43,8 +52,15 @@ namespace BuddyFitProject.Components.Services
             {
                 pet.Health_bar = 100;
             }
+            TimeSpan Ts = DateTime.Now - user.Register_moment;
+            pet.Health_bar -= Ts.Hours;
+            if (pet.Health_bar <= 0)
+            {
+                pet.Health_bar = 0;
+            }
+            UpdatePet(pet);
             return pet.Health_bar;
         }
-      
+
     }
 }

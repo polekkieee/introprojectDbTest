@@ -20,6 +20,7 @@ CREATE TABLE Users (
     coins INT DEFAULT 0,
     resetcode NVARCHAR(50),
     validatecode NVARCHAR(50),
+    register_moment DATETIME2 DEFAULT GETDATE() NOT NULL,
 );
 GO
 

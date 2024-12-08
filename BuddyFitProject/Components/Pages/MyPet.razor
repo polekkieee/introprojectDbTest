@@ -164,7 +164,7 @@
 				//Services uitvogelen iets fetchen vanuit userinventory
 				pet = PetService.GetPet(user.Id);
 				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
-				HealthBar = PetService.ChangeHealth(pet, allWorkouts);
+				HealthBar = PetService.ChangeHealth(user, pet, allWorkouts);
 				LoggedIn = true;
 			}
 
