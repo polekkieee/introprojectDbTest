@@ -61,7 +61,13 @@
 					@*dit is nu hardcoded, maar we moeten ff alle imgs even groot maken want anders loop je echt eindeloos te klooien
 						in t css file met alle percentages voor positionering*@
 					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" />
-					<img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" />
+					
+					@if (!string.IsNullOrEmpty(pet.Clothing))
+					{
+						<img class="img-clothes" src="@($"Clothing/{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" />
+					}
+
+					@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@
 				</div>
 			</div>
 		}
@@ -120,6 +126,8 @@
 			}
 		</div>
 	</main>
+
+
 	@*
 	<svg width="600" height="200" xmlns="https://localhost:7068/pets"> </svg>
 	<img src="bunny.png"
@@ -160,8 +168,8 @@
 			{
 
 				user = UserService.GetUserById(loggedInUserId);
-				//hier doen wat er gebeurt als ingelogd?
-				//Services uitvogelen iets fetchen vanuit userinventory
+
+
 				pet = PetService.GetPet(user.Id);
 				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
 				HealthBar = PetService.ChangeHealth(user, pet, allWorkouts);
@@ -174,34 +182,30 @@
 
 	}
 
-	private async Task UseItem(UserInventory item)
+	private async Task UseItem(UserInventory invItem)
 	{
-		// try
-		// {
-		// 	
-		// 	var currentItem = userInventory.FirstOrDefault(i => i.Id == item.Id);
-		// 	if (currentItem != null && currentItem.Quantity > 0)
-		// 	{
-		// 		currentItem.Quantity--;
+		// Get the item details
+		var item = ItemService.GetItemById(invItem.ItemId);
 
-		// 		Update the inventory in the database
-		// 		UserInventoryService.UpdateInventoryItem(item);
+		if (item.Type == "food")
+		{
+			
+			pet.Food_bar = Math.Min(100, pet.Food_bar + 20); 
+			PetService.UpdatePet(pet);
 
-		// 		
-		// 	}
-		// 	else
-		// 	{
-		// ("Item is not available or out of stock.");
-		// 	}
-		// }
-		// catch (Exception ex)
-		// {
+			
+			invItem.Quantity -= 1;
+			UserInventoryService.UpdateUserInventoryItem(invItem);
+		}
+		else if (item.Type == "outfit")
+		{
+			
+			pet.Clothing = item.Name;
+			PetService.UpdatePet(pet);
+		}
+
 		
-		// }
-
 		userInventory = UserInventoryService.GetInventory(user.Id);
-
-	
 		await InvokeAsync(StateHasChanged);
 	}
 
