@@ -96,6 +96,8 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
+  
+
         public void UpdateUserInventoryItem(UserInventory userinv)
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())

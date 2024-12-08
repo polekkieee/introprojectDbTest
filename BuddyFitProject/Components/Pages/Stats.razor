@@ -34,10 +34,17 @@
         <br />
         <button class="btn btn-primary" @onclick="LoadStatsRefresh">Load Stats</button>
         <br />
+
+        <div class="button-group">
+            <button class="btn btn-secondary" @onclick="() =>ViewPeriod('w')">Weekly</button>
+            <button class="btn btn-secondary" @onclick="() =>ViewPeriod('m')">Monthly</button>
+            <button class="btn btn-secondary" @onclick="() =>ViewPeriod('y')">Yearly</button>
+        </div>
+
         <br />
 
         <main>
-            <h4>@User.Username 's Statistics</h4>
+            <h4><strong>@User.Username 's Statistics</strong></h4>
 
             <table class="table">
                 <thead>
@@ -62,6 +69,23 @@
                     }
                 </tbody>
             </table>
+
+            <div class="bar-wrapper">
+                @foreach (var s in UserStatistics)
+                {
+                    var exerciseName = @ExerciseService.GetExerciseById(s.ExerciseId).Name;
+                    var exerciseWidth = BarWidth(@s.Total_minutes);
+
+                    <div class="bar-container">
+                        <span class="bar-text">@exerciseName</span>
+                        <div class="bars">
+                            <div class="bar" style="width:@exerciseWidth%"></div>
+                        </div>
+                        <span class="bar-minutes">@s.Total_minutes.ToString()</span>
+                    </div>
+                }
+            </div>
+
         </main>
 
 
@@ -74,13 +98,14 @@
 
     }
 
-    </body>
+</body>
 @code {
     private List<UserStatistics> UserStatistics = new();
     private Users? User;
     private Pets? Pet;
 
     private bool LoggedIn = false;
+    private int MinutesAmount { get; set; } = 1;
 
     private void LoadStats()
     {
@@ -96,6 +121,41 @@
             Console.WriteLine($"Error updating stats: {ex.Message}");
         }
     }
+
+    private async Task ViewPeriod (char time)
+    {//w is week m is maand en y is jaar; kan geen strings doen door "" gebruik??
+        try
+        {
+            UserStatisticsService.UpdateUserStatistics(User.Id);
+                // Fetch statistics for the selected timeframe
+                UserStatistics = UserStatisticsService.GetStatisticsByUserAndTime(User.Id, time);
+
+                // Update the max minutes for the bar chart
+                if (UserStatistics.Any())
+                {
+                    MinutesAmount = UserStatistics.Max(s => s.Total_minutes);
+
+                await InvokeAsync(StateHasChanged);
+                }
+            }
+            catch (Exception ex)
+            {
+               
+            }
+        
+    }
+    private int BarWidth (int minutes)
+    {
+        try
+        {
+           
+            return minutes / MinutesAmount * 100;
+        }
+        catch{
+            return 100;
+        }
+    }
+
 
     private void LoadStatsRefresh()
     {
@@ -131,6 +191,7 @@
                 User = UserService.GetUserById(loggedInUserId);
                 Pet = PetService.GetPet(User.Id);
                 LoadStats();
+                await ViewPeriod('w');
 
                 LoggedIn = true;
             }

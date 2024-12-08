@@ -71,11 +71,11 @@
 		}
 
 		<div class="inventory-section">
-			<h2>@user.Username's inventory</h2>
+			<h2<strong>@user.Username's inventory</strong></h2>
 			@if (userInventory.Any())
 			{
 				<div class="food-items">
-					<h3>Food</h3>
+					<h3><strong>Food</strong></h3>
 					<ul class="inventory-list">
 
 						@foreach (var inventoryItem in userInventory)
@@ -85,7 +85,7 @@
 								<li class="inventory-item">
 									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
 									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
-									<p>Quantity: @inventoryItem.Quantity</p>
+									<p>@inventoryItem.Quantity x </p>
 									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
 								</li>
 							}
@@ -95,7 +95,7 @@
 				</div>
 
 				<div class="clothing-items">
-					<h3>Clothing</h3>
+					<h3><strong>Clothing</strong></h3>
 					<ul class="inventory-list">
 						@foreach (var inventoryItem in userInventory)
 						{
@@ -104,7 +104,7 @@
 								<li class="inventory-item">
 									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
 									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
-									<p>Quantity: @inventoryItem.Quantity</p>
+									<p>@inventoryItem.Quantity</p>
 									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
 								</li>
 							}
@@ -170,9 +170,34 @@
 
 	private async Task UseItem(UserInventory item)
 	{
+		// try
+		// {
+		// 	
+		// 	var currentItem = userInventory.FirstOrDefault(i => i.Id == item.Id);
+		// 	if (currentItem != null && currentItem.Quantity > 0)
+		// 	{
+		// 		currentItem.Quantity--;
 
+		// 		Update the inventory in the database
+		// 		UserInventoryService.UpdateInventoryItem(item);
 
-		await OnInitializedAsync();
+		// 		
+		// 	}
+		// 	else
+		// 	{
+		// ("Item is not available or out of stock.");
+		// 	}
+		// }
+		// catch (Exception ex)
+		// {
+		
+		// }
+
+		userInventory = UserInventoryService.GetInventory(user.Id);
+
+	
+		await InvokeAsync(StateHasChanged);
 	}
+
 }
 

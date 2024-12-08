@@ -35,6 +35,6 @@ namespace BuddyFitProject.Components.Services
                 return HealthBarPercentage;
             }
         }
-
+      
     }
 }
