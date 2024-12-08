@@ -45,6 +45,6 @@ namespace BuddyFitProject.Components.Services
             }
             return pet.Health_bar;
         }
-
+      
     }
 }

@@ -11,7 +11,6 @@
 @inject Services.ItemService ItemService
 @inject Services.PetService PetService
 @inject Services.UserInventoryService UserInventoryService
-@inject Services.WorkoutSessionService WorkoutSessionService
 @rendermode InteractiveServer
 
 
@@ -25,12 +24,12 @@
 <div class="coin-label">@user.Coins</div>
 
 <div class="level-coin">lvl</div>
-<div class="level-label">???</div>
+<div class="level-label">@pet.Level</div>
 
 
 <body>
 	<header>
-		<h1>Pet</h1>
+		<h1>@user.Username's Fit Buddy</h1>
 	</header>
 
 	<br />
@@ -72,24 +71,47 @@
 		}
 
 		<div class="inventory-section">
-			<h2>@user.Username's inventory</h2>
+			<h2<strong>@user.Username's inventory</strong></h2>
 			@if (userInventory.Any())
 			{
-				<ul class="inventory-list">
-					@foreach (var inventoryItem in userInventory)
-					{
-						if (ItemService.GetItemById(inventoryItem.ItemId).Type == "food" && inventoryItem.Quantity > 0)
-						{
-							<li class="inventory-item">
-								<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
-								<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
-								<p>Quantity: @inventoryItem.Quantity</p>
-								<button @onclick="() => UseItem(inventoryItem)">Use</button>
-							</li>
-						}
+				<div class="food-items">
+					<h3><strong>Food</strong></h3>
+					<ul class="inventory-list">
 
-					}
-				</ul>
+						@foreach (var inventoryItem in userInventory)
+						{
+							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "food" && inventoryItem.Quantity > 0)
+							{
+								<li class="inventory-item">
+									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
+									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
+									<p>@inventoryItem.Quantity x </p>
+									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
+								</li>
+							}
+						}
+					</ul>
+					
+				</div>
+
+				<div class="clothing-items">
+					<h3><strong>Clothing</strong></h3>
+					<ul class="inventory-list">
+						@foreach (var inventoryItem in userInventory)
+						{
+							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "outfit" && inventoryItem.Quantity > 0)
+							{ 
+								<li class="inventory-item">
+									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
+									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
+									<p>@inventoryItem.Quantity</p>
+									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
+								</li>
+							}
+							
+						}
+					</ul>
+				</div>
 			}
 			else
 			{
@@ -115,7 +137,6 @@
 	private Users? user;
 	private Pets? pet;
 	private List<UserInventory> userInventory = new();
-	private List<WorkoutSessions> allWorkouts = new();
 
 	private bool LoggedIn = false;
 	private int Id { get; set; }
@@ -137,14 +158,11 @@
 			{
 
 				user = UserService.GetUserById(loggedInUserId);
-				//hier doen wat er gebeurt als ingelogd?
-				//Services uitvogelen iets fetchen vanuit userinventory
-				pet = PetService.GetPet(user.Id);
-				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
-				HealthBar = PetService.ChangeHealth(pet, allWorkouts);
+				HealthBar = PetService.ChangeHealthBar(user.Id);
 				LoggedIn = true;
 			}
 
+			pet = PetService.GetPet(user.Id);
 			userInventory = UserInventoryService.GetInventory(user.Id);
 		}
 
@@ -152,13 +170,34 @@
 
 	private async Task UseItem(UserInventory item)
 	{
-		if (false) //uitvogelen hoe t werkt met die foreign keys om via via bij item type te komen
-		{
+		// try
+		// {
+		// 	
+		// 	var currentItem = userInventory.FirstOrDefault(i => i.Id == item.Id);
+		// 	if (currentItem != null && currentItem.Quantity > 0)
+		// 	{
+		// 		currentItem.Quantity--;
 
-		}
+		// 		Update the inventory in the database
+		// 		UserInventoryService.UpdateInventoryItem(item);
 
+		// 		
+		// 	}
+		// 	else
+		// 	{
+		// ("Item is not available or out of stock.");
+		// 	}
+		// }
+		// catch (Exception ex)
+		// {
+		
+		// }
 
-		await OnInitializedAsync();
+		userInventory = UserInventoryService.GetInventory(user.Id);
+
+	
+		await InvokeAsync(StateHasChanged);
 	}
+
 }
 

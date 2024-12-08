@@ -1,17 +1,28 @@
 ﻿
-body{
-    background-color:hotpink;
+body {
+    color: white;
 }
 
-     h1 {
-        text-align: center;
-        margin-bottom: 40px;
-        font-family: "Montserrat", sans-serif;
-        font-size: 4rem;
-        color: #ffffff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-        margin: 0px 20px 0px 0px;
-    }
+table {
+    color: white;
+}
+
+
+h1 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 4rem;
+    color: #ffffff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    margin: 0px 20px 0px 0px;
+}
+h4 {
+    font-size: 1.5rem;
+    color: floralwhite;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    margin-bottom: 10px;
+}
 
 
 main {
@@ -20,41 +31,8 @@ main {
     align-items: center;
     gap: 20px;
 }
-    main h4 {
-        font-size: 1.5rem;
-        color: #ffe1e6;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
-        margin-bottom: 10px;
-    }
 
-div.input {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 20px;
-    width: 80%;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-    div.input label {
-        font-size: 1.8rem;
-        color: #ffe1e6;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
-        margin-bottom: 10px;
-    }
-
-div.message {
-    text-align: center;
-    margin-top: 20px;
-}
-
-    div.message p {
-        font-style: italic;
-        font-size: 1.3rem;
-        color: #ffffff;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-    }
+  
 
 div.button-group {
     display: flex;
@@ -62,17 +40,53 @@ div.button-group {
     align-items: center;
     gap: 10px;
     margin-top: 15px;
+    justify-content: center;
 }
 
-btn {
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
+
+.bar-wrapper {
+    width: 80%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    justify-content: space-around;
 }
+.bar-container {
+    display: flex;
+    align-items: center;
+}
+.bar-text {
+    flex: 1;
+    font-size: 1.5rem;
+    color: floralwhite;
+    text-align: right;
+    padding-right: 20px;
+
+}
+.bar-minutes {
+    flex: 1;
+    font-size: 1.5rem;
+    color: floralwhite;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    
+}
+.bars {
+    flex: 4;
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    height: 50px;
+    align-items: center;
+   
+}
+.bar {
+    height: 100%;
+    background: hotpink;
+    border-radius: 5px;
+}
+
 
 .coin {
     position: absolute;
@@ -132,4 +146,3 @@ btn {
     color: #fff;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
-/* hier moet uiteindelijk ipv 1000 en 10 coinsamount en Level moeten staan zoals in workoutscherm*/

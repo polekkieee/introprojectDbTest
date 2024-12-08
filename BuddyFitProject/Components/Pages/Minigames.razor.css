@@ -1,0 +1,91 @@
+﻿
+/*.canvas {
+    display: block;
+    margin: 20px auto;
+    border: 2px solid #000;
+    background-color: #cce7ff;
+}*/
+
+.game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    margin: 20px auto;
+    border: 2px solid black;
+    background-color: #87CEEB;
+    overflow: hidden;
+}
+
+.bird {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.pipe-top {
+    background-color: green; /* Top pipe color */
+    border-bottom: 5px solid darkgreen; /* Accent to make it visually distinct */
+    position: absolute;
+    width: 50px;
+}
+
+.pipe-bottom {
+    background-color: lightgreen; /* Bottom pipe color */
+    border-top: 5px solid darkgreen; /* Accent to differentiate */
+    position: absolute;
+    width: 50px;
+}
+
+
+.cloud {
+    position: relative;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0,0,0, 0.2);
+    opacity: 0.8;
+    animation: float 4s infinite linear;
+}
+
+.sun{
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: 20px;
+    right: 20px;
+    background-color: yellow;
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(255,255,0, 0.8)
+}
+
+.score {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    color: black;
+}
+
+.start-button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+
+.start-button:disabled, flap-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+@keyframes float {
+    0% {transform: translateY(0px);}
+    50% {transform: translateY(10px);}
+    100% {transform: translateY(0px);}
+}
