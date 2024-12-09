@@ -21,12 +21,12 @@
 </head>
 
 @if(LoggedIn){
+
 	<div class="coin">$</div>
-<div class="coin-label">@user.Coins</div>
+	<div class="coin-label">@user.Coins</div>
 
-<div class="level-coin">lvl</div>
-<div class="level-label">@pet.Level</div>
-
+	<div class="level-coin">lvl</div>
+	<div class="level-label">@pet.Level</div>
 
 	<header>
 		<h1>@user.Username's Fit Buddy</h1>
@@ -34,10 +34,11 @@
 
 	<br />
 	<main>
+		@* Null checker for both the Pet and User Inventory, otherwise the page won't load and/or show errors *@
 		@if (pet != null)
 		{
-			<div class="pet-section">
-				<div class="show-pet">
+			<div class="pet-section"> @* Pet section is the left side of the page and displays the Pet*@
+				<div class="pet-stats"> 
 					<h2>@pet.Name (Level: @pet.Level)</h2>
 					<br />
 					<p>Health: @HealthBar %</p>
@@ -57,16 +58,14 @@
 				</div>
 				<br />
 				<div class="img-wrapper">
-					@*dit is nu hardcoded, maar we moeten ff alle imgs even groot maken want anders loop je echt eindeloos te klooien
-						in t css file met alle percentages voor positionering*@
-					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" />
-					
-					@if (!string.IsNullOrEmpty(pet.Clothing))
+					@* We are currently working on the images of the items. As we do not have all the pictures ready yet, only the 'tutu'-item works 
+						on the bear right now. The other images don't have the correct positioning in the razor.css file *@
+					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" /> 
+					@if (!string.IsNullOrEmpty(pet.Clothing)) @* Again, a null-checker to avoid the page not loading due to a null value *@
 					{
 						<img class="img-clothes" src="@($"Clothing/{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" />
 					}
-
-					@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@
+					@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@ @* This is the hardcoded tutu image that works on the bear*@
 				</div>
 			</div>
 		}
@@ -76,16 +75,17 @@
 			<p>No pet found!</p>
 		}
 
-		<div class="inventory-section">
+		@* UserInventory section is the right side of the page and displays the the Food-items on the uppercolumn and Outfit-items on the lower column *@
+		<div class="inventory-section"> 
 			<h2><strong>@user.Username's inventory</strong></h2>
-			@if (userInventory.Any())
+			@if (userInventory.Any()) @* Null checker to avoid null-errors*@
 			{
 				<div class="food-items">
 					<h3><strong>Food</strong></h3>
 					<ul class="inventory-list">
-
 						@foreach (var inventoryItem in userInventory)
 						{
+							@* Each item in UserInventory is checked to see whether it's a food. If so, it will be displayed and the User is able to use it *@
 							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "food" && inventoryItem.Quantity > 0)
 							{
 								<li class="inventory-item">
@@ -97,7 +97,6 @@
 							}
 						}
 					</ul>
-
 				</div>
 
 				<div class="clothing-items">
@@ -105,6 +104,7 @@
 					<ul class="inventory-list">
 						@foreach (var inventoryItem in userInventory)
 						{
+							@* Same logic for Food-items is applied here *@
 							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "outfit" && inventoryItem.Quantity > 0)
 							{ 
 								<li class="inventory-item">
@@ -114,27 +114,25 @@
 									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
 								</li>
 							}
-
 						}
 					</ul>
 				</div>
 			}
+
 			else
 			{
 				<p>Inventory is empty</p>
 			}
 		</div>
 	</main>
-
 }
+
 else
 {
 	<h1>You must be logged in to access this page.</h1>
 	<br />
 	<a href="login" class="btn btn-primary">Go to Login</a>
 }
-
-
 
 
 @code {
