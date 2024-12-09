@@ -20,6 +20,7 @@ CREATE TABLE Users (
     coins INT DEFAULT 0,
     resetcode NVARCHAR(50),
     validatecode NVARCHAR(50),
+    register_moment DATETIME2 DEFAULT GETDATE() NOT NULL,
 );
 GO
 
@@ -32,6 +33,7 @@ CREATE TABLE Pets (
     level INT DEFAULT 1,
     food_bar INT DEFAULT 100,
     health_bar INT DEFAULT 100,
+    stamina_bar INT DEFAULT 100,
     FOREIGN KEY (userId) REFERENCES Users(Id) ON DELETE CASCADE
 );
 GO

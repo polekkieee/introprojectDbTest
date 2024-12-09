@@ -48,8 +48,12 @@
             </div>
 
         </EditForm>
-
-        <p>@errorMessage</p>
+        <br />
+        
+        <div class="message">
+            <p>@errorMessage</p>
+        </div>
+    
 
     </main>
 </body>
@@ -64,6 +68,7 @@
     {
         if (!UserService.UserExists(User.Username, User.Email))
         {
+            User.Register_moment = DateTime.Now;
             User.Start_condition = "new";
             User.Gender = "new";
             User.Resetcode = "12345678";
