@@ -61,7 +61,12 @@
 					@*dit is nu hardcoded, maar we moeten ff alle imgs even groot maken want anders loop je echt eindeloos te klooien
 						in t css file met alle percentages voor positionering*@
 					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" />
-					<img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" />
+					@if (!string.IsNullOrEmpty(pet.Clothing))
+					{
+						<img class="img-clothes" src="@($"Clothing/{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" />
+					}
+
+					@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@
 				</div>
 			</div>
 		}
