@@ -52,7 +52,7 @@
 					<br />
 					<p>Stamina: @pet.Stamina_bar %</p>
 					<div class="bar">
-						<div class="bar-filled" style="width:@pet.Stamina_bar%;"></div>
+						<div class="bar-filled" style="width:@StaminaBar%;"></div>
 					</div>
 				</div>
 				<br />
@@ -150,6 +150,7 @@
 	private int Id { get; set; }
 
 	private int HealthBar { get; set; }
+	private int StaminaBar { get; set; }
 
 	protected override async void OnInitialized()
 	{
@@ -166,11 +167,12 @@
 			{
 
 				user = UserService.GetUserById(loggedInUserId);
-
-
+				//hier doen wat er gebeurt als ingelogd?
+				//Services uitvogelen iets fetchen vanuit userinventory
 				pet = PetService.GetPet(user.Id);
 				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
 				HealthBar = PetService.ChangeHealth(user, pet, allWorkouts);
+				StaminaBar = PetService.ChangeStamina(user, pet, allWorkouts);
 				LoggedIn = true;
 			}
 

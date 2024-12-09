@@ -95,8 +95,6 @@ else
 				pet = PetService.GetPet(user.Id);
 				petimg = $"Pets/{pet.Type.ToLower()}.png";
 
-				StaminaBar = pet.Stamina_bar;
-
 			}
 
 		}
@@ -188,13 +186,14 @@ else
 		if (pet != null)
 		{
 			pet.Stamina_bar = Math.Max(0, pet.Stamina_bar - 5); // Reduce stamina by 5, ensuring it doesn't go below 0
-			// Update the UI-bound StaminaBar property
+																// Update the UI-bound StaminaBar property
 			StaminaBar = pet.Stamina_bar;
 			PetService.UpdatePet(pet); // Save the updated pet state to the database
 
 			StateHasChanged();
 		}
 	}
+
 
 	private Pipe GeneratePipe(int xPosition)
 	{

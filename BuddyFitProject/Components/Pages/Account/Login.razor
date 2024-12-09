@@ -23,6 +23,7 @@
   <h1>Log in</h1>
     </header>
     <main>
+<!--Form where the user can fill in their username and password:-->
 <EditForm FormName="LoginUser" Model="@User" OnValidSubmit="LoginUser">
 	<div class="input">
                 <label for="Username" class="label">Username:</label>
@@ -50,18 +51,17 @@
 
 @code {
     [SupplyParameterFromForm]
-    private Users User { get; set; } = new();
+    private Users User { get; set; } = new(); //Holds the information for the LoginUser form
 
     [CascadingParameter]
-    public HttpContext httpcontext { get; set; } = default!;
+    public HttpContext httpcontext { get; set; } = default!; //Provides HTTP context to help signing in the user
 
     private string errorMessage;
 
-
-
+    //Handles the login logic:
     private async Task LoginUser()
     {
-        bool isUserValid = UserService.ValidateUser(User.Username, User.Password);
+        bool isUserValid = UserService.ValidateUser(User.Username, User.Password); //Looks if the user exists
 
         if (!isUserValid)
         {
@@ -72,7 +72,7 @@
         }
 
 
-        var claims = new List<Claim>
+        var claims = new List<Claim> //Creates claims for the authenticated user
 		{
 			new Claim(ClaimTypes.Name, User.Username),
 			new Claim(ClaimTypes.NameIdentifier, User.Id.ToString())
@@ -84,11 +84,11 @@
 
         bool newUser = UserService.NewUser(User.Username, User.Start_condition);
         if (newUser)
-        {navigationManager.NavigateTo("/userinfo"); 
+        {navigationManager.NavigateTo("/userinfo"); //Navigates to the userinfo page for new users
         }
         else
         {
-            navigationManager.NavigateTo("/session");
+            navigationManager.NavigateTo("/session"); //Navigates to the session page for existing users
         }
 	}
 }

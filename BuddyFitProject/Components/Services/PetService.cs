@@ -37,7 +37,7 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-        public int ChangeHealth(Users user, Pets pet, List<WorkoutSessions> Workouts) // Dit beter hier houden
+        public int ChangeHealth(Users user, Pets pet, List<WorkoutSessions> Workouts) //Logic to change the health percentage
         {
             int totalMinutes = 0;
             foreach (var session in Workouts)
@@ -48,15 +48,15 @@ namespace BuddyFitProject.Components.Services
             {
                 pet.Health_bar = totalMinutes / 2;
             }
-            pet.Health_bar = Math.Min(100, pet.Health_bar);
-            TimeSpan Ts = DateTime.Now - user.Register_moment;
-            pet.Health_bar -= Ts.Hours;
-            pet.Health_bar = Math.Max(0, pet.Health_bar);
+            pet.Health_bar = Math.Min(100, pet.Health_bar); //So it doesn't go over the 100
+            TimeSpan Ts = DateTime.Now - user.Register_moment; //Timespan since user was registered
+            pet.Health_bar -= Ts.Hours; //So the healthbar lowers one every hour
+            pet.Health_bar = Math.Max(0, pet.Health_bar); //So it doesn't go under 0
             UpdatePet(pet);
             return pet.Health_bar;
         }
 
-        public int ChangeStamina(Users user, Pets pet, List<WorkoutSessions> Workouts) // Dit moet miss beter in Session
+        public int ChangeStamina(Users user, Pets pet, List<WorkoutSessions> Workouts) //Logic to change the stamina percentage
         {
             int totalMinutes = 0;
             foreach (var session in Workouts)

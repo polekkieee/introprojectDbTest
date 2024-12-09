@@ -17,6 +17,7 @@
 	<main>
 
 		<p>Are you sure? Your pet will miss you!</p>
+		<!--Form to fill in your credentials to delete your account:-->
 		<EditForm FormName="DeleteYourUser" Model="@User" OnValidSubmit="DeleteUser">
 			<div class="input">
 				<label for="Username">Username:</label>
@@ -42,20 +43,20 @@
 
 @code {
 	[SupplyParameterFromForm]
-	private Users User { get; set; } = new();
+	private Users User { get; set; } = new(); //Holds the information for the DeleteYourUser form
 
 	private string errorMessage = string.Empty;
 
-	private async Task DeleteUser()
+	private async Task DeleteUser() //Handles the logic to delete the account
 	{
 		bool isUserValid = UserService.ValidateUserByEmaiUsernameAndPassword(User.Username, User.Email, User.Password);
 
-		if (!isUserValid)
+		if (!isUserValid) //When one or more of the username, email or password are incorrect
 		{
 			errorMessage = "Your username, email or password is invalid.";
 			return;
 		}
-		else
+		else //When they're all three correct
 		{
 			UserService.DeleteUser(User);
 		}
