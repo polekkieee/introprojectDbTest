@@ -37,7 +37,7 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-        public int ChangeHealth(Users user, Pets pet, List<WorkoutSessions> Workouts)
+        public int ChangeHealth(Users user, Pets pet, List<WorkoutSessions> Workouts) // Dit beter hier houden
         {
             int totalMinutes = 0;
             foreach (var session in Workouts)
@@ -56,7 +56,7 @@ namespace BuddyFitProject.Components.Services
             return pet.Health_bar;
         }
 
-        public int ChangeStamina(Users user, Pets pet, List<WorkoutSessions> Workouts)
+        public int ChangeStamina(Users user, Pets pet, List<WorkoutSessions> Workouts) // Dit moet miss beter in Session
         {
             int totalMinutes = 0;
             foreach (var session in Workouts)
@@ -65,9 +65,10 @@ namespace BuddyFitProject.Components.Services
             }
             if (pet.Stamina_bar <= 100)
             {
-                pet.Stamina_bar = Math.Max(0, totalMinutes / 5);
+                pet.Stamina_bar += Math.Max(0, totalMinutes / 50);
             }
             pet.Stamina_bar = Math.Min(100, pet.Stamina_bar);
+            pet.Stamina_bar = Math.Max(0, pet.Stamina_bar);
             UpdatePet(pet);
             return pet.Stamina_bar;
         }
