@@ -19,7 +19,6 @@
 
 <PageTitle> Store </PageTitle>
 
-
 	@if (LoggedIn)
 	{
 		<h1 class="h">Store</h1>
@@ -39,8 +38,7 @@
 			</div>
 
 			@if (foodSelected)
-			{
-
+			{	
 				<div class="storebox">
 					<div class="product-container">
 						@foreach (var item in Food)
@@ -131,7 +129,6 @@
 		<h1>You must be logged in to access this page.</h1>
 		<a href="login">Go to Login</a>
 	}
-
 
 @code {
 	private Users? User { get; set; }
@@ -228,7 +225,7 @@
 	}
 
 
-	private async Task BuyOutfit()
+	private void BuyOutfit()
 	{
 		responseMessage = string.Empty;
 		if (User.Coins >= SelectedOutfit.Price)
