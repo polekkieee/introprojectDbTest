@@ -28,7 +28,6 @@
 <div class="level-label">@pet.Level</div>
 
 
-<body>
 	<header>
 		<h1>@user.Username's Fit Buddy</h1>
 	</header>
@@ -51,9 +50,9 @@
 						<div class="bar-filled" style="width:@pet.Food_bar%;"></div>
 					</div>
 					<br />
-					<p>Stamina: @StaminaBar %</p>
+					<p>Stamina: @pet.Stamina_bar %</p>
 					<div class="bar">
-						<div class="bar-filled" style="width:@StaminaBar%;"></div>
+						<div class="bar-filled" style="width:@pet.Stamina_bar%;"></div>
 					</div>
 				</div>
 				<br />
@@ -61,7 +60,13 @@
 					@*dit is nu hardcoded, maar we moeten ff alle imgs even groot maken want anders loop je echt eindeloos te klooien
 						in t css file met alle percentages voor positionering*@
 					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" />
-					<img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" />
+					
+					@if (!string.IsNullOrEmpty(pet.Clothing))
+					{
+						<img class="img-clothes" src="@($"{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" />
+					}
+
+					@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@
 				</div>
 			</div>
 		}
@@ -101,7 +106,7 @@
 						@foreach (var inventoryItem in userInventory)
 						{
 							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "outfit" && inventoryItem.Quantity > 0)
-							{
+							{ 
 								<li class="inventory-item">
 									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
 									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
@@ -120,6 +125,8 @@
 			}
 		</div>
 	</main>
+
+
 	@*
 	<svg width="600" height="200" xmlns="https://localhost:7068/pets"> </svg>
 	<img src="bunny.png"
@@ -131,7 +138,6 @@
 	<img src="cat.png"
 	aria-hidden="true"
 	width="400">*@
-</body>
 
 
 @code {
@@ -144,7 +150,6 @@
 	private int Id { get; set; }
 
 	private int HealthBar { get; set; }
-	private int StaminaBar { get; set; }
 
 	protected override async void OnInitialized()
 	{
@@ -161,12 +166,11 @@
 			{
 
 				user = UserService.GetUserById(loggedInUserId);
-				//hier doen wat er gebeurt als ingelogd?
-				//Services uitvogelen iets fetchen vanuit userinventory
+
+
 				pet = PetService.GetPet(user.Id);
 				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
 				HealthBar = PetService.ChangeHealth(user, pet, allWorkouts);
-				StaminaBar = PetService.ChangeStamina(user, pet, allWorkouts);
 				LoggedIn = true;
 			}
 
@@ -176,35 +180,30 @@
 
 	}
 
-	private async Task UseItem(UserInventory item)
+	private void UseItem(UserInventory invItem)
 	{
-		// try
-		// {
-		//
-		//var currentItem = userInventory.FirstOrDefault(i => i.Id == item.Id);
-		//if (currentItem != null && currentItem.Quantity > 0)
-		//{
-		//currentItem.Quantity--;
+		// Get the item details
+		var item = ItemService.GetItemById(invItem.ItemId);
 
-		//Update the inventory in the database
-		//UserInventoryService.UpdateInventoryItem(item);
-		//}
-		//
-		// 	}
-		// 	else
-		// 	{
-		// ("Item is not available or out of stock.");
-		// 	}
-		// }
-		// catch (Exception ex)
-		// {
+		if (item.Type == "food")
+		{
+			pet.Food_bar = Math.Min(100, pet.Food_bar + 20); 
+			PetService.UpdatePet(pet);
 
-		// }
+			invItem.Quantity -= 1;
+			UserInventoryService.UpdateUserInventoryItem(invItem);
+		}
+		else if (item.Type == "outfit")
+		{
+			
+			pet.Clothing = item.Name;
+			PetService.UpdatePet(pet);
+		}
 
 		userInventory = UserInventoryService.GetInventory(user.Id);
+		navigationManager.NavigateTo(navigationManager.Uri, true);
 
 
-		await InvokeAsync(StateHasChanged);
 	}
 
 }

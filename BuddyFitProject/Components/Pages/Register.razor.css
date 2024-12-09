@@ -46,6 +46,19 @@ div.button-group {
     margin-top: 15px;
 }
 
+div.message {
+    text-align: center;
+    margin-top: 20px;
+}
+
+    div.message p {
+        font-style: italic;
+        font-size: 1.3rem;
+        color: #ffffff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+ 
 /*
     label {
     width: 6em;
