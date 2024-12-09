@@ -42,7 +42,8 @@
         </div>
 
         <br />
-
+        <p>@ErrorMessage</p>
+        <br>
         <main>
             <h4><strong>@User.Username 's Statistics</strong></h4>
 
@@ -95,7 +96,6 @@
         <h1>You must be logged in to access this page.</h1>
         <br />
         <a href="login" class="btn btn-primary">Go to Login</a>
-
     }
 
 </body>
@@ -107,6 +107,8 @@
     private bool LoggedIn = false;
     private int MinutesAmount { get; set; } = 1;
 
+    private string ErrorMessage;
+
     private void LoadStats()
     {
         try
@@ -117,8 +119,7 @@
         }
         catch (Exception ex)
         {
-            // Log error or show a User-friendly message
-            Console.WriteLine($"Error updating stats: {ex.Message}");
+           ErrorMessage = "Error loading stats";
         }
     }
 
@@ -127,7 +128,7 @@
         try
         {
             UserStatisticsService.UpdateUserStatistics(User.Id);
-                // Fetch statistics for the selected timeframe
+                // Fetch statistics 
                 UserStatistics = UserStatisticsService.GetStatisticsByUserAndTime(User.Id, time);
 
                 // Update the max minutes for the bar chart
@@ -168,7 +169,7 @@
         catch (Exception ex)
         {
             
-            Console.WriteLine($"Error updating stats: {ex.Message}");
+            ErrorMessage = "Error updating stats";
         }
     }
 

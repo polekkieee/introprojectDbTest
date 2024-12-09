@@ -17,8 +17,6 @@ namespace BuddyFitProject.Components.Services
             DbContextFactory = dbContext;
         }
 
-
-
         public Pets GetPet(int userId)
         {
             using (var dbContext = DbContextFactory.CreateDbContext())

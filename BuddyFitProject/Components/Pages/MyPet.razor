@@ -20,8 +20,8 @@
 	<link href="MyPet.razor.css" rel="stylesheet" />
 </head>
 
-
-<div class="coin">$</div>
+@if(LoggedIn){
+	<div class="coin">$</div>
 <div class="coin-label">@user.Coins</div>
 
 <div class="level-coin">lvl</div>
@@ -63,7 +63,7 @@
 					
 					@if (!string.IsNullOrEmpty(pet.Clothing))
 					{
-						<img class="img-clothes" src="@($"{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" />
+						<img class="img-clothes" src="@($"Clothing/{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" />
 					}
 
 					@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@
@@ -77,7 +77,7 @@
 		}
 
 		<div class="inventory-section">
-			<h2<strong>@user.Username's inventory</strong></h2>
+			<h2><strong>@user.Username's inventory</strong></h2>
 			@if (userInventory.Any())
 			{
 				<div class="food-items">
@@ -126,30 +126,25 @@
 		</div>
 	</main>
 
+}
+else
+{
+	<h1>You must be logged in to access this page.</h1>
+	<br />
+	<a href="login" class="btn btn-primary">Go to Login</a>
+}
 
-	@*
-	<svg width="600" height="200" xmlns="https://localhost:7068/pets"> </svg>
-	<img src="bunny.png"
-	aria-hidden="true"
-	width="400">
-	<img src="bear.png"
-	aria-hidden="false"
-	width="400">
-	<img src="cat.png"
-	aria-hidden="true"
-	width="400">*@
+
 
 
 @code {
 	private Users? user;
 	private Pets? pet;
 	private List<UserInventory> userInventory = new();
-
 	private List<WorkoutSessions> allWorkouts = new();
 	private bool LoggedIn = false;
-	private int Id { get; set; }
-
 	private int HealthBar { get; set; }
+
 
 	protected override async void OnInitialized()
 	{
@@ -166,28 +161,31 @@
 			{
 
 				user = UserService.GetUserById(loggedInUserId);
+				
+				// Boolean LoggedIn is changed to true so the user has access to the page
+				LoggedIn = true;
 
-
+				// User items are fetched from the database using the services
 				pet = PetService.GetPet(user.Id);
 				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
+				userInventory = UserInventoryService.GetInventory(user.Id);
 				HealthBar = PetService.ChangeHealth(user, pet, allWorkouts);
-				LoggedIn = true;
 			}
-
-			pet = PetService.GetPet(user.Id);
-			userInventory = UserInventoryService.GetInventory(user.Id);
 		}
-
 	}
+
 
 	private void UseItem(UserInventory invItem)
 	{
-		// Get the item details
+		// Fetch the item that the user wants to use from the database
 		var item = ItemService.GetItemById(invItem.ItemId);
 
+		// Check what kind of item it is
 		if (item.Type == "food")
 		{
-			pet.Food_bar = Math.Min(100, pet.Food_bar + 20); 
+			// The pet's food bar will go up whenever the user feeds their pet
+			// and the quantity will drop in the database, both using the method in the needed services
+			pet.Food_bar = Math.Min(100, pet.Food_bar + 5); 
 			PetService.UpdatePet(pet);
 
 			invItem.Quantity -= 1;
@@ -195,15 +193,14 @@
 		}
 		else if (item.Type == "outfit")
 		{
-			
+			// The clothing item is applied to the pet
 			pet.Clothing = item.Name;
 			PetService.UpdatePet(pet);
 		}
 
+		// The User Inventory will be fetched again in order to display the right quantity
 		userInventory = UserInventoryService.GetInventory(user.Id);
 		navigationManager.NavigateTo(navigationManager.Uri, true);
-
-
 	}
 
 }
