@@ -34,6 +34,7 @@ CREATE TABLE Pets (
     food_bar INT DEFAULT 100,
     health_bar INT DEFAULT 100,
     stamina_bar INT DEFAULT 100,
+    clothing NVARCHAR(50) NOT NULL,
     FOREIGN KEY (userId) REFERENCES Users(Id) ON DELETE CASCADE
 );
 GO
