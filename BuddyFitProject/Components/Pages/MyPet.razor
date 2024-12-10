@@ -28,7 +28,7 @@
 <div class="level-label">@pet.Level</div>
 
 
-<body>
+
 	<header>
 		<h1>@user.Username's Fit Buddy</h1>
 	</header>
@@ -61,10 +61,11 @@
 					@*dit is nu hardcoded, maar we moeten ff alle imgs even groot maken want anders loop je echt eindeloos te klooien
 						in t css file met alle percentages voor positionering*@
 					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" />
-					
+
 					@if (!string.IsNullOrEmpty(pet.Clothing))
 					{
-						<img class="img-clothes" src="@($"Clothing/{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" />
+						@* <img class="img-clothes" src="@($"Clothing/{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" /> *@
+						<img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" />
 					}
 
 					@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@
@@ -139,7 +140,6 @@
 	<img src="cat.png"
 	aria-hidden="true"
 	width="400">*@
-</body>
 
 
 @code {
@@ -189,24 +189,26 @@
 
 		if (item.Type == "food")
 		{
-			
+
 			pet.Food_bar = Math.Min(100, pet.Food_bar + 20); 
 			PetService.UpdatePet(pet);
 
-			
+
 			invItem.Quantity -= 1;
 			UserInventoryService.UpdateUserInventoryItem(invItem);
 		}
 		else if (item.Type == "outfit")
 		{
-			
+
 			pet.Clothing = item.Name;
 			PetService.UpdatePet(pet);
 		}
 
-		
+
 		userInventory = UserInventoryService.GetInventory(user.Id);
 		await InvokeAsync(StateHasChanged);
+
+		navigationManager.NavigateTo(navigationManager.Uri, true);
 	}
 
 }

@@ -21,20 +21,16 @@ namespace BuddyFitProject.Components.Services
 
         public Pets GetPet(int userId)
         {
-            using (var dbContext = DbContextFactory.CreateDbContext())
-            {
-                var pet = dbContext.Pets.FirstOrDefault(x => x.UserId == userId);
-                return pet;
-            }
+            using var dbContext = DbContextFactory.CreateDbContext();
+            var pet = dbContext.Pets.FirstOrDefault(x => x.UserId == userId);
+            return pet;
         }
 
         public void UpdatePet(Pets pet)
         {
-            using (var dbContext = this.DbContextFactory.CreateDbContext())
-            {
-                dbContext.Pets.Update(pet);
-                dbContext.SaveChanges();
-            }
+            using var dbContext = this.DbContextFactory.CreateDbContext();
+            dbContext.Pets.Update(pet);
+            dbContext.SaveChanges();
         }
 
         public int ChangeHealth(Users user,Pets pet, List<WorkoutSessions> Workouts)

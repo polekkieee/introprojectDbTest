@@ -19,123 +19,122 @@
 
 <PageTitle> Store </PageTitle>
 
-<body>
 	@if (LoggedIn)
-	{
-		<h1 class="h">Store</h1>
+{
+	<h1 class="h">Store</h1>
 
-		<div class="coin">$</div>
-		<div class="coin-label">@User.Coins</div>
+	<div class="coin">$</div>
+	<div class="coin-label">@User.Coins</div>
 
-		<div class="level-coin">lvl</div>
-		<div class="level-label">@Pet.Level</div>
+	<div class="level-coin">lvl</div>
+	<div class="level-label">@Pet.Level</div>
 
-		<div class="storepagebox">
-			<h3>What do you want to buy?</h3>
+	<div class="storepagebox">
+		<h3>What do you want to buy?</h3>
 
-			<div class="choosestore">
-				<span class="@foodbutton" @onclick='() => ToggleStore("food")'>Food</span>
-				<span class="@outfitsbutton" @onclick='() => ToggleStore("outfit")'>Outfits</span>
-			</div>
-
-			@if (foodSelected)
-			{
-
-				<div class="storebox">
-					<div class="product-container">
-						@foreach (var item in Food)
-						{
-							<div class="productbox" tabindex="@Food.IndexOf(item)" @onclick="() => UpdateSelectedFood(item)">
-								<div class="product">
-									<img style="width: inherit; object-fit:cover;" src=@($"{item.Name}.png") />
-								</div>
-							</div>
-						}
-					</div>
-
-					<div class="previewbox">
-						@if (SelectedFood != null)
-						{
-							<div class="previewoutfit">
-								<p>Buy @SelectedFood.Name </p>
-								<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"{SelectedFood.Name}.png") />
-							</div>
-							<div>
-								@SelectedFood.Price coins per piece
-							</div>
-
-							<div>
-								<InputNumber @bind-Value=SelectedFoodQuantity>Quantity</InputNumber>
-								<button class="buybutton" @onclick="BuyFood">Buy</button>
-							</div>
-							<div>
-								@responseMessage
-							</div>
-						}
-					</div>
-				</div>
-			}
-			else if (outfitSelected)
-			{
-				<div class="storebox">
-					<div class="product-container">
-						@foreach (var item in Outfits)
-						{
-							<div class="productbox" tabindex="@Outfits.IndexOf(item)" @onclick="() => UpdateSelectedOutfit(item)">
-								<div class="product">
-									<img style="width: inherit; object-fit:cover;" src=@($"{item.Name}.png") />
-
-									@if (UnlockedOutfits.Contains(item))
-									{
-										<span style="color: gray; text-decoration: line-through;">@item.Name</span>
-									}
-								</div>
-							</div>
-						}
-					</div>
-
-					<div class="previewbox">
-						@if (SelectedOutfit != null)
-						{
-							<div class="previewoutfit">
-								<p>Selected Outfit: </p>
-								<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"{SelectedOutfit.Name}.png") />
-							</div>
-							<div>
-								Price: @SelectedOutfit.Price
-							</div>
-							<div>
-								@if (UnlockedOutfits.Any(x => x.Id == SelectedOutfit.Id))
-								{
-									<button disabled class="buybutton">Owned</button>
-								}
-								else
-								{
-									<button class="buybutton" @onclick="BuyOutfit">Buy</button>
-								}
-							</div>
-							<div>
-								@responseMessage
-							</div>
-						}
-					</div>
-				</div>
-
-
-			}
+		<div class="choosestore">
+			<span class="@foodbutton" @onclick='() => ToggleStore("food")'>Food</span>
+			<span class="@outfitsbutton" @onclick='() => ToggleStore("outfit")'>Outfits</span>
 		</div>
 
-	}
-	else
-	{
-		<h1>You must be logged in to access this page.</h1>
-		<a href="login">Go to Login</a>
-	}
-</body>
+		@if (foodSelected)
+		{
+
+			<div class="storebox">
+				<div class="product-container">
+					@foreach (var item in Food)
+					{
+						<div class="productbox" tabindex="@Food.IndexOf(item)" @onclick="() => UpdateSelectedFood(item)">
+							<div class="product">
+								<img style="width: inherit; object-fit:cover;" src=@($"{item.Name}.png") />
+							</div>
+						</div>
+					}
+				</div>
+
+				<div class="previewbox">
+					@if (SelectedFood != null)
+					{
+						<div class="previewoutfit">
+							<p>Buy @SelectedFood.Name </p>
+							<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"{SelectedFood.Name}.png") />
+						</div>
+						<div>
+							@SelectedFood.Price coins per piece
+						</div>
+
+						<div>
+							<InputNumber @bind-Value=SelectedFoodQuantity>Quantity</InputNumber>
+							<button class="buybutton" @onclick="BuyFood">Buy</button>
+						</div>
+						<div>
+							@responseMessage
+						</div>
+					}
+				</div>
+			</div>
+		}
+		else if (outfitSelected)
+		{
+			<div class="storebox">
+				<div class="product-container">
+					@foreach (var item in Outfits)
+					{
+						<div class="productbox" tabindex="@Outfits.IndexOf(item)" @onclick="() => UpdateSelectedOutfit(item)">
+							<div class="product">
+								<img style="width: inherit; object-fit:cover;" src=@($"{item.Name}.png") />
+
+								@if (UnlockedOutfits.Contains(item))
+								{
+									<span style="color: gray; text-decoration: line-through;">@item.Name</span>
+								}
+							</div>
+						</div>
+					}
+				</div>
+
+				<div class="previewbox">
+					@if (SelectedOutfit != null)
+					{
+						<div class="previewoutfit">
+							<p>Selected Outfit: </p>
+							<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"{SelectedOutfit.Name}.png") />
+						</div>
+						<div>
+							Price: @SelectedOutfit.Price
+						</div>
+						<div>
+							@if (UnlockedOutfits.Any(x => x.Id == SelectedOutfit.Id))
+							{
+								<button disabled class="buybutton">Owned</button>
+							}
+							else
+							{
+								<button class="buybutton" @onclick="BuyOutfit">Buy</button>
+							}
+						</div>
+						<div>
+							@responseMessage
+						</div>
+					}
+				</div>
+			</div>
+
+
+		}
+	</div>
+
+}
+else
+{
+	<h1>You must be logged in to access this page.</h1>
+	<a href="login">Go to Login</a>
+}
 
 @code {
-	private Users? User { get; set; }
-	private Pets? Pet { get; set; }
+
+	private Users? User { get; set; } 
+	private Pets? Pet { get; set; } 
 
 	private string responseMessage = string.Empty;
 
