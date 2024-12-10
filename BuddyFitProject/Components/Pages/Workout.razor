@@ -90,6 +90,7 @@
     private double Difficulty = 1;
 
 
+    private int elementscheme = 0; //aantal elementen van eigen schema gecompleet
 
     private int CurrentMinutes = 0;
     private int Next100mins = 0;
@@ -124,7 +125,7 @@
     private int StairWalkingSpeed = 0;
 
     private int coinsamount = 1000; // De hoeveelheid coins
-    private int level = 10; // Hoogte level gebruiker
+    private int level = 0; // Hoogte level gebruiker
 
 
     // Methode die wordt aangeroepen bij de knopdruk
@@ -150,102 +151,119 @@
         if (PushUpMinutes >= PushUpschema)
         {
             coinsamount += 50;
+            elementscheme++;
             JumpingJacksschema = null;
         }
 
         if (PlankMinutes >= Plankschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Plankschema = null;
         }
 
         if (BurpeesMinutes >= Burpeesschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Burpeesschema = null;
         }
 
         if (JumpingJacksMinutes >= JumpingJacksschema)
         {
             coinsamount += 50;
+            elementscheme++;
             JumpingJacksschema = null;
         }
 
         if (BenchPressMinutes >= BenchPressschema)
         {
             coinsamount += 50;
+            elementscheme++;
             BenchPressschema = null;
         }
 
         if (DumbbellRowsMinutes >= DumbbellRowsschema)
         {
             coinsamount += 50;
+            elementscheme++;
             DumbbellRowsschema = null;
         }
 
         if (CurlsMinutes >= Curlsschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Curlsschema = null;
         }
 
         if (PullUpMinutes >= PullUpschema)
         {
             coinsamount += 50;
+            elementscheme++;
             PullUpschema = null;
         }
 
         if (LegPressMinutes >= LegPressschema)
         {
             coinsamount += 50;
+            elementscheme++;
             LegPressschema = null;
         }
 
         if (WalkingMinutes >= Walkingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Walkingschema = null;
         }
 
         if (CyclingMinutes >= Cyclingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Cyclingschema = null;
         }
 
         if (SwimmingMinutes >= Swimmingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Swimmingschema = null;
         }
 
         if (RunningMinutes >= Runningschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Runningschema = null;
         }
 
         if (SprintingMinutes >= Sprintingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Sprintingschema = null;
         }
 
         if (WallsitsMinutes >= Wallsitsschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Wallsitsschema = null;
         }
 
         if (RopeJumpingMinutes >= RopeJumpingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             RopeJumpingschema = null;
         }
 
         if (StairWalkingMinutes >= StairWalkingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             StairWalkingschema = null;
         }
 
