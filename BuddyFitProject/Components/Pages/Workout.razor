@@ -26,6 +26,7 @@
     private bool SprintingSelected = false;
     private bool StairWalkingSelected = false;
 
+    //minuten die wordt meegegeven aan de geselecteerde exercises in user schema. Staan op null, zodat de user niet bonus krijgt voor niks doen
     private int? PushUpschema = null;
     private int? Plankschema = null;
     private int? Burpeesschema = null;
@@ -96,6 +97,7 @@
     private int Next100mins = 0;
     private int lastBonus100 = 0; // Houdt het laatste honderdtal bij waarvoor bonus is gegeven
 
+    //variabelen voor het loggen
     private int PushUpMinutes = 0;
     private int PlankMinutes = 0;
     private int BurpeesMinutes = 0;
@@ -128,14 +130,13 @@
     private int level = 0; // Hoogte level gebruiker
 
 
-    // Methode die wordt aangeroepen bij de knopdruk
+    // Methode aangeroepen door knop die hoeveelheid coins veranderd
     private void UpdateCoinsAmount()
     {
-        // Bijwerken van coins hoeveelheid op basis van de minuten voor elke oefening
+        //userinfo dat effect heeft op het coinalgoritme
         if (Male)
             Gender = 1;
         else Gender = 1.2;  
-
 
         if (Terrible)
             Difficulty = 2;
@@ -148,6 +149,7 @@
         if (Great)
             Difficulty = 0.7;
 
+            //bonus coins voor het houden aan user gemaakte schema
         if (PushUpMinutes >= PushUpschema)
         {
             coinsamount += 50;
@@ -268,6 +270,7 @@
         }
 
 
+        // Bijwerken van coins hoeveelheid op basis van de minuten voor elke oefening
 
         coinsamount = (int) (coinsamount + Gender * 0.1 * Age * Difficulty * 
             ( + PushUpMinutes * 150
@@ -288,7 +291,7 @@
             + RopeJumpingMinutes * 120
             + StairWalkingMinutes * 140));
 
-        // Gewicht en snelheid alleen toevoegen als minuten > 0
+        // Snelheid heeft alleen effect als minuten van het bijbehorende oefening niet op 0
         if (BenchPressMinutes > 0)
             coinsamount += BenchPressWeight * 1;
 
@@ -319,10 +322,13 @@
         if (StairWalkingMinutes > 0)
             coinsamount += StairWalkingSpeed * 1;
 
+        //telt het totaal aantal minuten
         CurrentMinutes = CurrentMinutes + PushUpMinutes + PlankMinutes + BurpeesMinutes + JumpingJacksMinutes + PullUpMinutes + WallsitsMinutes + RopeJumpingMinutes + BenchPressMinutes + DumbbellRowsMinutes + CurlsMinutes + LegPressMinutes + WalkingMinutes + CyclingMinutes + SwimmingMinutes + RunningMinutes + SprintingMinutes + StairWalkingMinutes;
 
+        //houd bij wanneer de volgende honder minuten is voor bonus
         Next100mins = 100 - (CurrentMinutes % 100);
 
+        //bij elke nieuwe 100tal minuten coinbonus
         int current100 = CurrentMinutes / 100;
         if (current100 > lastBonus100)
         {
@@ -332,6 +338,7 @@
             lastBonus100 = current100;
         }
 
+        //reset alle variabelen
         PushUpMinutes = 0;
         PlankMinutes = 0;
         BurpeesMinutes = 0;
@@ -408,6 +415,7 @@
         width: 100%;
     }
 
+    /* left frame is het gedeelte waar de knop voor converten staat en extra info over 100tal bonus*/
     .left-frame {
         width: 300px;
         height: 450px;
@@ -440,6 +448,7 @@
                 background-color: #ff9900;
             }
 
+     /*in de exercisecontainer kun je exercises loggen aan met behulp van minuten, speed en weight */
     .exercise-container {
         width: 700px;
         height: 450px;
@@ -541,7 +550,7 @@
             width: 100px;
         }
 
-    /* Coin styling (right top corner) */
+    /* dit houdt bij hoeveel coins de user heeft */
     .coin {
         position: absolute;
         top: 10px;
@@ -559,7 +568,6 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    /* Coin label styling */
     .coin-label {
         position: absolute;
         top: 15px;
@@ -571,7 +579,7 @@
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
 
-    /* Level Coin styling */
+    /* Dit houdt bij welk level de user is */
     .level-coin {
         position: absolute;
         top: 60px;
@@ -589,7 +597,6 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    /* Level label styling */
     .level-label {
         position: absolute;
         top: 65px;
@@ -607,6 +614,7 @@
         align-items: center;
     }
 
+    /*hierin kan je user een exercise uitkiezen die zichtbaar wordt in zijn schema*/
     .schemaselecter-container {
         width: 220px;
         height: 220px;
@@ -653,6 +661,8 @@
         margin-bottom: 10px;
     }
 
+
+    /*Dit is de schema van de user. hierin worden de geselecteerde exercises zichtbaar en kunnen de minuten worden meegegeven door de gebruiker*/
     .schema-container {
         width: 220px;
         height: 220px;
@@ -732,7 +742,6 @@
 <div class="level-label">@level</div>
 
 <div class="wrapper">
-    <!-- Left white frame with Coins amount label -->
     <div class="left-frame">
         <label>Current coins amount:</label>
         <label>@coinsamount</label>
@@ -746,7 +755,6 @@
 
     </div>
 
-    <!-- Exercise container -->
     <div class="exercise-container">
         <div class="onderdeel-item">
             <label>Minutes</label>
@@ -914,13 +922,12 @@
         </div>
       </div>
 
-        <!-- Schema container waar de geselecteerde oefeningen worden weergegeven -->
         <div class="schema-container">
     <div class="schematitel">
         <label>Planning today:</label>
     </div>
 
-    <!-- Button to update the schema -->
+    <!-- Knop om de schema te updaten -->
     <button @onclick="UpdateSchema">Update Exercise</button>
 
     @foreach (var exercise in selectedExercises)

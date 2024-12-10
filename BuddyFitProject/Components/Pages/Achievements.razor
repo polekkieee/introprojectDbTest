@@ -7,16 +7,20 @@
 </head>
 
 @code {
-    private int coinsamount = 1000; 
-    private int level = 0;
-    private int CurrentMinutes = 0;
+    private int coinsamount = 1000; //aantal coins user
+    private int level = 0; //hoogte level van de user, heeft ook invloed op achievements
+
+    //variabelen die bepalen of achievements true of false zijn
+    private int CurrentMinutes = 0; 
     private int elementscheme = 0;
     private int FlappyBuddyScore = 0;
 
+    //variabelen om het percentage voltooide achievements te berekenen
     private int aantalAchievements = 12;
     private int Achievementscomplete = 0;
     private int percentage = 0;
 
+    //geeft aan of een achievement gecomplete is of niet
     bool lvl10Completed = false;
     bool lvl50Completed = false;
     bool lvl100Completed = false;
@@ -100,8 +104,9 @@
         //nog 2 if opdrachten voor 2 toekomstige minigames
         StateHasChanged();
     }
-
+    // berekent percentage voltooide achievements
     public void PercentageComplete() {
+        //elk achievement dat op true staat verhoogt het voltooide aantal achievements
         if (lvl10Completed)
             Achievementscomplete++;
         if (lvl50Completed)
@@ -148,7 +153,8 @@
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
         text-align: center;
     }
-
+    
+    /* dit houdt bij hoeveel coins de user heeft */
     .coin {
         position: absolute;
         top: 10px;
@@ -177,6 +183,7 @@
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
 
+    /* Dit houdt bij welk level de user is */
     .level-coin {
         position: absolute;
         top: 60px;
@@ -215,6 +222,7 @@
         flex-direction: row;
     }
 
+    /*alle kaders voor achievements*/
     .Achievement {
         width: 200px;
         height: 200px;
@@ -237,6 +245,7 @@
             margin: 3px;
         }
 
+    /*als achievement op true, dan is voltooid, text groen*/
     .Achievement-waarde {
         width: 150px;
         height: 30px;
@@ -252,6 +261,7 @@
         border-radius: 5px;
     }
 
+    /*logo achievemen voor level*/
     .achievement-item {
         width: 80px;
         height: 80px;
@@ -267,6 +277,7 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
+    /*logo achievemen voor minuten*/
     .achievement-item-min {
         width: 100px;
         height: 70px;
@@ -284,6 +295,7 @@
         transform: skewX(-10deg);
     }
 
+    /*logo achievemen voor schema*/
     .achievement-item-schema {
         width: 165px;
         height: 80px;
@@ -301,6 +313,7 @@
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
     }
 
+    /*logo achievemen voor games*/
     .achievement-item-game {
         width: 95px;
         height: 85px;
@@ -318,10 +331,12 @@
         animation: rotate 4s linear infinite;
     }
 
+    /*als achievement op false dan text is rood*/
     .incomplete {
         color: red;
     }
 
+    /*toont percentage behaalde achievements*/
     .percentagecomplete {
         position: absolute;
         top: 5px;
@@ -359,6 +374,7 @@
         <div class="Achievement">
             <div class="achievement-item">10</div>
             <label>Reach level 10 to get a 1000 coin bonus.</label>
+            <!--Als achievement op true, dan wordt de klasse voor rode text niet toegevoegd en text is "completed", bij false andersom-->
             <div class="Achievement-waarde @(lvl10Completed ? "" : "incomplete")">
                 @(lvl10Completed ? "Completed" : "Incomplete")
             </div>
