@@ -28,106 +28,106 @@
 <div class="level-label">@pet.Level</div>
 
 
-	<header>
-		<h1>@user.Username's Fit Buddy</h1>
-	</header>
+<header>
+	<h1>@user.Username's Fit Buddy</h1>
+</header>
 
-	<br />
-	<main>
-		@if (pet != null)
-		{
-			<div class="pet-section">
-				<div class="show-pet">
-					<h2>@pet.Name (Level: @pet.Level)</h2>
-					<br />
-					<p>Health: @HealthBar %</p>
-					<div class="bar">
-						<div class="bar-filled" style="width:@HealthBar%;"></div>
-					</div>
-					<br />
-					<p>Food: @pet.Food_bar %</p>
-					<div class="bar">
-						<div class="bar-filled" style="width:@pet.Food_bar%;"></div>
-					</div>
-					<br />
-					<p>Stamina: @pet.Stamina_bar %</p>
-					<div class="bar">
-						<div class="bar-filled" style="width:@StaminaBar%;"></div>
-					</div>
+<br />
+<main>
+	@if (pet != null)
+	{
+		<div class="pet-section">
+			<div class="show-pet">
+				<h2>@pet.Name (Level: @pet.Level)</h2>
+				<br />
+				<p>Health: @pet.Health_bar %</p>
+				<div class="bar">
+					<div class="bar-filled" style="width:@pet.Health_bar%;"></div>
 				</div>
 				<br />
-				<div class="img-wrapper">
-					@*dit is nu hardcoded, maar we moeten ff alle imgs even groot maken want anders loop je echt eindeloos te klooien
-						in t css file met alle percentages voor positionering*@
-					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" />
-					
-					@if (!string.IsNullOrEmpty(pet.Clothing))
-					{
-						<img class="img-clothes" src="@($"{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" />
-					}
-
-					@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@
+				<p>Food: @pet.Food_bar %</p>
+				<div class="bar">
+					<div class="bar-filled" style="width:@pet.Food_bar%;"></div>
+				</div>
+				<br />
+				<p>Stamina: @pet.Stamina_bar %</p>
+				<div class="bar">
+					<div class="bar-filled" style="width:@pet.Stamina_bar%;"></div>
 				</div>
 			</div>
-		}
+			<br />
+			<div class="img-wrapper">
+				@*dit is nu hardcoded, maar we moeten ff alle imgs even groot maken want anders loop je echt eindeloos te klooien
+						in t css file met alle percentages voor positionering*@
+				<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" />
 
+				@if (!string.IsNullOrEmpty(pet.Clothing))
+				{
+					<img class="img-clothes" src="@($"{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" />
+				}
+
+				@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@
+			</div>
+		</div>
+	}
+
+	else
+	{
+		<p>No pet found!</p>
+	}
+
+	<div class="inventory-section">
+		<h2<strong>@user.Username's inventory</strong></h2>
+		@if (userInventory.Any())
+		{
+			<div class="food-items">
+				<h3><strong>Food</strong></h3>
+				<ul class="inventory-list">
+
+					@foreach (var inventoryItem in userInventory)
+					{
+						if (ItemService.GetItemById(inventoryItem.ItemId).Type == "food" && inventoryItem.Quantity > 0)
+						{
+							<li class="inventory-item">
+								<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
+								<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
+								<p>@inventoryItem.Quantity x </p>
+								<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
+							</li>
+						}
+					}
+				</ul>
+
+			</div>
+
+			<div class="clothing-items">
+				<h3><strong>Clothing</strong></h3>
+				<ul class="inventory-list">
+					@foreach (var inventoryItem in userInventory)
+					{
+						if (ItemService.GetItemById(inventoryItem.ItemId).Type == "outfit" && inventoryItem.Quantity > 0)
+						{ 
+							<li class="inventory-item">
+								<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
+								<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
+								<p>@inventoryItem.Quantity</p>
+								<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
+							</li>
+						}
+
+					}
+				</ul>
+			</div>
+		}
 		else
 		{
-			<p>No pet found!</p>
+			<p>Inventory is empty</p>
 		}
-
-		<div class="inventory-section">
-			<h2<strong>@user.Username's inventory</strong></h2>
-			@if (userInventory.Any())
-			{
-				<div class="food-items">
-					<h3><strong>Food</strong></h3>
-					<ul class="inventory-list">
-
-						@foreach (var inventoryItem in userInventory)
-						{
-							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "food" && inventoryItem.Quantity > 0)
-							{
-								<li class="inventory-item">
-									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
-									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
-									<p>@inventoryItem.Quantity x </p>
-									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
-								</li>
-							}
-						}
-					</ul>
-
-				</div>
-
-				<div class="clothing-items">
-					<h3><strong>Clothing</strong></h3>
-					<ul class="inventory-list">
-						@foreach (var inventoryItem in userInventory)
-						{
-							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "outfit" && inventoryItem.Quantity > 0)
-							{ 
-								<li class="inventory-item">
-									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
-									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
-									<p>@inventoryItem.Quantity</p>
-									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
-								</li>
-							}
-
-						}
-					</ul>
-				</div>
-			}
-			else
-			{
-				<p>Inventory is empty</p>
-			}
-		</div>
-	</main>
+	</div>
+</main>
 
 
-	@*
+@*
 	<svg width="600" height="200" xmlns="https://localhost:7068/pets"> </svg>
 	<img src="bunny.png"
 	aria-hidden="true"
@@ -149,9 +149,6 @@
 	private bool LoggedIn = false;
 	private int Id { get; set; }
 
-	private int HealthBar { get; set; }
-	private int StaminaBar { get; set; }
-
 	protected override async void OnInitialized()
 	{
 		await base.OnInitializedAsync();
@@ -171,12 +168,10 @@
 				//Services uitvogelen iets fetchen vanuit userinventory
 				pet = PetService.GetPet(user.Id);
 				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
-				HealthBar = PetService.ChangeHealth(user, pet, allWorkouts);
-				StaminaBar = PetService.ChangeStamina(user, pet, allWorkouts);
+				PetService.DecreaseHealth(user, pet);
+				PetService.DigestFood(user, pet);
 				LoggedIn = true;
 			}
-
-			pet = PetService.GetPet(user.Id);
 			userInventory = UserInventoryService.GetInventory(user.Id);
 		}
 
@@ -189,8 +184,7 @@
 
 		if (item.Type == "food")
 		{
-			pet.Food_bar = Math.Min(100, pet.Food_bar + 20); 
-			PetService.UpdatePet(pet);
+			PetService.EatFood(pet);
 
 			invItem.Quantity -= 1;
 			UserInventoryService.UpdateUserInventoryItem(invItem);

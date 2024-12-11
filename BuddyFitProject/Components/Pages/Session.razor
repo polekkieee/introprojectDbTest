@@ -161,6 +161,7 @@ else
 
     private async Task LogWorkout()
     {
+        int TotalMinutes = 0;
         if (coinsamount == 0)
         {
             return;
@@ -169,6 +170,7 @@ else
         {
             if (workout.Minutes > 0)
             {
+                TotalMinutes += workout.Minutes;
                 workout.Reward = workout.Minutes * ExerciseService.GetExerciseById(workout.ExerciseId).Coins_pm;
                 await WorkoutService.AddWorkoutSessionAsync(workout);
                 User.Coins += workout.Reward;
@@ -184,6 +186,8 @@ else
                 }
              );
         }
+        PetService.ChangeStamina(Pet, TotalMinutes);
+        PetService.IncreaseHealth(TotalMinutes, Pet);
         UserService.UpdateUser(User);
         UserStatisticsService.UpdateUserStatistics(User.Id);
         CalculateRewards();
