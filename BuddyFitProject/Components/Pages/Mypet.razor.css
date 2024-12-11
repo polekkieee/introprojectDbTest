@@ -54,11 +54,10 @@ main {
 
 .img-clothes {
     position: absolute;
-    top: 37%; 
-    width: 80%;
+    top: 28%; 
+    width: 100%;
     height: auto;
-    width: 60%;
-    left: 20%
+   left:0%;
 }
 
 .inventory-section {
@@ -118,7 +117,7 @@ main {
     background-color: hotpink; 
 }
 
-
+/*used getcssscan.com/css-buttons-examples for this button */
 .use-button {
 
     background-color: #EA4C89;
@@ -126,7 +125,6 @@ main {
     border-style: none;
     box-sizing: border-box;
     color: #FFFFFF;
-    cursor: pointer;
     display: inline-block;
     font-weight: 500;
     height: 40px;
@@ -139,7 +137,6 @@ main {
     text-align: center;
     text-decoration: none;
     vertical-align: baseline;
-  
 }
 
 

@@ -64,7 +64,13 @@
 
 					@if (!string.IsNullOrEmpty(pet.Clothing)) @* Again, a null-checker to avoid the page not loading due to a null value *@
 					{
-						<img class="img-clothes" src="@($"Clothing/{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" />
+						@if(pet.Clothing == "Tutu"){
+							<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" style="top:17%"  alt="@pet.Clothing" />
+					
+						}
+						else{
+							<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" alt="@pet.Clothing" />
+						}
 					}
 					@if (@pet.Clothing == "nothing"){
 						<img class="img-clothes" src="@($"Clothing/nothing.png")"/>
@@ -93,7 +99,7 @@
 							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "food" && inventoryItem.Quantity > 0)
 							{
 								<li class="inventory-item">
-									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
+									<img src=@($"Food/{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
 									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
 									<p>@inventoryItem.Quantity x </p>
 									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
@@ -118,7 +124,7 @@
 							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "outfit" && inventoryItem.Quantity > 0)
 							{ 
 								<li class="inventory-item">
-									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
+									<img src=@($"Clothing/{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
 									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
 									<p>@inventoryItem.Quantity</p>
 									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>

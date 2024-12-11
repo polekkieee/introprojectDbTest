@@ -18,8 +18,8 @@
 </head>
 
 <body>
-    @if (LoggedIn == false)
-    {
+
+    
         <header>
             <h1>Welcome to BuddyFit!</h1>
             <br />
@@ -48,17 +48,7 @@
         </main>
     }
 
-    @if(LoggedIn)
-    {
-        <header>
-            <h1>Welcome Back, @user.Username!</h1>
-            <br />
-        </header>
-        <!--kijken of je hier een overzichtje van alles kan plaatsen, dus verkort stats en pet health etc.-->
-        <main>
-        </main>
-   
-    }
+    
 </body>
 
 @code {
