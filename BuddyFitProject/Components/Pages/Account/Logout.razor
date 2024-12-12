@@ -20,17 +20,17 @@
 </body>
 
 @code {
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync() //Logic to handle logging out
     {
         await base.OnInitializedAsync();
 
-        var httpContext = HttpContextAccessor.HttpContext;
-
-        if (httpContext?.User.Identity?.IsAuthenticated == true)
+        var httpContext = HttpContextAccessor.HttpContext; //Retrieving the HTTP context
+        
+        if (httpContext?.User.Identity?.IsAuthenticated == true) //Logic to sign out user and remove coockie
         {
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
-        // Redirect to homepage after logout
+        //Rederict to homepage after logout
         navigationManager.NavigateTo("/home", forceLoad: true);
     }
 }

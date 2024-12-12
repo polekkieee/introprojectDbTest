@@ -17,7 +17,7 @@ public class ValidateUserService
         this.UserService = UserService;
     }
 
-    public async Task<string> ChangePasswordAsync(string username, string resetCode, string newPassword, string email)
+    public async Task<string> ChangePasswordAsync(string username, string resetCode, string newPassword, string email) //Logic to change the password
     {
         try
         {
@@ -38,46 +38,34 @@ public class ValidateUserService
                 return "Invalid reset code.";
             }
 
-            user.Password = newPassword;
-            UserService.UpdateUser(user);
-            return "Password reset successfully.";
+            user.Password = newPassword; 
+            UserService.UpdateUser(user); //Updates the user's password
+            return "Password reset successfully."; //Save the changes into the database
         }
-        catch (DbUpdateException dbEx)
+        catch (DbUpdateException dbEx) //Handles database update errors
         {
             return $"Error updating password: {dbEx.InnerException?.Message ?? dbEx.Message}";
         }
         catch (Exception ex)
         {
-            return $"Unexpected error: {ex.Message}";
+            return $"Unexpected error: {ex.Message}"; //Handles other errors
         }
     }
 
-    public string SetResetCode(string username, string email)
+    public string SetResetCode(string username, string email) //Logic to putting the resetcode in the database
     {
         string resetcode = GenerateRandomCode();
         Users user = UserService.GetUserByUsernameAndEmail(username, email);
         user.Resetcode = resetcode;
-        UserService.UpdateUser(user);
+        UserService.UpdateUser(user); //Save the resetcode into the database
         return resetcode;
     }
 
-    private string GenerateRandomCode()
+    private string GenerateRandomCode() //Logic to generate a random resetcode
     {
         const string chars = "0123456789";
         Random random = new();
         return new string(Enumerable.Repeat(chars, 6)
             .Select(s => s[random.Next(s.Length)]).ToArray());
-    }
-
-    /// <summary>
-    /// Hashes a password using SHA-256.
-    /// </summary>
-    private string HashPassword(string password)
-    {
-        using (SHA256 sha256 = SHA256.Create())
-        {
-            byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(hashedBytes);
-        }
     }
 }
