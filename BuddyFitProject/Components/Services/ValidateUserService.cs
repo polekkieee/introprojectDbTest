@@ -14,7 +14,7 @@ public class ValidateUserService
     UserService UserService;
     public ValidateUserService(UserService UserService)
     {
-        this.UserService = UserService;
+        this.UserService = UserService; //Dependency injection of the userservice
     }
 
     public async Task<string> ChangePasswordAsync(string username, string resetCode, string newPassword, string email) //Logic to change the password
@@ -38,9 +38,9 @@ public class ValidateUserService
                 return "Invalid reset code.";
             }
 
-            user.Password = newPassword; 
-            UserService.UpdateUser(user); //Updates the user's password
-            return "Password reset successfully."; //Saves the changes into the database
+            user.Password = newPassword; //Updates the user's password
+            UserService.UpdateUser(user); //Saves the new password into the database
+            return "Password reset successfully."; 
         }
         catch (DbUpdateException dbEx) //Handles database update errors
         {
@@ -52,7 +52,7 @@ public class ValidateUserService
         }
     }
 
-    public string SetResetCode(string username, string email) //Logic to putting the resetcode in the database
+    public string SetResetCode(string username, string email) //Logic to save the resetcode into the database
     {
         string resetcode = GenerateRandomCode();
         Users user = UserService.GetUserByUsernameAndEmail(username, email);

@@ -21,7 +21,7 @@ namespace BuddyFitProject.Components.Services
             DbContextFactory = dbContext;
         }
 
-        public void AddUser(Users user) //Saves the user to the database
+        public void AddUser(Users user) //Saves the user into the database
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
@@ -30,7 +30,7 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-        public Users GetUserByName(string name) //Retrieves the user from the database using their uername
+        public Users GetUserByName(string name) //Retrieves the user from the database using their username
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
@@ -68,14 +68,14 @@ namespace BuddyFitProject.Components.Services
                     throw new InvalidOperationException("User not found in the database.");
                 }
 
-                dbContext.Users.Remove(userToDelete); //Remove the user from the database
+                dbContext.Users.Remove(userToDelete); //Removes the user from the database
                 dbContext.SaveChanges();
 
                 return userToDelete;
             }
         }
 
-        public void UpdateUser(Users user) //Updating user in the database
+        public void UpdateUser(Users user) //Updates user in the database
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {

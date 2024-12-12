@@ -24,7 +24,7 @@
     {
         await base.OnInitializedAsync();
 
-        var httpContext = HttpContextAccessor.HttpContext; //Retrieving the HTTP context
+        var httpContext = HttpContextAccessor.HttpContext; //Retrieves the HTTP context
         
         if (httpContext?.User.Identity?.IsAuthenticated == true) //Logic to sign out user and remove coockie
         {

@@ -94,7 +94,7 @@
 			UserDb.Age = UserAndPet.User.Age;
 			UserDb.Start_condition = UserAndPet.User.Start_condition;
 
-			UserService.UpdateUser(UserDb); //Saves the new details into the database
+			UserService.UpdateUser(UserDb); //Saves the new  user details into the database
 
 			var pet = new Pets //Set default values
 				{
@@ -112,7 +112,7 @@
 
 			UserService.AddPet(pet); //Saves the pet's information into the database
 
-			navigationManager.NavigateTo("/pet"); //Navigate to the pet page
+			navigationManager.NavigateTo("/pet"); //Navigates to the pet page
 		}
 		else
 		{
@@ -122,12 +122,12 @@
 
 	protected override void OnInitialized() //Checks if the user is authenticated and takes consequent actions
 	{
-		var httpContext = HttpContextAccessor.HttpContext; //Retrieving the HTTP context
+		var httpContext = HttpContextAccessor.HttpContext; //Retrieves the HTTP context
 
 		if (httpContext?.User.Identity?.IsAuthenticated == true)
 		{
 			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId)) //Parse the user ID claim
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId)) //Parses the user ID claim
 			{
 				UserDb = UserService.GetUserById(loggedInUserId); //Retrieves the id of the user, if the user is authenticated
 			}

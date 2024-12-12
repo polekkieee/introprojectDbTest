@@ -63,7 +63,7 @@
             User.Start_condition = "new";
             User.Gender = "new";
             User.Resetcode = "12345678";
-            UserService.AddUser(User);
+            UserService.AddUser(User); //Saves the new user into the database
             navigationManager.NavigateTo("/login");
         }
         errorMessage = "User bestaat al"; 
