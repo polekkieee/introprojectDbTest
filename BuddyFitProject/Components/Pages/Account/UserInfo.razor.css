@@ -11,7 +11,6 @@ h1 {
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     margin: 0px 20px 0px 0px;
 }
-
 h2 {
     text-align: center;
     padding-right: 40px;
@@ -29,7 +28,7 @@ main {
     gap: 20px;
 }
 
-/*handles the different input boxes*/
+
 div.input {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -37,8 +36,8 @@ div.input {
     padding: 20px;
     width: 80%;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-    justify-content: space-between;
-    display: flex;
+ justify-content:space-between;
+ display:flex;
 }
 
     div.input label {
@@ -46,22 +45,23 @@ div.input {
         color: floralwhite;
         text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
         margin-bottom: 10px;
+
     }
-/*handles the radioboxes, which is where the user chooses a pet*/
-.radio-group {
-    gap: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-/*this is an individual radio option*/
+
+
+   .radio-group{
+       gap:10px;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+   }
 .radio {
+ 
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap:5px;
 }
-/*handles the image in the radio*/
-    .radio img {
-        height: auto;
-        max-width: 200px;
-    }
+.radio img{
+    height: auto;
+    max-width: 200px;
+}

@@ -11,14 +11,15 @@
 @inject Services.ExerciseService ExerciseService
 @rendermode InteractiveServer
 
-
+<PageTitle>Home</PageTitle>
 <head>
- <PageTitle>Home</PageTitle>
+    <link href="Session.razor.css" rel="stylesheet" />
+
 </head>
 
 <body>
 
-    <!--home screen-->
+    
         <header>
             <h1>Welcome to BuddyFit!</h1>
             <br />
@@ -53,7 +54,6 @@
 @code {
     private Users? user;
 
-    // The boolean LoggedIn is added for later so we can put a different home screen for users who have already logged in
     private bool LoggedIn = false;
 
     protected override async void OnInitialized()
@@ -70,8 +70,7 @@
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
             {
                 user = UserService.GetUserById(loggedInUserId);
-                LoggedIn = true; 
-             
+                LoggedIn = true;
             }
         }
     }
