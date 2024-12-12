@@ -37,7 +37,7 @@ namespace BuddyFitProject.Components.Services
 
         public int DecreaseHealth(Users user, Pets pet) //Logic to lower the health percentage
         {
-            if (DateTime.Compare(pet.Health_bar_tlc, user.Register_moment) <= 0)
+            if (DateTime.Compare(pet.Health_bar_tlc, user.Register_moment) <= 0) 
             {
                 return pet.Health_bar;
             }
