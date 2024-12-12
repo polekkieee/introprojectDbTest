@@ -8,14 +8,14 @@ BuddyFit is all about staying fit. We all know the struggle, you wanna work out 
 
 ## Instructions 
 1. Install ASP.Net & web development.
-    1.1. Go to Visual Studio Installer 
+    1) Go to Visual Studio Installer 
         (This is a different program than Visual Studio so look it up on your computer instead of in Visual Studio)
-    1.2  Your version of Visual Studio should appear under 'Installed'. Click on Modify.
-    1.3. Check whether ASP.Net & web development (under 'Web & Cloud') is installed. 
+    2)  Your version of Visual Studio should appear under 'Installed'. Click on Modify.
+    3) Check whether ASP.Net & web development (under 'Web & Cloud') is installed. 
             If not, please install it.
 2. Download the packages in Visual Studio.
-    2.1. Go to Tools -> NuGet Package Manager -> Manage NuGet Packages for Solution
-    2.2. Go to Browse and make sure you have donwloaded the following packages:
+    1) Go to Tools -> NuGet Package Manager -> Manage NuGet Packages for Solution
+    2) Go to Browse and make sure you have donwloaded the following packages:
             - SendGrid
             - Microsoft.EntityFrameworkCore.Sqlserver
             - Microsoft.EntityFrameworkCore
