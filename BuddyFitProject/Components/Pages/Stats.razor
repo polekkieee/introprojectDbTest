@@ -19,7 +19,6 @@
     <PageTitle>Statistics</PageTitle>
 </head>
 
-<body>
     <h1>Workout History</h1>
 
     @if(LoggedIn)
@@ -34,12 +33,6 @@
         <br />
         <button class="btn btn-primary" @onclick="LoadStatsRefresh">Load Stats</button>
         <br />
-
-        @* <div class="button-group"> *@
-        @*     <button class="btn btn-secondary" @onclick="() =>ViewPeriod('w')">Weekly</button> *@
-        @*     <button class="btn btn-secondary" @onclick="() =>ViewPeriod('m')">Monthly</button> *@
-        @*     <button class="btn btn-secondary" @onclick="() =>ViewPeriod('y')">Yearly</button> *@
-        @* </div> *@
 
         <br />
         <p>@ErrorMessage</p>
@@ -98,7 +91,6 @@
         <a href="login" class="btn btn-primary">Go to Login</a>
     }
 
-</body>
 @code {
     private List<UserStatistics> UserStatistics = new();
     private Users? User;
@@ -125,75 +117,6 @@
             ErrorMessage = "Error loading stats";
         }
     }
-
-    // private async Task ViewPeriod (char time)
-    // {W is week; M is month; Y is year
-    //     try
-    //     {
-    //         UserStatisticsService.UpdateUserStatistics(User.Id);
-    //             Fetch statistics 
-    //             UserStatistics = UserStatisticsService.GetStatisticsByUserAndTime(User.Id, time);
-
-    //             Update the max minutes for the bar chart
-    //             if (UserStatistics.Any())
-    //             {
-    //                 MinutesAmount = UserStatistics.Max(s => s.Total_minutes);
-
-    //             await InvokeAsync(StateHasChanged);
-    //             }
-    //         }
-    //         catch (Exception ex)
-    //         {
-
-    //         }
-
-    // }
-
-    // private void ViewPeriod(char time)
-    // {
-    //     LoadStats();
-    //     try
-    //     {
-    //         Determine the start of the time period
-    //         DateTime now = DateTime.Now;
-    //         DateTime periodStart;
-
-    //         switch (time)
-    //         {
-    //             case 'w': Weekly
-    //                 periodStart = now.AddDays(-7);
-    //                 break;
-
-    //             case 'm': Monthly
-    //                 periodStart = now.AddMonths(-1);
-    //                 break;
-
-    //             case 'y': Yearly
-    //                 periodStart = now.AddYears(-1);
-    //                 break;
-
-    //             default:
-    //                 ErrorMessage = "Invalid time period selected.";
-    //                 return;
-    //         }
-
-
-    //         Update max minutes for bar width calculation
-    //         if (UserStatistics.Any())
-    //         {
-    //             MinutesAmount = UserStatistics.Max(s => s.Total_minutes);
-    //         }
-
-    //         Fetch statistics for the selected period
-    //         UserStatistics = UserStatisticsService.GetStatisticsByUserAndTime(User.Id, periodStart, now);
-    //         navigationManager.NavigateTo(navigationManager.Uri, true);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         ErrorMessage = "Error loading stats for the selected period.";
-    //     }
-    // }
-
 
     private int BarWidth(int minutes)
     {
