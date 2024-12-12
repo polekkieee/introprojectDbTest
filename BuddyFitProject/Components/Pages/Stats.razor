@@ -35,14 +35,15 @@
         <button class="btn btn-primary" @onclick="LoadStatsRefresh">Load Stats</button>
         <br />
 
-        <div class="button-group">
-            <button class="btn btn-secondary" @onclick="() =>ViewPeriod('w')">Weekly</button>
-            <button class="btn btn-secondary" @onclick="() =>ViewPeriod('m')">Monthly</button>
-            <button class="btn btn-secondary" @onclick="() =>ViewPeriod('y')">Yearly</button>
-        </div>
+        @* <div class="button-group"> *@
+        @*     <button class="btn btn-secondary" @onclick="() =>ViewPeriod('w')">Weekly</button> *@
+        @*     <button class="btn btn-secondary" @onclick="() =>ViewPeriod('m')">Monthly</button> *@
+        @*     <button class="btn btn-secondary" @onclick="() =>ViewPeriod('y')">Yearly</button> *@
+        @* </div> *@
 
         <br />
-
+        <p>@ErrorMessage</p>
+        <br>
         <main>
             <h4><strong>@User.Username 's Statistics</strong></h4>
 
@@ -70,20 +71,20 @@
                 </tbody>
             </table>
 
-            <div class="bar-wrapper">
-                @foreach (var s in UserStatistics)
-                {
-                    var exerciseName = @ExerciseService.GetExerciseById(s.ExerciseId).Name;
-                    var exerciseWidth = BarWidth(@s.Total_minutes);
+             <div class="bar-wrapper"> 
+                @foreach (var s in UserStatistics) 
+                 { 
+                     var exerciseName = @ExerciseService.GetExerciseById(s.ExerciseId).Name; 
+                     var exerciseWidth = BarWidth(@s.Total_minutes); 
 
-                    <div class="bar-container">
-                        <span class="bar-text">@exerciseName</span>
-                        <div class="bars">
-                            <div class="bar" style="width:@exerciseWidth%"></div>
-                        </div>
-                        <span class="bar-minutes">@s.Total_minutes.ToString()</span>
-                    </div>
-                }
+                     <div class="bar-container"> 
+                         <span class="bar-text">@exerciseName</span> 
+                         <div class="bars"> 
+                             <div class="bar" style="width:@exerciseWidth%"></div> 
+                         </div> 
+                         <span class="bar-minutes">@s.Total_minutes.ToString()</span> 
+                     </div> 
+                } 
             </div>
 
         </main>
@@ -95,7 +96,6 @@
         <h1>You must be logged in to access this page.</h1>
         <br />
         <a href="login" class="btn btn-primary">Go to Login</a>
-
     }
 
 </body>
@@ -106,6 +106,7 @@
 
     private bool LoggedIn = false;
     private int MinutesAmount { get; set; } = 1;
+    private string ErrorMessage;
 
     private void LoadStats()
     {
@@ -114,47 +115,97 @@
             // Update and fetch User statistics
             UserStatisticsService.UpdateUserStatistics(User.Id);
             UserStatistics = UserStatisticsService.GetStatisticsByUser(User.Id);
+            if (UserStatistics.Any())
+            {
+                MinutesAmount = UserStatistics.Max(s => s.Total_minutes);
+            }
         }
         catch (Exception ex)
         {
-            // Log error or show a User-friendly message
-            Console.WriteLine($"Error updating stats: {ex.Message}");
+            ErrorMessage = "Error loading stats";
         }
     }
 
-    private async Task ViewPeriod (char time)
-    {//W is week; M is month; Y is year
-        try
-        {
-            UserStatisticsService.UpdateUserStatistics(User.Id);
-                // Fetch statistics for the selected timeframe
-                UserStatistics = UserStatisticsService.GetStatisticsByUserAndTime(User.Id, time);
+    // private async Task ViewPeriod (char time)
+    // {W is week; M is month; Y is year
+    //     try
+    //     {
+    //         UserStatisticsService.UpdateUserStatistics(User.Id);
+    //             Fetch statistics 
+    //             UserStatistics = UserStatisticsService.GetStatisticsByUserAndTime(User.Id, time);
 
-                // Update the max minutes for the bar chart
-                if (UserStatistics.Any())
-                {
-                    MinutesAmount = UserStatistics.Max(s => s.Total_minutes);
+    //             Update the max minutes for the bar chart
+    //             if (UserStatistics.Any())
+    //             {
+    //                 MinutesAmount = UserStatistics.Max(s => s.Total_minutes);
 
-                await InvokeAsync(StateHasChanged);
-                }
-            }
-            catch (Exception ex)
-            {
-               
-            }
-        
-    }
-    private int BarWidth (int minutes)
+    //             await InvokeAsync(StateHasChanged);
+    //             }
+    //         }
+    //         catch (Exception ex)
+    //         {
+
+    //         }
+
+    // }
+
+    // private void ViewPeriod(char time)
+    // {
+    //     LoadStats();
+    //     try
+    //     {
+    //         Determine the start of the time period
+    //         DateTime now = DateTime.Now;
+    //         DateTime periodStart;
+
+    //         switch (time)
+    //         {
+    //             case 'w': Weekly
+    //                 periodStart = now.AddDays(-7);
+    //                 break;
+
+    //             case 'm': Monthly
+    //                 periodStart = now.AddMonths(-1);
+    //                 break;
+
+    //             case 'y': Yearly
+    //                 periodStart = now.AddYears(-1);
+    //                 break;
+
+    //             default:
+    //                 ErrorMessage = "Invalid time period selected.";
+    //                 return;
+    //         }
+
+
+    //         Update max minutes for bar width calculation
+    //         if (UserStatistics.Any())
+    //         {
+    //             MinutesAmount = UserStatistics.Max(s => s.Total_minutes);
+    //         }
+
+    //         Fetch statistics for the selected period
+    //         UserStatistics = UserStatisticsService.GetStatisticsByUserAndTime(User.Id, periodStart, now);
+    //         navigationManager.NavigateTo(navigationManager.Uri, true);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         ErrorMessage = "Error loading stats for the selected period.";
+    //     }
+    // }
+
+
+    private int BarWidth(int minutes)
     {
         try
         {
-            return minutes / MinutesAmount * 100;
+            return MinutesAmount > 0 ? (int)((minutes / (double)MinutesAmount) * 100) : 0; 
         }
-        catch{
-            return 100;
+        catch
+        {
+            return 100; 
         }
     }
-
 
     private void LoadStatsRefresh()
     {
@@ -168,9 +219,11 @@
         catch (Exception ex)
         {
             
-            Console.WriteLine($"Error updating stats: {ex.Message}");
+            ErrorMessage = "Error updating stats";
         }
     }
+
+
 
 
     protected override async void OnInitialized()

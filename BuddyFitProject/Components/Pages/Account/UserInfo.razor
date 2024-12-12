@@ -18,7 +18,6 @@
 	<PageTitle>User Info</PageTitle>
 	<link href="UserInfo.razor.css" rel="stylesheet" />
 </head>
-
 <body>
 	<header>
 		<h1>Set up your account</h1>
@@ -27,7 +26,8 @@
 	<br />
 
 	<main>
-	<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo">
+	<!--Form where the user needs to fill in their age, gender, start condition, name for their pet and can also choose their pet:-->
+	<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo"> 
 		<h2>About you:</h2><div class="input">
 			<label for="Age" class="l2">Age:</label>
 			<InputNumber required @bind-Value="UserAndPet.User.Age" />
@@ -94,7 +94,7 @@
 			UserDb.Age = UserAndPet.User.Age;
 			UserDb.Start_condition = UserAndPet.User.Start_condition;
 
-			UserService.UpdateUser(UserDb); // Save additional user details
+			UserService.UpdateUser(UserDb); //Save the new details into the database
 
 			var pet = new Pets
 				{
@@ -105,12 +105,12 @@
 					Food_bar = 0,
 					Health_bar = 0,
 					Stamina_bar = 0,
-					Clothing = "none"
+					Clothing = "nothing"
 				};
 
-			UserService.AddPet(pet); // Save the pet
+			UserService.AddPet(pet); //Save the pet into the database
 
-			navigationManager.NavigateTo("/pet"); // Redirect to the pet page
+			navigationManager.NavigateTo("/pet"); //Navigate to the pet page
 		}
 		else
 		{

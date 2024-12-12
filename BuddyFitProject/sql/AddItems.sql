@@ -1,8 +1,8 @@
 ﻿INSERT INTO Items (name, type, price) VALUES 
-('Military Outfit', 'outfit', 5000),
-('Cat In Suit', 'outfit', 8000),
-('Cat In Tutu', 'outfit', 1000),
-('Pyjamas Cat', 'outfit', 2000),
+('Military', 'outfit', 5000),
+('Pyjamas', 'outfit', 8000),
+('Tutu', 'outfit', 1000),
+('Suit', 'outfit', 2000),
 ('Banana', 'food', 50),
 ('Apple', 'food', 50),
 ('Strawberry', 'food', 150),

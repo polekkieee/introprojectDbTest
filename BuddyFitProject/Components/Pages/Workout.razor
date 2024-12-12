@@ -2,307 +2,9 @@
 
 @page "/Workout"
 @attribute [StreamRendering]
-@using BuddyFitProject.Data.Models
-@using System.Security.Claims
-@using Microsoft.EntityFrameworkCore
-@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
-@inject NavigationManager navigationManager
-@inject IHttpContextAccessor HttpContextAccessor
-@inject Services.UserService UserService
-@inject Services.UserStatisticsService UserStatisticsService
-@inject Services.ExerciseService ExerciseService
-@inject Services.PetService PetService
 @rendermode InteractiveServer
 
-<header>
-    <link href="Workout.razor.css" rel="stylesheet" />
-    <PageTitle>Workout</PageTitle>
-
-</header>
-
-<body>
-    <h2>Current total minutes: @CurrentMinutes </h2>
-    <h1>Workout</h1>
-    <p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox. </p>
-    <p>Do not forget to fill in the speed or weights if needed</p>
-
-    <div class="coin">$</div>
-    <div class="coin-label">@coinsamount</div>
-
-    <div class="level-coin">lvl</div>
-    <div class="level-label">@level</div>
-
-    <div class="wrapper">
-        <!-- Left white frame with Coins amount label -->
-        <div class="left-frame">
-            <label>Current coins amount:</label>
-            <label>@coinsamount</label>
-
-            <button @onclick="UpdateCoinsAmount">Convert given data to coins</button>
-
-            <label>So name, what exercises did you do today?</label>
-
-            <label>Minutes till bonus:</label>
-            <label> @Next100mins</label>
-
-        </div>
-
-        <!-- Exercise container -->
-        <div class="exercise-container">
-            <div class="onderdeel-item">
-                <label>Minutes</label>
-            </div>
-            <div class="exercise-item">
-                <label>Push-up:</label>
-                <input type="number" @bind="@PushUpMinutes" />
-            </div>
-            <div class="exercise-item">
-                <label>Plank:</label>
-                <input type="number" @bind="@PlankMinutes" />
-            </div>
-            <div class="exercise-item">
-                <label>Burpees:</label>
-                <input type="number" @bind="@BurpeesMinutes" />
-            </div>
-            <div class="exercise-item">
-                <label>Jumping Jacks:</label>
-                <input type="number" @bind="@JumpingJacksMinutes" />
-            </div>
-            <div class="exercise-item">
-                <label>Pull-up:</label>
-                <input type="number" @bind="@PullUpMinutes" />
-            </div>
-            <div class="exercise-item">
-                <label>Wallsits:</label>
-                <input type="number" @bind="@WallsitsMinutes" />
-            </div>
-            <div class="exercise-item">
-                <label>Rope jumping:</label>
-                <input type="number" @bind="@RopeJumpingMinutes" />
-            </div>
-            <div class="onderdeel-item2">
-                <label>Minutes</label>
-                <label>Weights(kg)</label>
-            </div>
-            <div class="exercise-item">
-                <label>Bench Press:</label>
-                <input type="number" @bind="@BenchPressMinutes" />
-                <input type="number" @bind="@BenchPressWeight" class="weight-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Dumbbell Rows:</label>
-                <input type="number" @bind="@DumbbellRowsMinutes" />
-                <input type="number" @bind="@DumbbellRowsWeight" class="weight-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Curls:</label>
-                <input type="number" @bind="@CurlsMinutes" />
-                <input type="number" @bind="@CurlsWeight" class="weight-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Leg Press:</label>
-                <input type="number" @bind="@LegPressMinutes" />
-                <input type="number" @bind="@LegPressWeight" class="weight-input" />
-            </div>
-            <div class="onderdeel-item3">
-                <label>Minutes</label>
-                <label>distance(km)</label>
-            </div>
-            <div class="exercise-item">
-                <label>Walking:</label>
-                <input type="number" @bind="@WalkingMinutes" />
-                <input type="number" @bind="@WalkingSpeed" class="speed-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Cycling:</label>
-                <input type="number" @bind="@CyclingMinutes" />
-                <input type="number" @bind="@CyclingSpeed" class="speed-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Swimming:</label>
-                <input type="number" @bind="@SwimmingMinutes" />
-                <input type="number" @bind="@SwimmingSpeed" class="speed-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Running:</label>
-                <input type="number" @bind="@RunningMinutes" />
-                <input type="number" @bind="@RunningSpeed" class="speed-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Sprinting:</label>
-                <input type="number" @bind="@SprintingMinutes" />
-                <input type="number" @bind="@SprintingSpeed" class="speed-input" />
-            </div>
-            <div class="exercise-item">
-                <label>Stairwalking:</label>
-                <input type="number" @bind="@StairWalkingMinutes" />
-                <input type="number" @bind="@StairWalkingSpeed" class="speed-input" />
-            </div>
-        </div>
-
-        <div class="schema-wrapper">
-            <div class="schemaselecter-container">
-                <div class="schemaselectertitel">
-                    <label>Choose exercise for planning:</label>
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Push-up</label>
-                    <input type="checkbox" @bind="@PushUpSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Plank</label>
-                    <input type="checkbox" @bind="@PlankSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Burpees</label>
-                    <input type="checkbox" @bind="@BurpeesSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Jumping Jacks</label>
-                    <input type="checkbox" @bind="@JumpingJacksSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Pull-up</label>
-                    <input type="checkbox" @bind="@PullUpSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Wallsits</label>
-                    <input type="checkbox" @bind="@WallsitsSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Rope jumping</label>
-                    <input type="checkbox" @bind="@RopeJumpingSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Bench press</label>
-                    <input type="checkbox" @bind="@BenchPressSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Dumbbell Rows</label>
-                    <input type="checkbox" @bind="@DumbbellRowsSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Curls</label>
-                    <input type="checkbox" @bind="@CurlsSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Leg Press</label>
-                    <input type="checkbox" @bind="@LegPressSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Walking</label>
-                    <input type="checkbox" @bind="@WalkingSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Cycling</label>
-                    <input type="checkbox" @bind="@CyclingSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Swimming</label>
-                    <input type="checkbox" @bind="@SwimmingSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Running</label>
-                    <input type="checkbox" @bind="@RunningSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Sprinting</label>
-                    <input type="checkbox" @bind="@SprintingSelected" />
-                </div>
-                <div class="schemaselecter-item">
-                    <label>Stairwalking</label>
-                    <input type="checkbox" @bind="@StairWalkingSelected" />
-                </div>
-            </div>
-
-            <!-- Schema container waar de geselecteerde oefeningen worden weergegeven -->
-            <div class="schema-container">
-                <div class="schematitel">
-                    <label>Planning today:</label>
-                </div>
-
-                <!-- Button to update the schema -->
-                <button @onclick="UpdateSchema">Update Exercise</button>
-
-                @foreach (var exercise in selectedExercises)
-                {
-                    <div class="schema-item">
-                        <label>@exercise</label>
-                        @if (exercise == "Push-up")
-                        {
-                            <input type="number" @bind="@PushUpschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Plank")
-                        {
-                            <input type="number" @bind="@Plankschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Burpees")
-                        {
-                            <input type="number" @bind="@Burpeesschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Jumping Jacks")
-                        {
-                            <input type="number" @bind="@JumpingJacksschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Pull-up")
-                        {
-                            <input type="number" @bind="@PullUpschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Wallsits")
-                        {
-                            <input type="number" @bind="@Wallsitsschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Rope Jumping")
-                        {
-                            <input type="number" @bind="@RopeJumpingschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Bench Press")
-                        {
-                            <input type="number" @bind="@BenchPressschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Dumbbell Rows")
-                        {
-                            <input type="number" @bind="@DumbbellRowsschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Curls")
-                        {
-                            <input type="number" @bind="@Curlsschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Leg Press")
-                        {
-                            <input type="number" @bind="@LegPressschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Walking")
-                        {
-                            <input type="number" @bind="@Walkingschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Cycling")
-                        {
-                            <input type="number" @bind="@Cyclingschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Swimming")
-                        {
-                            <input type="number" @bind="@Swimmingschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Running")
-                        {
-                            <input type="number" @bind="@Runningschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Sprinting")
-                        {
-                            <input type="number" @bind="@Sprintingschema" placeholder="Min." />
-                        }
-                        @if (exercise == "Stair Walking")
-                        {
-                            <input type="number" @bind="@StairWalkingschema" placeholder="Min." />
-                        }
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-</body>
-
+<PageTitle>Workout</PageTitle>
 
 @code {
     //checkboxen voor in schema
@@ -324,6 +26,7 @@
     private bool SprintingSelected = false;
     private bool StairWalkingSelected = false;
 
+    //minuten die wordt meegegeven aan de geselecteerde exercises in user schema. Staan op null, zodat de user niet bonus krijgt voor niks doen
     private int? PushUpschema = null;
     private int? Plankschema = null;
     private int? Burpeesschema = null;
@@ -350,7 +53,7 @@
     {
         selectedExercises.Clear();
 
-        if (PushUpSelected) selectedExercises.Add("Push-up");
+        if (PushUpSelected) selectedExercises.Add("Push-up"); 
         if (PlankSelected) selectedExercises.Add("Plank");
         if (BurpeesSelected) selectedExercises.Add("Burpees");
         if (JumpingJacksSelected) selectedExercises.Add("Jumping Jacks");
@@ -374,7 +77,7 @@
     // Variabelen voor oefeningem
 
     //Male true als user man is en false als het een vrouw is
-    private bool Male = false;
+    private bool Male = false;       
 
     //Een van de volgende variabelen moet op true op basis van userinfo
     private bool Terrible = false;
@@ -388,11 +91,13 @@
     private double Difficulty = 1;
 
 
+    private int elementscheme = 0; //aantal elementen van eigen schema gecompleet
 
     private int CurrentMinutes = 0;
     private int Next100mins = 0;
     private int lastBonus100 = 0; // Houdt het laatste honderdtal bij waarvoor bonus is gegeven
 
+    //variabelen voor het loggen
     private int PushUpMinutes = 0;
     private int PlankMinutes = 0;
     private int BurpeesMinutes = 0;
@@ -422,17 +127,16 @@
     private int StairWalkingSpeed = 0;
 
     private int coinsamount = 1000; // De hoeveelheid coins
-    private int level = 10; // Hoogte level gebruiker
+    private int level = 0; // Hoogte level gebruiker
 
 
-    // Methode die wordt aangeroepen bij de knopdruk
+    // Methode aangeroepen door knop die hoeveelheid coins veranderd
     private void UpdateCoinsAmount()
     {
-        // Bijwerken van coins hoeveelheid op basis van de minuten voor elke oefening
+        //userinfo dat effect heeft op het coinalgoritme
         if (Male)
             Gender = 1;
-        else Gender = 1.2;
-
+        else Gender = 1.2;  
 
         if (Terrible)
             Difficulty = 2;
@@ -445,112 +149,131 @@
         if (Great)
             Difficulty = 0.7;
 
+            //bonus coins voor het houden aan user gemaakte schema
         if (PushUpMinutes >= PushUpschema)
         {
             coinsamount += 50;
+            elementscheme++;
             JumpingJacksschema = null;
         }
 
         if (PlankMinutes >= Plankschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Plankschema = null;
         }
 
         if (BurpeesMinutes >= Burpeesschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Burpeesschema = null;
         }
 
         if (JumpingJacksMinutes >= JumpingJacksschema)
         {
             coinsamount += 50;
+            elementscheme++;
             JumpingJacksschema = null;
         }
 
         if (BenchPressMinutes >= BenchPressschema)
         {
             coinsamount += 50;
+            elementscheme++;
             BenchPressschema = null;
         }
 
         if (DumbbellRowsMinutes >= DumbbellRowsschema)
         {
             coinsamount += 50;
+            elementscheme++;
             DumbbellRowsschema = null;
         }
 
         if (CurlsMinutes >= Curlsschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Curlsschema = null;
         }
 
         if (PullUpMinutes >= PullUpschema)
         {
             coinsamount += 50;
+            elementscheme++;
             PullUpschema = null;
         }
 
         if (LegPressMinutes >= LegPressschema)
         {
             coinsamount += 50;
+            elementscheme++;
             LegPressschema = null;
         }
 
         if (WalkingMinutes >= Walkingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Walkingschema = null;
         }
 
         if (CyclingMinutes >= Cyclingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Cyclingschema = null;
         }
 
         if (SwimmingMinutes >= Swimmingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Swimmingschema = null;
         }
 
         if (RunningMinutes >= Runningschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Runningschema = null;
         }
 
         if (SprintingMinutes >= Sprintingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Sprintingschema = null;
         }
 
         if (WallsitsMinutes >= Wallsitsschema)
         {
             coinsamount += 50;
+            elementscheme++;
             Wallsitsschema = null;
         }
 
         if (RopeJumpingMinutes >= RopeJumpingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             RopeJumpingschema = null;
         }
 
         if (StairWalkingMinutes >= StairWalkingschema)
         {
             coinsamount += 50;
+            elementscheme++;
             StairWalkingschema = null;
         }
 
 
+        // Bijwerken van coins hoeveelheid op basis van de minuten voor elke oefening
 
-        coinsamount = (int)(coinsamount + 0.1 * Age * Difficulty *
-            (+PushUpMinutes * 150
+        coinsamount = (int) (coinsamount + Gender * 0.1 * Age * Difficulty * 
+            ( + PushUpMinutes * 150
             + PlankMinutes * 100
             + BurpeesMinutes * 200
             + JumpingJacksMinutes * 100
@@ -568,7 +291,7 @@
             + RopeJumpingMinutes * 120
             + StairWalkingMinutes * 140));
 
-        // Gewicht en snelheid alleen toevoegen als minuten > 0
+        // Snelheid heeft alleen effect als minuten van het bijbehorende oefening niet op 0
         if (BenchPressMinutes > 0)
             coinsamount += BenchPressWeight * 1;
 
@@ -599,19 +322,23 @@
         if (StairWalkingMinutes > 0)
             coinsamount += StairWalkingSpeed * 1;
 
+        //telt het totaal aantal minuten
         CurrentMinutes = CurrentMinutes + PushUpMinutes + PlankMinutes + BurpeesMinutes + JumpingJacksMinutes + PullUpMinutes + WallsitsMinutes + RopeJumpingMinutes + BenchPressMinutes + DumbbellRowsMinutes + CurlsMinutes + LegPressMinutes + WalkingMinutes + CyclingMinutes + SwimmingMinutes + RunningMinutes + SprintingMinutes + StairWalkingMinutes;
 
+        //houd bij wanneer de volgende honder minuten is voor bonus
         Next100mins = 100 - (CurrentMinutes % 100);
 
+        //bij elke nieuwe 100tal minuten coinbonus
         int current100 = CurrentMinutes / 100;
         if (current100 > lastBonus100)
         {
-            int bonus = (current100 - lastBonus100) * 1000;
+            int bonus = (current100 - lastBonus100) * 1000; 
             coinsamount += bonus;
 
             lastBonus100 = current100;
         }
 
+        //reset alle variabelen
         PushUpMinutes = 0;
         PlankMinutes = 0;
         BurpeesMinutes = 0;
@@ -646,15 +373,15 @@
 
 }
 
-
 <style>
     body {
         margin: 0;
+        font-family: Arial, sans-serif;
         background: linear-gradient(to bottom, purple, blue);
         color: #333;
         text-align: center;
-/*         padding: 20px;
- */        position: relative;
+        padding: 20px;
+        position: relative;
     }
 
     h1 {
@@ -668,7 +395,7 @@
         font-size: 1.5rem;
         position: absolute;
         left: 247px;
-        top: 50px;
+        top:50px;
         color: #fff;
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
@@ -688,6 +415,7 @@
         width: 100%;
     }
 
+    /* left frame is het gedeelte waar de knop voor converten staat en extra info over 100tal bonus*/
     .left-frame {
         width: 300px;
         height: 450px;
@@ -720,6 +448,7 @@
                 background-color: #ff9900;
             }
 
+     /*in de exercisecontainer kun je exercises loggen aan met behulp van minuten, speed en weight */
     .exercise-container {
         width: 700px;
         height: 450px;
@@ -740,11 +469,11 @@
             border-radius: 5px;
         }
 
-    .exercise-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
+        .exercise-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
 
         .exercise-item label {
             flex: none;
@@ -755,12 +484,14 @@
             font-weight: bold;
         }
 
-    .onderdeel-item {
+        .onderdeel-item {
         display: flex;
         align-items: center;
         margin-bottom: 10px;
         margin-left: 370px;
-    }
+            
+
+        }
 
         .onderdeel-item label {
             flex: none;
@@ -804,22 +535,22 @@
         }
 
 
-    .exercise-item input {
-        flex-grow: 1;
-        margin-left: 10px;
-        padding: 5px;
-        border: 1px solid #ddd;
-        border-radius: 40px;
-        text-align: center;
-        display: block;
-    }
+        .exercise-item input {
+            flex-grow: 1;
+            margin-left: 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 40px;
+            text-align: center;
+            display: block;
+        }
 
-    .exercise-item .weight-input,
-    .exercise-item .speed-input {
-        width: 100px;
-    }
+        .exercise-item .weight-input,
+        .exercise-item .speed-input {
+            width: 100px;
+        }
 
-    /* Coin styling (right top corner) */
+    /* dit houdt bij hoeveel coins de user heeft */
     .coin {
         position: absolute;
         top: 10px;
@@ -837,7 +568,6 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    /* Coin label styling */
     .coin-label {
         position: absolute;
         top: 15px;
@@ -849,7 +579,7 @@
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
 
-    /* Level Coin styling */
+    /* Dit houdt bij welk level de user is */
     .level-coin {
         position: absolute;
         top: 60px;
@@ -867,7 +597,6 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    /* Level label styling */
     .level-label {
         position: absolute;
         top: 65px;
@@ -885,6 +614,7 @@
         align-items: center;
     }
 
+    /*hierin kan je user een exercise uitkiezen die zichtbaar wordt in zijn schema*/
     .schemaselecter-container {
         width: 220px;
         height: 220px;
@@ -931,6 +661,8 @@
         margin-bottom: 10px;
     }
 
+
+    /*Dit is de schema van de user. hierin worden de geselecteerde exercises zichtbaar en kunnen de minuten worden meegegeven door de gebruiker*/
     .schema-container {
         width: 220px;
         height: 220px;
@@ -952,7 +684,7 @@
             border-radius: 5px;
         }
 
-        .schema-container button {
+    .schema-container button {
             margin-bottom: 10px;
             background-color: #ffcc00;
             border: none;
@@ -962,7 +694,7 @@
             color: white;
             width: 170px;
             height: 28px;
-        }
+    }
 
     .schema-item {
         display: flex;
@@ -980,11 +712,11 @@
         }
 
         .schema-item input {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            text-align: center;
-            width: 43px;
-            height: 25px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        text-align: center;
+        width: 43px;
+        height: 25px;
         }
 
     .schematitel label {
@@ -996,5 +728,286 @@
         font-weight: bold;
         margin-bottom: 5px;
     }
-
 </style>
+
+<h2>Current total minutes: @CurrentMinutes </h2>
+<h1>Workout</h1>
+<p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox. </p>
+<p>Do not forget to fill in the speed or weights if needed</p>
+
+<div class="coin">$</div>
+<div class="coin-label">@coinsamount</div>
+
+<div class="level-coin">lvl</div>
+<div class="level-label">@level</div>
+
+<div class="wrapper">
+    <div class="left-frame">
+        <label>Current coins amount:</label>
+        <label>@coinsamount</label>
+
+        <button @onclick="UpdateCoinsAmount">Convert given data to coins</button>
+
+        <label>So name, what exercises did you do today?</label>
+
+        <label>Minutes till bonus:</label>
+        <label> @Next100mins</label>            
+
+    </div>
+
+    <div class="exercise-container">
+        <div class="onderdeel-item">
+            <label>Minutes</label>
+        </div>
+        <div class="exercise-item">
+            <label>Push-up:</label>
+            <input type="number" @bind="@PushUpMinutes" />
+        </div>
+        <div class="exercise-item">
+            <label>Plank:</label>
+            <input type="number" @bind="@PlankMinutes" />
+        </div>
+        <div class="exercise-item">
+            <label>Burpees:</label>
+            <input type="number" @bind="@BurpeesMinutes" />
+        </div>
+        <div class="exercise-item">
+            <label>Jumping Jacks:</label>
+            <input type="number" @bind="@JumpingJacksMinutes"  />
+        </div>
+        <div class="exercise-item">
+            <label>Pull-up:</label>
+            <input type="number" @bind="@PullUpMinutes"  />
+        </div>
+        <div class="exercise-item">
+            <label>Wallsits:</label>
+            <input type="number" @bind="@WallsitsMinutes"  />
+        </div>
+        <div class="exercise-item">
+            <label>Rope jumping:</label>
+            <input type="number" @bind="@RopeJumpingMinutes" />
+        </div>
+        <div class="onderdeel-item2">
+            <label>Minutes</label>
+            <label>Weights(kg)</label>
+        </div>
+        <div class="exercise-item">
+            <label>Bench Press:</label>
+            <input type="number" @bind="@BenchPressMinutes"  />
+            <input type="number" @bind="@BenchPressWeight" class="weight-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Dumbbell Rows:</label>
+            <input type="number" @bind="@DumbbellRowsMinutes" />
+            <input type="number" @bind="@DumbbellRowsWeight" class="weight-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Curls:</label>
+            <input type="number" @bind="@CurlsMinutes"  />
+            <input type="number" @bind="@CurlsWeight" class="weight-input"  />
+        </div> 
+        <div class="exercise-item">
+            <label>Leg Press:</label>
+            <input type="number" @bind="@LegPressMinutes"  />
+            <input type="number" @bind="@LegPressWeight" class="weight-input"  />
+        </div>
+        <div class="onderdeel-item3">
+            <label>Minutes</label>
+            <label>distance(km)</label>
+        </div>
+        <div class="exercise-item">
+            <label>Walking:</label>
+            <input type="number" @bind="@WalkingMinutes"  />
+            <input type="number" @bind="@WalkingSpeed" class="speed-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Cycling:</label>
+            <input type="number" @bind="@CyclingMinutes"  />
+            <input type="number" @bind="@CyclingSpeed" class="speed-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Swimming:</label>
+            <input type="number" @bind="@SwimmingMinutes"  />
+            <input type="number" @bind="@SwimmingSpeed" class="speed-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Running:</label>
+            <input type="number" @bind="@RunningMinutes"/>
+            <input type="number" @bind="@RunningSpeed" class="speed-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Sprinting:</label>
+            <input type="number" @bind="@SprintingMinutes" />
+            <input type="number" @bind="@SprintingSpeed" class="speed-input"  />
+        </div>
+        <div class="exercise-item">
+            <label>Stairwalking:</label>
+            <input type="number" @bind="@StairWalkingMinutes" />
+            <input type="number" @bind="@StairWalkingSpeed" class="speed-input"  />
+        </div>
+    </div>
+
+    <div class="schema-wrapper"> 
+      <div class="schemaselecter-container">
+        <div class="schemaselectertitel">
+            <label>Choose exercise for planning:</label>
+        </div>
+        <div class="schemaselecter-item">
+           <label>Push-up</label>
+          <input type="checkbox" @bind="@PushUpSelected"/>
+       </div>
+        <div class="schemaselecter-item">
+            <label>Plank</label>
+            <input type="checkbox" @bind="@PlankSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Burpees</label>
+            <input type="checkbox" @bind="@BurpeesSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Jumping Jacks</label>
+            <input type="checkbox" @bind="@JumpingJacksSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Pull-up</label>
+            <input type="checkbox" @bind="@PullUpSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Wallsits</label>
+            <input type="checkbox" @bind="@WallsitsSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Rope jumping</label>
+            <input type="checkbox" @bind="@RopeJumpingSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Bench press</label>
+            <input type="checkbox" @bind="@BenchPressSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Dumbbell Rows</label>
+            <input type="checkbox" @bind="@DumbbellRowsSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Curls</label>
+            <input type="checkbox" @bind="@CurlsSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Leg Press</label>
+            <input type="checkbox" @bind="@LegPressSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Walking</label>
+            <input type="checkbox" @bind="@WalkingSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Cycling</label>
+            <input type="checkbox" @bind="@CyclingSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Swimming</label>
+            <input type="checkbox" @bind="@SwimmingSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Running</label>
+            <input type="checkbox" @bind="@RunningSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Sprinting</label>
+            <input type="checkbox" @bind="@SprintingSelected" />
+        </div>
+        <div class="schemaselecter-item">
+            <label>Stairwalking</label>
+            <input type="checkbox" @bind="@StairWalkingSelected" />
+        </div>
+      </div>
+
+        <div class="schema-container">
+    <div class="schematitel">
+        <label>Planning today:</label>
+    </div>
+
+    <!-- Knop om de schema te updaten -->
+    <button @onclick="UpdateSchema">Update Exercise</button>
+
+    @foreach (var exercise in selectedExercises)
+    {
+        <div class="schema-item">
+            <label>@exercise</label>
+            @if (exercise == "Push-up")
+            {
+                        <input type="number" @bind="@PushUpschema" placeholder="Min." />
+            }
+            @if (exercise == "Plank")
+            {
+                        <input type="number" @bind="@Plankschema" placeholder="Min." />
+            }
+            @if (exercise == "Burpees")
+            {
+                        <input type="number" @bind="@Burpeesschema" placeholder="Min." />
+            }
+            @if (exercise == "Jumping Jacks")
+            {
+                        <input type="number" @bind="@JumpingJacksschema" placeholder="Min." />
+            }
+            @if (exercise == "Pull-up")
+            {
+                        <input type="number" @bind="@PullUpschema" placeholder="Min." />
+            }
+            @if (exercise == "Wallsits")
+            {
+                        <input type="number" @bind="@Wallsitsschema" placeholder="Min." />
+            }
+            @if (exercise == "Rope Jumping")
+            {
+                        <input type="number" @bind="@RopeJumpingschema" placeholder="Min." />
+            }
+            @if (exercise == "Bench Press")
+            {
+                        <input type="number" @bind="@BenchPressschema" placeholder="Min." />
+            }
+            @if (exercise == "Dumbbell Rows")
+            {
+                        <input type="number" @bind="@DumbbellRowsschema" placeholder="Min." />
+            }
+            @if (exercise == "Curls")
+            {
+                        <input type="number" @bind="@Curlsschema" placeholder="Min." />
+            }
+            @if (exercise == "Leg Press")
+            {
+                        <input type="number" @bind="@LegPressschema" placeholder="Min." />
+            }
+            @if (exercise == "Walking")
+            {
+                        <input type="number" @bind="@Walkingschema" placeholder="Min." />
+            }
+            @if (exercise == "Cycling")
+            {
+                        <input type="number" @bind="@Cyclingschema" placeholder="Min." />
+            }
+            @if (exercise == "Swimming")
+            {
+                        <input type="number" @bind="@Swimmingschema" placeholder="Min." />
+            }
+            @if (exercise == "Running")
+            {
+                        <input type="number" @bind="@Runningschema" placeholder="Min." />
+            }
+            @if (exercise == "Sprinting")
+            {
+                        <input type="number" @bind="@Sprintingschema" placeholder="Min." />
+            }
+            @if (exercise == "Stair Walking")
+            {
+                        <input type="number" @bind="@StairWalkingschema" placeholder="Min." />
+            }
+        </div>
+    }
+</div>
+    </div>
+</div>
+
+
+
+
