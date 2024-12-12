@@ -47,7 +47,7 @@
 
 	private string errorMessage = string.Empty;
 
-	private async Task DeleteUser() //Handles the logic to delete the account, function was originally from chatgpt, but I had to change it significantly
+	private async Task DeleteUser() //Handles the logic to delete the account, function was originally from chatgpt, but I had to change it significantly. I tested by trying to delete my account again and again, until I fixed all my errors and it worked.
 	{
 		bool isUserValid = UserService.ValidateUserByEmaiUsernameAndPassword(User.Username, User.Email, User.Password);
 
