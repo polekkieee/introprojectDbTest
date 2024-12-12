@@ -86,7 +86,7 @@
 
 	private string errorMessage;
 
-	private void AddInfo()
+	private void AddInfo() //Logic to save the info the user just gave and a few default values, into the database
 	{
 		if (UserDb != null)
 		{
@@ -94,9 +94,9 @@
 			UserDb.Age = UserAndPet.User.Age;
 			UserDb.Start_condition = UserAndPet.User.Start_condition;
 
-			UserService.UpdateUser(UserDb); //Save the new details into the database
+			UserService.UpdateUser(UserDb); //Saves the new details into the database
 
-			var pet = new Pets //Saving default values into the database
+			var pet = new Pets //Set default values
 				{
 					UserId = UserDb.Id,
 					Name = UserAndPet.Pet.Name,
@@ -110,7 +110,7 @@
 					Food_bar_tlc = UserDb.Register_moment
 				};
 
-			UserService.AddPet(pet); //Save the pet into the database
+			UserService.AddPet(pet); //Saves the pet's information into the database
 
 			navigationManager.NavigateTo("/pet"); //Navigate to the pet page
 		}
