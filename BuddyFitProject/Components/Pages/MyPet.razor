@@ -40,17 +40,17 @@
 			<div class="show-pet">
 				<h2>@pet.Name (Level: @pet.Level)</h2>
 				<br />
-				<p>Health: @pet.Health_bar %</p>
+				<p>Health: @pet.Health_bar %</p> <!--Shows the percentage of the health-->
 				<div class="bar">
-					<div class="bar-filled" style="width:@pet.Health_bar%;"></div>
+					<div class="bar-filled" style="width:@pet.Health_bar%;"></div> <!--Calculates the width of the healthbar-->
 				</div>
 				<br />
-				<p>Food: @pet.Food_bar %</p>
+				<p>Food: @pet.Food_bar %</p> <!--Same as for health-->
 				<div class="bar">
 					<div class="bar-filled" style="width:@pet.Food_bar%;"></div>
 				</div>
 				<br />
-				<p>Stamina: @pet.Stamina_bar %</p>
+				<p>Stamina: @pet.Stamina_bar %</p> <!--Same as for health-->
 				<div class="bar">
 					<div class="bar-filled" style="width:@pet.Stamina_bar%;"></div>
 				</div>
@@ -168,8 +168,8 @@
 				//Services uitvogelen iets fetchen vanuit userinventory
 				pet = PetService.GetPet(user.Id);
 				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
-				PetService.DecreaseHealth(user, pet);
-				PetService.DigestFood(user, pet);
+				PetService.DecreaseHealth(user, pet); //Call decreasehealth function
+				PetService.DigestFood(user, pet); //Call digestfood function
 				LoggedIn = true;
 			}
 			userInventory = UserInventoryService.GetInventory(user.Id);
@@ -184,7 +184,7 @@
 
 		if (item.Type == "food")
 		{
-			PetService.EatFood(pet);
+			PetService.EatFood(pet); //Call EatFood function
 
 			invItem.Quantity -= 1;
 			UserInventoryService.UpdateUserInventoryItem(invItem);
