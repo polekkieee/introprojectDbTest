@@ -49,7 +49,7 @@ namespace BuddyFitProject.Components.Services
                 TimeSpan Ts = DateTime.Now - pet.Health_bar_tlc; //Timespan since user was registered
                 pet.Health_bar -= Ts.Hours; //So the healthbar lowers one every hour
                 pet.Health_bar = Math.Max(0, pet.Health_bar); //So it doesn't go under 0
-                pet.Health_bar_tlc = DateTime.Now;
+                pet.Health_bar_tlc = DateTime.Now; //Reset the datetime
                 UpdatePet(pet);
             }
             return pet.Health_bar;
@@ -59,9 +59,9 @@ namespace BuddyFitProject.Components.Services
         {
             if (pet.Health_bar < 100)
             {
-                pet.Health_bar += TotalMinutes / 2;
+                pet.Health_bar += TotalMinutes / 2; //Healthbar increases 1 every 2 minutes you workout
                 pet.Health_bar = Math.Min(100, pet.Health_bar); //So it doesn't go over the 100
-                pet.Health_bar_tlc = DateTime.Now;
+                pet.Health_bar_tlc = DateTime.Now; //Reset the datetime
                 UpdatePet(pet);
             }
             return pet.Health_bar;
@@ -71,10 +71,10 @@ namespace BuddyFitProject.Components.Services
         {
             if (pet.Stamina_bar < 100)
             {
-                pet.Stamina_bar += TotalMinutes / 5;
-                pet.Stamina_bar = Math.Min(100, pet.Stamina_bar);
-                pet.Stamina_bar = Math.Max(0, pet.Stamina_bar);
-                UpdatePet(pet);
+                pet.Stamina_bar += TotalMinutes / 5; //Staminabar increases 1 every 5 minutes you workout
+                pet.Stamina_bar = Math.Min(100, pet.Stamina_bar); //So it doesn't go above 100
+                pet.Stamina_bar = Math.Max(0, pet.Stamina_bar); //So it doesn't go under 0
+                UpdatePet(pet); 
             }
             return pet.Stamina_bar;
         }

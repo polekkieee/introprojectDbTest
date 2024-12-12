@@ -122,18 +122,18 @@
 
 	protected override void OnInitialized()
 	{
-		var httpContext = HttpContextAccessor.HttpContext;
+		var httpContext = HttpContextAccessor.HttpContext; //Retrieving the HTTP context
 
 		if (httpContext?.User.Identity?.IsAuthenticated == true)
 		{
 			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId)) //Parse the user ID claim
 			{
-				UserDb = UserService.GetUserById(loggedInUserId);
+				UserDb = UserService.GetUserById(loggedInUserId); //Retrieved the id of the user
 			}
 			else
 			{
-				navigationManager.NavigateTo("/login");
+				navigationManager.NavigateTo("/login"); //Navigates unauthenticated users to the login page
 			}
 		}
 	}
