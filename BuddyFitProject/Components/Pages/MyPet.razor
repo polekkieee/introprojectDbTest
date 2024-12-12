@@ -59,8 +59,7 @@
 				</div>
 				<br />
 				<div class="img-wrapper">
-					@* We are currently working on the images of the items. As we do not have all the pictures ready yet, only the 'tutu'-item works 
-						on the bear right now. The other images don't have the correct positioning in the razor.css file *@
+					
 					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" /> 
 
 					@if (!string.IsNullOrEmpty(pet.Clothing)) @* Again, a null-checker to avoid the page not loading due to a null value *@
@@ -76,7 +75,6 @@
 					@if (@pet.Clothing == "nothing"){
 						<img class="img-clothes" src="@($"Clothing/nothing.png")"/>
 					}
-					@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@ @* This is the hardcoded tutu image that works on the bear*@
 				</div>
 			</div>
 		}
