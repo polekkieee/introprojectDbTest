@@ -3,7 +3,6 @@ Introproject Informatica UU 2024-2025
 Group 6
 
 ## About
-
 BuddyFit is all about staying fit. We all know the struggle, you wanna work out but simply do not have the motivation to. No worries, we have found a way to keep you motivated.  A Fit buddy will accompany you on your fit journey! 
 
 ## Instructions 
@@ -16,10 +15,10 @@ BuddyFit is all about staying fit. We all know the struggle, you wanna work out 
 2. Download the packages in Visual Studio.
     1) Go to Tools -> NuGet Package Manager -> Manage NuGet Packages for Solution
     2) Go to Browse and make sure you have donwloaded the following packages:
-            - SendGrid
-            - Microsoft.EntityFrameworkCore.Sqlserver
-            - Microsoft.EntityFrameworkCore
-            - Microsoft.EntityFrameworkCore.Tools
+        -  SendGrid
+        -  Microsoft.EntityFrameworkCore.Sqlserver
+        -  Microsoft.EntityFrameworkCore
+        -  Microsoft.EntityFrameworkCore.Tools
 3. Run the complete [sql script](https://git.science.uu.nl/jazzmex/introproject/-/tree/main/BuddyFitProject/sql?ref_type=heads) we have included in our repo.
 4.. That's it! Click start without debugging and a website will appear in your browser (localhost). 
 
