@@ -28,6 +28,7 @@ main {
     gap: 20px;
 }
 
+/* this handles the different steps that are described on the home screen right now*/
 div.step {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -51,6 +52,7 @@ div.step {
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
     }
 
+    /* message is the message down below that is not a step*/
 div.message {
     text-align: center;
     margin-top: 20px;

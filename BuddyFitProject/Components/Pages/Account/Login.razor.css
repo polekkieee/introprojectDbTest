@@ -12,7 +12,6 @@ header {
         margin: 0px 20px 0px 0px;
     }
 
-
 main {
     display: flex;
     flex-direction: column;
@@ -20,6 +19,7 @@ main {
     gap: 20px;
 }
 
+/* handles the different input boxes*/
 div.input {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -29,7 +29,7 @@ div.input {
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
   
 }
-
+/*handles the labels that show what should the input box is*/
     div.input label {
         font-size: 1.8rem;
         color: #ffe1e6;
@@ -37,6 +37,7 @@ div.input {
         margin-bottom: 10px;
     }
 
+    /* handles error message*/
 div.message {
     text-align: center;
     margin-top: 20px;
@@ -49,6 +50,7 @@ div.message {
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
 
+    /*button group that handels the buttons log in, register and password forgotten*/
 div.button-group{
     display: flex;
     flex-direction: row;
@@ -56,24 +58,3 @@ div.button-group{
     gap: 10px;
     margin-top: 15px;
 }
-
-btn {
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-}
-
-/*
-.b2 {
-    font-family: Impact;
-    font-size: 2em;
-}
-
-.b3 {
-    font-family: Impact;
-    font-size: 1em
-}*/

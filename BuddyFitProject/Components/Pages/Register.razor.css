@@ -20,7 +20,7 @@ main {
     align-items: center;
     gap: 20px;
 }
-
+/*handles the different input boxes*/
 div.input {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -38,6 +38,8 @@ div.input {
         margin-bottom: 10px;
     }
 
+
+/* handles all the buttons */
 div.button-group {
     display: flex;
     flex-direction: row;
@@ -46,6 +48,7 @@ div.button-group {
     margin-top: 15px;
 }
 
+/* error message*/
 div.message {
     text-align: center;
     margin-top: 20px;
@@ -57,61 +60,3 @@ div.message {
         color: #ffffff;
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
-
- 
-/*
-    label {
-    width: 6em;
-}
-
-.l {
-    font-family: Impact;
-    font-size: 2em;
-}
-
-.b2 {
-    font-family: Impact;
-    font-size: 2em;
-}
-
-.b3 {
-    font-family: Impact;
-    font-size: 1em
-}*/
-
-/*.h {
-    font-family: Impact;
-    font-size: 2em;
-}
-
-.i {
-    font-family: Impact;
-    font-size: 1em;
-}
-
-.btn2 {
-    margin-top: 4em;
-    height: 5em;
-    width: 20em;
-    border: 5px solid green;
-    background-color: #3aeb34;
-    font-family: Impact;
-    font-size: 1.5em
-}
-
-.absolute {
-    position: absolute;
-    top: 90px;
-    right: 0;
-    width: 800px;
-    height: 400px;
-}
-
-.hr {
-    height: 100px;
-    margin-top: 5em;
-    margin-left: -35px;
-    margin-right: -35px;
-    color: #0000dB;
-}
-*/
