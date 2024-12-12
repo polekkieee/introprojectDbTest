@@ -180,7 +180,7 @@ else
 		GameTimer?.Dispose();
 		GameEnded = true;
 
-		if (pet != null) //Substract 5 from the statima bar everytime a game is played
+		if (pet != null) //Substract 5 from the stamina bar everytime a game is played
 		{
 			pet.Stamina_bar = Math.Max(0, pet.Stamina_bar - 5); 									
 			PetService.UpdatePet(pet); 
