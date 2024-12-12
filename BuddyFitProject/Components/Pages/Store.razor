@@ -45,7 +45,7 @@
 						{
 							<div class="productbox" tabindex="@Food.IndexOf(item)" @onclick="() => UpdateSelectedFood(item)">
 								<div class="product">
-									<img style="width: inherit; object-fit:cover;" src=@($"{item.Name}.png") />
+									<img style="width: inherit; object-fit:cover;" src=@($"Food/{item.Name}.png") />
 								</div>
 							</div>
 						}
@@ -56,7 +56,7 @@
 						{
 							<div class="previewoutfit">
 								<p>Buy @SelectedFood.Name </p>
-								<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"{SelectedFood.Name}.png") />
+								<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"Food/{SelectedFood.Name}.png") />
 							</div>
 							<div>
 								@SelectedFood.Price coins per piece
@@ -81,7 +81,8 @@
 						{
 							<div class="productbox" tabindex="@Outfits.IndexOf(item)" @onclick="() => UpdateSelectedOutfit(item)">
 								<div class="product">
-									<img style="width: inherit; object-fit:cover;" src=@($"{item.Name}.png") />
+									<img style="width: inherit; object-fit:cover;" src=@($"Clothing/{item.Name}.png") />
+								
 
 									@if (UnlockedOutfits.Contains(item))
 									{
@@ -97,7 +98,7 @@
 						{
 							<div class="previewoutfit">
 								<p>Selected Outfit: </p>
-								<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"{SelectedOutfit.Name}.png") />
+							<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"Clothing/{SelectedOutfit.Name}.png") />
 							</div>
 							<div>
 								Price: @SelectedOutfit.Price

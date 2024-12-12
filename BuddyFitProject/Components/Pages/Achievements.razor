@@ -1,0 +1,246 @@
+﻿@page "/Achievements"
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<head>
+    <PageTitle> Achievements </PageTitle>
+</head>
+
+@code {
+    private int coinsamount = 1000; //aantal coins user
+    private int level = 0; //hoogte level van de user, heeft ook invloed op achievements
+
+    //variabelen die bepalen of achievements true of false zijn
+    private int CurrentMinutes = 0; 
+    private int elementscheme = 0;
+    private int FlappyBuddyScore = 0;
+
+    //variabelen om het percentage voltooide achievements te berekenen
+    private int aantalAchievements = 12;
+    private int Achievementscomplete = 0;
+    private int percentage = 0;
+
+    //geeft aan of een achievement gecomplete is of niet
+    bool lvl10Completed = false;
+    bool lvl50Completed = false;
+    bool lvl100Completed = false;
+
+    bool starterCompleted = false;
+    bool expertCompleted = false;
+    bool goatCompleted = false;
+
+    bool motivatedCompleted = false;
+    bool disciplineCompleted = false;
+    bool determinedCompleted = false;
+
+    bool flappy100Completed = false;
+    bool Game2Completed = false;
+    bool Game3Completed = false;
+
+    //dit zorgt ervoor dat de boolvarbialen de achievementchecker uitvoert voor de pagina wordt geladen
+    protected override void OnInitialized()
+    {
+        Achievementchecker();
+        PercentageComplete();
+    }
+
+    public void Achievementchecker() {
+        if (level >= 10)
+        {
+            lvl10Completed = true;
+            coinsamount += 1000;
+        }
+        if (level >= 50)
+        {
+            lvl50Completed = true;
+            coinsamount += 2000;
+        }
+        if (level >= 100)
+        {
+            lvl100Completed = true;
+            coinsamount += 5000;
+        }
+
+
+        if (CurrentMinutes >= 100)
+        {
+            starterCompleted = true;
+            coinsamount += 1000;
+        }
+        if (CurrentMinutes >= 500)
+        {
+            expertCompleted = true;
+            coinsamount += 2000;
+        }
+        if (CurrentMinutes >= 1000)
+        {
+            goatCompleted = true;
+            coinsamount += 5000;
+        }
+
+        if (elementscheme >= 50)
+        {
+            motivatedCompleted = true;
+            coinsamount += 1000;
+        }
+        if (elementscheme >= 200)
+        {
+            disciplineCompleted = true;
+            coinsamount += 2000;
+        }
+        if (elementscheme >= 500)
+        {
+            determinedCompleted = true;
+            coinsamount += 25000;
+        }
+
+
+        if (FlappyBuddyScore >= 100)
+        {
+            flappy100Completed = true;
+            coinsamount += 1000;
+        }
+
+        //nog 2 if opdrachten voor 2 toekomstige minigames
+        StateHasChanged();
+    }
+    // berekent percentage voltooide achievements
+    public void PercentageComplete() {
+        //elk achievement dat op true staat verhoogt het voltooide aantal achievements
+        if (lvl10Completed)
+            Achievementscomplete++;
+        if (lvl50Completed)
+            Achievementscomplete++;
+        if (lvl100Completed)
+            Achievementscomplete++;
+        if (starterCompleted)
+            Achievementscomplete++;
+        if (expertCompleted)
+            Achievementscomplete++;
+        if (goatCompleted)
+            Achievementscomplete++;
+        if (motivatedCompleted)
+            Achievementscomplete++;
+        if (disciplineCompleted)
+            Achievementscomplete++;
+        if (determinedCompleted)
+            Achievementscomplete++;
+        if (flappy100Completed)
+            Achievementscomplete++;
+        if (Game2Completed)
+            Achievementscomplete++;
+        if (Game3Completed)
+            Achievementscomplete++;
+
+        percentage = (Achievementscomplete * 100) / aantalAchievements;
+    }
+}
+
+
+
+<div class="coin">$</div>
+<div class="coin-label">@coinsamount</div>
+
+<div class="level-coin">lvl</div>
+<div class="level-label">@level</div>
+
+<h1>Achievements</h1>
+<div class="percentagecomplete">
+    <label>Completed: @percentage%</label>
+</div>
+
+<div class="wrapperrow">
+    <div class="wrappercolumn">
+        <div class="Achievement">
+            <div class="achievement-item">10</div>
+            <label>Reach level 10 to get a 1000 coin bonus.</label>
+            <!--Als achievement op true, dan wordt de klasse voor rode text niet toegevoegd en text is "completed", bij false andersom-->
+            <div class="Achievement-waarde @(lvl10Completed ? "" : "incomplete")">
+                @(lvl10Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item">50</div>
+            <label>Are you already level 50? You will get a 2000 coins bonus for reaching level 50!</label>
+            <div class="Achievement-waarde @(lvl50Completed ? "" : "incomplete")">
+                @(lvl50Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item">100</div>
+            <label>Triple digits? It’s tough, but you can do it! Reward: 5000 coins!</label>
+            <div class="Achievement-waarde @(lvl100Completed ? "" : "incomplete")">
+                @(lvl100Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+    </div>
+    <div class="wrappercolumn">
+        <div class="Achievement">
+            <div class="achievement-item-min">Starter</div>
+            <label>Reach a total of 100 minutes of exercises to earn a 1000 coin bonus</label>
+            <div class="Achievement-waarde @(starterCompleted ? "" : "incomplete")">
+                @(starterCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-min">Expert</div>
+            <label>Hungry for coins? Exercise for 500 minutes to earn 2000 coins!</label>
+            <div class="Achievement-waarde @(expertCompleted ? "" : "incomplete")">
+                @(expertCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-min">GOAT</div>
+            <label>Keep your head up. 1000 minutes and a big prize of 5000 coins is waiting for you!</label>
+            <div class="Achievement-waarde @(goatCompleted ? "" : "incomplete")">
+                @(goatCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+    </div>
+    <div class="wrappercolumn">
+        <div class="Achievement">
+            <div class="achievement-item-schema">Motivated</div>
+            <label>Complete an element of your own scheme 50 times to get 1000 coins</label>
+            <div class="Achievement-waarde @(motivatedCompleted ? "" : "incomplete")">
+                @(motivatedCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-schema">Discipline</div>
+            <label>Disciplined enough? Complete an element of your own scheme 200 times to get 2000 coins</label>
+            <div class="Achievement-waarde @(disciplineCompleted ? "" : "incomplete")">
+                @(disciplineCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-schema">Determined</div>
+            <label>You've got the hang of it. Complete an element of your own scheme 500 times to get 5000 coins</label>
+            <div class="Achievement-waarde @(determinedCompleted ? "" : "incomplete")">
+                @(determinedCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+    </div>
+    <div class="wrappercolumn">
+        <div class="Achievement">
+            <div class="achievement-item-game">100</div>
+            <label>Prove you're the KING of FlappyBuddy by scoring 100 in the minigame.</label>
+            <div class="Achievement-waarde @(flappy100Completed ? "" : "incomplete")">
+                @(flappy100Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-game">game</div>
+            <label>game2</label>
+            <div class="Achievement-waarde @(Game2Completed ? "" : "incomplete")">
+                @(Game2Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-game">game</div>
+            <label>game3</label>
+            <div class="Achievement-waarde @(Game3Completed ? "" : "incomplete")">
+                @(Game3Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+    </div>
+</div>
