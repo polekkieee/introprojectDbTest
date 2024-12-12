@@ -73,8 +73,6 @@ else
 	private PeriodicTimer? GameTimer;
 	private static readonly Random RandomGenerator = new();
 
-	private int StaminaBar { get; set; }
-
 	protected override async Task OnInitializedAsync()
 	{
 		await base.OnInitializedAsync();
@@ -182,15 +180,10 @@ else
 		GameTimer?.Dispose();
 		GameEnded = true;
 
-		// Decrease pet's stamina
 		if (pet != null)
 		{
-			pet.Stamina_bar = Math.Max(0, pet.Stamina_bar - 5); // Reduce stamina by 5, ensuring it doesn't go below 0
-																// Update the UI-bound StaminaBar property
-			StaminaBar = pet.Stamina_bar;
-			PetService.UpdatePet(pet); // Save the updated pet state to the database
-
-			StateHasChanged();
+			pet.Stamina_bar = Math.Max(0, pet.Stamina_bar - 5); 									
+			PetService.UpdatePet(pet); 
 		}
 	}
 

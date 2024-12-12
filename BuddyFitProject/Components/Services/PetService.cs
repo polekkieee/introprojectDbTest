@@ -35,41 +35,75 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-        public int ChangeHealth(Users user, Pets pet, List<WorkoutSessions> Workouts) //Logic to change the health percentage
+        public int DecreaseHealth(Users user, Pets pet) //Logic to lower the health percentage
         {
-            int totalMinutes = 0;
-            foreach (var session in Workouts)
+            if (DateTime.Compare(pet.Health_bar_tlc, user.Register_moment) <= 0)
             {
-                totalMinutes += session.Minutes;
+                return pet.Health_bar;
             }
-            if (pet.Health_bar <= 100)
+
+            if (pet.Health_bar < 100)
             {
-                pet.Health_bar = totalMinutes / 2;
+                TimeSpan Ts = DateTime.Now - pet.Health_bar_tlc; //Timespan since user was registered
+                pet.Health_bar -= Ts.Hours; //So the healthbar lowers one every hour
+                pet.Health_bar = Math.Max(0, pet.Health_bar); //So it doesn't go under 0
+                pet.Health_bar_tlc = DateTime.Now;
+                UpdatePet(pet);
             }
-            pet.Health_bar = Math.Min(100, pet.Health_bar); //So it doesn't go over the 100
-            TimeSpan Ts = DateTime.Now - user.Register_moment; //Timespan since user was registered
-            pet.Health_bar -= Ts.Hours; //So the healthbar lowers one every hour
-            pet.Health_bar = Math.Max(0, pet.Health_bar); //So it doesn't go under 0
-            UpdatePet(pet);
             return pet.Health_bar;
         }
 
-        public int ChangeStamina(Users user, Pets pet, List<WorkoutSessions> Workouts) //Logic to change the stamina percentage
+        public int IncreaseHealth(int TotalMinutes, Pets pet) //Logic to increase the health percentage
         {
-            int totalMinutes = 0;
-            foreach (var session in Workouts)
+            if (pet.Health_bar < 100)
             {
-                totalMinutes += session.Minutes;
+                pet.Health_bar += TotalMinutes / 2;
+                pet.Health_bar = Math.Min(100, pet.Health_bar); //So it doesn't go over the 100
+                pet.Health_bar_tlc = DateTime.Now;
+                UpdatePet(pet);
             }
-            if (pet.Stamina_bar <= 100)
+            return pet.Health_bar;
+        }
+
+        public int ChangeStamina(Pets pet, int TotalMinutes) //Logic to change the stamina percentage
+        {
+            if (pet.Stamina_bar < 100)
             {
-                pet.Stamina_bar += Math.Max(0, totalMinutes / 50);
+                pet.Stamina_bar += TotalMinutes / 5;
+                pet.Stamina_bar = Math.Min(100, pet.Stamina_bar);
+                pet.Stamina_bar = Math.Max(0, pet.Stamina_bar);
+                UpdatePet(pet);
             }
-            pet.Stamina_bar = Math.Min(100, pet.Stamina_bar);
-            pet.Stamina_bar = Math.Max(0, pet.Stamina_bar);
-            UpdatePet(pet);
             return pet.Stamina_bar;
         }
 
+        public int DigestFood(Users user, Pets pet) //Logic to lower the food percentage
+        {
+            if (DateTime.Compare(pet.Food_bar_tlc, user.Register_moment) <= 0)
+            {
+                return pet.Food_bar;
+            }
+
+            if (pet.Food_bar > 0)
+            {
+                TimeSpan Ts = DateTime.Now - pet.Food_bar_tlc; //Timespan since user was registered
+                pet.Food_bar -= Ts.Hours; //So the foodbar lowers one every hour
+                pet.Food_bar = Math.Max(0, pet.Food_bar); //So it doesn't go under 0
+                pet.Food_bar_tlc = DateTime.Now;
+                UpdatePet(pet);
+            }
+            return pet.Food_bar;
+        }
+
+        public int EatFood(Pets pet) //Logic to increase the food percentage
+        {
+            if (pet.Food_bar < 100)
+            {
+                pet.Food_bar = Math.Min(100, pet.Food_bar + 20);
+                pet.Food_bar_tlc = DateTime.Now;
+                UpdatePet(pet);
+            }
+            return pet.Food_bar;
+        }
     }
 }
