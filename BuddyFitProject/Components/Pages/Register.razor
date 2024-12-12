@@ -15,7 +15,7 @@
     <header>
         <h1>Register</h1>
     </header>
-
+    <!--Form where the user can create a "new user":-->
     <main>
         <EditForm method="post" Model="User" OnValidSubmit="AddUser" FormName="create">
             <div class="input">
@@ -32,15 +32,6 @@
                 <label for="input" class="l">Email:</label>
                 <InputText id="Email" @bind-Value="User.Email" class="i" />
             </div>
-
-            @*<div class="mb-2">
-                        <label for="Gender" class="l">Gender:</label>
-                        <InputText id="Gender" @bind-Value="User.Gender" class="i" />
-                    </div>
-                    <div class="mb-2">
-				<label for="StartCondition" class="l">Start Condition:</label>
-				<InputText id="StartCondition" @bind-Value="User.Start_condition" class="i" />
-			</div>*@
             <hr />
             <div class="button-group">
                 <button type="submit" class="btn btn-primary">Create</button>
@@ -61,12 +52,12 @@
 
 @code {
     [SupplyParameterFromForm]
-    private Users User { get; set; } = new();
+    private Users User { get; set; } = new(); //Holds the information for the create form
     private string errorMessage;
 
-    private void AddUser()
+    private void AddUser() //Logic to check if the user exists or not, and then save it into the database, if it doesn't exist yet
     {
-        if (!UserService.UserExists(User.Username, User.Email))
+        if (!UserService.UserExists(User.Username, User.Email)) 
         {
             User.Register_moment = DateTime.Now;
             User.Start_condition = "new";
@@ -75,6 +66,6 @@
             UserService.AddUser(User);
             navigationManager.NavigateTo("/login");
         }
-        errorMessage = "User bestaat al";
+        errorMessage = "User bestaat al"; 
     }
 }
