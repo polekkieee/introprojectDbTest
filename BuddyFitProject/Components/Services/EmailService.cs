@@ -15,7 +15,7 @@ namespace BuddyFitProject.Components.Services
             this.resetPasswordService = resetPasswordService;
         }
 
-        public async Task SendEmailResetPassword(string toEmail, string subject, string body, string resetcode)
+        public async Task SendEmailResetPassword(string toEmail, string subject, string body, string resetcode) //Logic to send email, this code was originally from chatgpt, but I had to change it significantly
         {
             var client = new SendGridClient(_configuration["SendGrid:ApiKey"]); //Create a sendgrid client
             var from = new EmailAddress("e.s.hemmers@students.uu.nl", "Liesbeth");
