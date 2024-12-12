@@ -89,8 +89,7 @@ namespace BuddyFitProject.Components.Services
                                     )
                             .ToList();
 
-                if (!inventory.Any())
-                    throw new Exception("User Inventory does not exist!");
+              
                 return inventory;
 
             }
