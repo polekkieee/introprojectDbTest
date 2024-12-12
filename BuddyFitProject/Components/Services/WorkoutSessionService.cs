@@ -45,9 +45,6 @@ namespace BuddyFitProject.Components.Services
                     .Where(x => x.UserId == userId)
                     .ToList();
 
-                if (!workouts.Any())
-                    throw new Exception("User statistics do not exist!");
-
                 return workouts;
             }
         }

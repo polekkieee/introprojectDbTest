@@ -182,10 +182,14 @@ else
 				LoggedIn = true;
 
 				// User items are fetched from the database using the services
-				pet = PetService.GetPet(user.Id);
 				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
 				userInventory = UserInventoryService.GetInventory(user.Id);
-				HealthBar = PetService.ChangeHealth(user, pet, allWorkouts);
+
+				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
+
+				pet = PetService.GetPet(user.Id);
+				PetService.DecreaseHealth(user, pet);
+				// PetService.DigestFood(user, pet);
 			}
 		}
 	}

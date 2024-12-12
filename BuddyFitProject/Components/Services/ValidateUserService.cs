@@ -61,15 +61,6 @@ public class ValidateUserService
         return resetcode;
     }
 
-    public string SetValidateCode(string email)
-    {
-        string validatecode = GenerateRandomCode();
-        Users user = UserService.GetUserByEmail( email);
-        user.Validatecode = validatecode;
-        UserService.UpdateUser(user);
-        return validatecode;
-    }
-
     private string GenerateRandomCode()
     {
         const string chars = "0123456789";
@@ -78,16 +69,6 @@ public class ValidateUserService
             .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 
-    public bool CheckValidateCode(string email, string validatecode)
-    {
-        Users user = UserService.GetUserByEmail(email);
-        if (user.Validatecode == validatecode)
-        {
-            return true;
-        }
-
-        return false;
-    }
     /// <summary>
     /// Hashes a password using SHA-256.
     /// </summary>
