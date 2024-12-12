@@ -22,7 +22,7 @@ namespace BuddyFitProject.Components.Services
             var to = new EmailAddress(toEmail, "Dear BuddyFitter");
             var plainTextContent = $"{resetcode}"; //Defining the plaintext content of the email 
             var htmlContent = $"<strong>{resetcode}</strong>"; //Defining the HTML content
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent); //Create the email message
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent); //Creates the email message
             var response = await client.SendEmailAsync(msg); //Send the email
         }
     }

@@ -96,7 +96,7 @@
 
 			UserService.UpdateUser(UserDb); //Save the new details into the database
 
-			var pet = new Pets
+			var pet = new Pets //Saving default values
 				{
 					UserId = UserDb.Id,
 					Name = UserAndPet.Pet.Name,
@@ -120,7 +120,7 @@
 		}
 	}
 
-	protected override void OnInitialized()
+	protected override void OnInitialized() //Checks if the user is authenticated and takes consequent actions
 	{
 		var httpContext = HttpContextAccessor.HttpContext; //Retrieving the HTTP context
 
@@ -129,7 +129,7 @@
 			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId)) //Parse the user ID claim
 			{
-				UserDb = UserService.GetUserById(loggedInUserId); //Retrieved the id of the user
+				UserDb = UserService.GetUserById(loggedInUserId); //Retrieves the id of the user, if the user is authenticated
 			}
 			else
 			{

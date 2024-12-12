@@ -12,12 +12,12 @@ namespace BuddyFitProject.Components.Services
     {
         private IDbContextFactory<BuddyFitDbContext> DbContextFactory;
 
-        public PetService(IDbContextFactory<BuddyFitDbContext> dbContext)
+        public PetService(IDbContextFactory<BuddyFitDbContext> dbContext) //Construction to initialize the service with a database context factory
         {
             DbContextFactory = dbContext;
         }
 
-        public Pets GetPet(int userId)
+        public Pets GetPet(int userId) //Retrieves pet from correct user from the database
         {
             using (var dbContext = DbContextFactory.CreateDbContext())
             {
@@ -26,7 +26,7 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-        public void UpdatePet(Pets pet)
+        public void UpdatePet(Pets pet) //Logic to update pet in the database
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
@@ -70,8 +70,8 @@ namespace BuddyFitProject.Components.Services
             if (pet.Stamina_bar < 100)
             {
                 pet.Stamina_bar += TotalMinutes / 5; //Staminabar increases 1 every 5 minutes you workout
-                pet.Stamina_bar = Math.Min(100, pet.Stamina_bar); //So it doesn't go above 100
-                pet.Stamina_bar = Math.Max(0, pet.Stamina_bar); //So it doesn't go under 0
+                pet.Stamina_bar = Math.Min(100, pet.Stamina_bar);  
+                pet.Stamina_bar = Math.Max(0, pet.Stamina_bar); 
                 UpdatePet(pet); 
             }
             return pet.Stamina_bar;
@@ -88,8 +88,8 @@ namespace BuddyFitProject.Components.Services
             {
                 TimeSpan Ts = DateTime.Now - pet.Food_bar_tlc; //Timespan since user was registered
                 pet.Food_bar -= Ts.Hours; //So the foodbar lowers one every hour
-                pet.Food_bar = Math.Max(0, pet.Food_bar); //So it doesn't go under 0
-                pet.Food_bar_tlc = DateTime.Now;
+                pet.Food_bar = Math.Max(0, pet.Food_bar); 
+                pet.Food_bar_tlc = DateTime.Now; //Resetting pet.Food_bar_tlc to the time it was last changed
                 UpdatePet(pet);
             }
             return pet.Food_bar;

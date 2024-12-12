@@ -78,8 +78,8 @@
 			new Claim(ClaimTypes.NameIdentifier, User.Id.ToString())
 		};
 
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme); //Creates new ClaimIdentity object, represents the authenticated identity of the user
+        var principal = new ClaimsPrincipal(identity); //Creates new ClaimsPrincipal object, represents the user's security context
         await httpcontext.SignInAsync(principal);
 
         bool newUser = UserService.NewUser(User.Username, User.Start_condition);

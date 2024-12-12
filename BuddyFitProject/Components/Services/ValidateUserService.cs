@@ -21,34 +21,34 @@ public class ValidateUserService
     {
         try
         {
-            if (string.IsNullOrEmpty(newPassword))
+            if (string.IsNullOrEmpty(newPassword)) //When the new password is empty
             {
                 return "Password cannot be empty.";
             }
 
             Users user = UserService.GetUserByUsernameAndEmail(username, email);
 
-            if (user == null)
+            if (user == null) //When the new user isn't found
             {
                 return $"User '{username}' not found.";
             }
 
-            if (user.Resetcode != resetCode)
+            if (user.Resetcode != resetCode) //When the resetcode is invalid
             {
                 return "Invalid reset code.";
             }
 
             user.Password = newPassword; 
             UserService.UpdateUser(user); //Updates the user's password
-            return "Password reset successfully."; //Save the changes into the database
+            return "Password reset successfully."; //Saves the changes into the database
         }
         catch (DbUpdateException dbEx) //Handles database update errors
         {
             return $"Error updating password: {dbEx.InnerException?.Message ?? dbEx.Message}";
         }
-        catch (Exception ex)
+        catch (Exception ex) //Handles other errors
         {
-            return $"Unexpected error: {ex.Message}"; //Handles other errors
+            return $"Unexpected error: {ex.Message}"; 
         }
     }
 
@@ -57,7 +57,7 @@ public class ValidateUserService
         string resetcode = GenerateRandomCode();
         Users user = UserService.GetUserByUsernameAndEmail(username, email);
         user.Resetcode = resetcode;
-        UserService.UpdateUser(user); //Save the resetcode into the database
+        UserService.UpdateUser(user); //Saves the resetcode into the database
         return resetcode;
     }
 
