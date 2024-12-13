@@ -4,21 +4,6 @@
 @inject NavigationManager navigationManager
 @inject IHttpContextAccessor HttpContextAccessor
 
-<head>
-    <PageTitle> Logout </PageTitle>
-    <link href="Logout.razor.css" rel="stylesheet" />
-</head>
-
-<body>
-    <header>
-        <h1>Log out</h1>
-    </header>
-    <main>
-        <h2>You've successfully logged out.</h2>
-    </main>
-        
-</body>
-
 @code {
     protected override async Task OnInitializedAsync() //Logic to handle logging out
     {

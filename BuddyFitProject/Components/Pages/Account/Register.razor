@@ -55,7 +55,7 @@
     private Users User { get; set; } = new(); //Holds the information for the create form
     private string errorMessage;
 
-    private void AddUser() //Logic to check if the user exists or not, and then save it into the database, if it doesn't exist yet
+    private void AddUser() //Logic to check if the user exists or not, and then saves it into the database, if it doesn't exist yet
     {
         if (!UserService.UserExists(User.Username, User.Email)) 
         {
