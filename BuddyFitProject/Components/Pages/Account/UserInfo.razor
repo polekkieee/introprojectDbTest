@@ -127,7 +127,7 @@
 		if (httpContext?.User.Identity?.IsAuthenticated == true)
 		{
 			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId)) //Parses the user ID claim
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId)) //Parses the user's ID claim
 			{
 				UserDb = UserService.GetUserById(loggedInUserId); //Retrieves the id of the user, if the user is authenticated
 			}
