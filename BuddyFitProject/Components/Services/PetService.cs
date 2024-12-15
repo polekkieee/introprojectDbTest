@@ -1,4 +1,4 @@
-﻿using BuddyFitProject.Data.Models;
+﻿﻿using BuddyFitProject.Data.Models;
 using BuddyFitProject.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
