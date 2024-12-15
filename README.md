@@ -54,7 +54,7 @@ All project files are located in the ```BuddyFitProject``` folder. Open the solu
 - We know that sometimes running the project will take some time. This is due to the images that need to be loaded. No worries if it takes 15-25 seconds before the website appears.
 - Logged out, but you're still on a page that's only accessible to logged in users? Simply refresh the site in your browser and you should be led back to the home screen.
 - We are still working on the ```Achievements```-page, meaning it is not yet linked to the database.
-- We know that the rabbit image is scaled correctly, making it fit weirdly on the pet page and while playing the minigame.
+- We know that the rabbit image is scaled incorrectly, making it fit weirdly on the pet page and while playing the minigame.
 - It may happen that the connection string to the database is incorrect. Follow the steps to fix this:
     1. Look up **SQL SERVER OBJECT EXPLORER** in Visual Studio 
     2. Go to **SQL Server** -> **(localdb)\MSSQLLocalDB(......)**
