@@ -27,8 +27,8 @@ div.input {
     border-radius: 10px;
     padding: 20px;
     width: 80%;
+    margin-left: 10%;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-
 }
 
     div.input label {
@@ -43,6 +43,7 @@ div.button-group {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     margin-top: 15px;
 }
