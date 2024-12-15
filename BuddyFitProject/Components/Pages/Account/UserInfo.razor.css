@@ -28,7 +28,7 @@ main {
     gap: 20px;
 }
 
-
+/*handles input boxes*/
 div.input {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -48,7 +48,7 @@ div.input {
 
     }
 
-
+     /*handles the radio group which is where the user selects a pet*/
    .radio-group{
        gap:10px;
        display: flex;

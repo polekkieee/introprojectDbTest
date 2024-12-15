@@ -9,7 +9,7 @@ namespace BuddyFitProject.Components.Services
     {
         private readonly IConfiguration _configuration;
         ValidateUserService resetPasswordService;
-        public EmailService(IConfiguration configuration, ValidateUserService resetPasswordService)
+        public EmailService(IConfiguration configuration, ValidateUserService resetPasswordService) //Contructor the initialize the configuration and resetpasswordservice
         {
             _configuration = configuration;
             this.resetPasswordService = resetPasswordService;
@@ -17,24 +17,13 @@ namespace BuddyFitProject.Components.Services
 
         public async Task SendEmailResetPassword(string toEmail, string subject, string body, string resetcode)
         {
-            var client = new SendGridClient(_configuration["SendGrid:ApiKey"]);
+            var client = new SendGridClient(_configuration["SendGrid:ApiKey"]); //Create a sendgrid client
             var from = new EmailAddress("e.s.hemmers@students.uu.nl", "Liesbeth");
             var to = new EmailAddress(toEmail, "Dear BuddyFitter");
-            var plainTextContent = $"{resetcode}";
-            var htmlContent = $"<strong>{resetcode}</strong>";
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg);
-        }
-
-        public async Task SendEmailValidateEmail(string toEmail, string subject, string body, string validatecode)
-        {
-            var client = new SendGridClient(_configuration["SendGrid:ApiKey"]);
-            var from = new EmailAddress("e.s.hemmers@students.uu.nl", "Liesbeth");
-            var to = new EmailAddress(toEmail, "Dear BuddyFitter");
-            var plainTextContent = $"{validatecode}";
-            var htmlContent = $"<strong>{validatecode}</strong>";
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg);
+            var plainTextContent = $"{resetcode}"; //Defining the plaintext content of the email 
+            var htmlContent = $"<strong>{resetcode}</strong>"; //Defining the HTML content
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent); //Create the email message
+            var response = await client.SendEmailAsync(msg); //Send the email
         }
     }
 }

@@ -20,7 +20,8 @@
 	<link href="MyPet.razor.css" rel="stylesheet" />
 </head>
 
-@if(LoggedIn){
+@if(LoggedIn)
+{
 
 	<div class="coin">$</div>
 	<div class="coin-label">@user.Coins</div>
@@ -41,9 +42,9 @@
 				<div class="pet-stats"> 
 					<h2>@pet.Name (Level: @pet.Level)</h2>
 					<br />
-					<p>Health: @HealthBar %</p>
+					<p>Health: @pet.Health_bar %</p>
 					<div class="bar">
-						<div class="bar-filled" style="width:@HealthBar%;"></div>
+						<div class="bar-filled" style="width:@pet.Health_bar %;"></div>
 					</div>
 					<br />
 					<p>Food: @pet.Food_bar %</p>
@@ -58,8 +59,7 @@
 				</div>
 				<br />
 				<div class="img-wrapper">
-					@* We are currently working on the images of the items. As we do not have all the pictures ready yet, only the 'tutu'-item works 
-						on the bear right now. The other images don't have the correct positioning in the razor.css file *@
+					
 					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" /> 
 
 					@if (!string.IsNullOrEmpty(pet.Clothing)) @* Again, a null-checker to avoid the page not loading due to a null value *@
@@ -75,7 +75,6 @@
 					@if (@pet.Clothing == "nothing"){
 						<img class="img-clothes" src="@($"Clothing/nothing.png")"/>
 					}
-					@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@ @* This is the hardcoded tutu image that works on the bear*@
 				</div>
 			</div>
 		}
@@ -142,7 +141,6 @@
 		</div>
 	</main>
 }
-
 else
 {
 	<h1>You must be logged in to access this page.</h1>
@@ -151,15 +149,15 @@ else
 }
 
 
+
 @code {
 	private Users? user;
 	private Pets? pet;
 	private List<UserInventory> userInventory = new();
 	private List<WorkoutSessions> allWorkouts = new();
 	private bool LoggedIn = false;
-	private int HealthBar { get; set; }
+	
 	private int Id { get; set; }
-	private int StaminaBar { get; set; }
 
 
 	protected override async void OnInitialized()
@@ -182,14 +180,12 @@ else
 				LoggedIn = true;
 
 				// User items are fetched from the database using the services
+				pet = PetService.GetPet(user.Id);
 				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
 				userInventory = UserInventoryService.GetInventory(user.Id);
-
-				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
-
-				pet = PetService.GetPet(user.Id);
 				PetService.DecreaseHealth(user, pet);
-				// PetService.DigestFood(user, pet);
+				PetService.DigestFood(user, pet);
+				
 			}
 		}
 	}
@@ -214,8 +210,7 @@ else
 		{
 			// The pet's food bar will go up whenever the user feeds their pet
 			// and the quantity will drop in the database, both using the method in the needed services
-			pet.Food_bar = Math.Min(100, pet.Food_bar + 5); 
-			PetService.UpdatePet(pet);
+			PetService.EatFood(pet);
 
 			invItem.Quantity -= 1;
 			UserInventoryService.UpdateUserInventoryItem(invItem);
