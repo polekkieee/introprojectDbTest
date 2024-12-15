@@ -14,15 +14,6 @@ namespace BuddyFitProject.Components.Services
             DbContextFactory = dbContext;
         }
 
-        public void AddUserStatistics(int userid)
-        {
-            using (var dbContext = this.DbContextFactory.CreateDbContext())
-            {
-                // dbContext.Users.Add(user);
-                dbContext.SaveChanges();
-            }
-        }
-
         public List<UserStatistics> GetStatisticsByUser(int id)
         {
             using (var dbContext = DbContextFactory.CreateDbContext())
@@ -30,9 +21,6 @@ namespace BuddyFitProject.Components.Services
                 var stats = dbContext.UserStatistics
                     .Where(x => x.UserId == id)
                     .ToList();
-
-                if (!stats.Any())
-                    throw new Exception("User statistics do not exist!");
 
                 return stats;
             }
@@ -82,13 +70,6 @@ namespace BuddyFitProject.Components.Services
                             AddUserStatistic(userId, exercise.Id);
                         }
                     }
-                }
-
-                var user = dbContext.Users.FirstOrDefault(x => x.Id == userId);
-                user.Coins = 0;
-                foreach (var stat in GetStatisticsByUser(userId))
-                {
-                    user.Coins += stat.Total_coins;
                 }
 
                 // Save changes to the database

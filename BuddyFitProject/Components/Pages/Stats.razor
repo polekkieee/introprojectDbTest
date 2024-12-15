@@ -3,93 +3,130 @@
 @using System.Security.Claims
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
+@using BuddyFitProject.Components.Services
 @inject NavigationManager navigationManager
 @inject IHttpContextAccessor HttpContextAccessor
-@inject Services.UserService UserService
-@inject Services.UserStatisticsService UserStatisticsService
+@inject UserService UserService
+@inject UserStatisticsService UserStatisticsService
+@inject PetService PetService
 @inject Services.ExerciseService ExerciseService
 @rendermode InteractiveServer
 @inject IHttpContextAccessor HttpContextAccessor
 
 
 <head>
-@*     <link href="Stats.razor.css" rel="stylesheet" />  *@
+    <link href="Stats.razor.css" rel="stylesheet" />
     <PageTitle>Statistics</PageTitle>
 </head>
-<body>
+
     <h1>Workout History</h1>
 
     @if(LoggedIn)
     {
 
         <div class="coin">$</div>
-        <div class="coin-label">@user.Coins</div>
+        <div class="coin-label">@User.Coins</div>
 
         <div class="level-coin">lvl</div>
-        <div class="level-label">???</div>
-    
+        <div class="level-label">@Pet.Level</div>
+
         <br />
         <button class="btn btn-primary" @onclick="LoadStatsRefresh">Load Stats</button>
         <br />
-        <br />
 
+        <br />
+        <p>@ErrorMessage</p>
+        <br>
         <main>
-            <h4>@user.Username 's Statistics</h4>
+            <h4><strong>@User.Username 's Statistics</strong></h4>
 
             <table class="table">
                 <thead>
                     <tr>
-                        <td>    <p>Exercise</p>             </td>
-                        <td>    <p>Total Minutes</p>        </td>
-                        <td>    <p>Total Coins earned</p>   </td>
+                        <td>    <h5>Exercise</h5>             </td>
+                        <td>    <h5>Total Minutes</h5>        </td>
+                        <td>    <h5>Total Coins earned</h5>   </td>
 
                     </tr>
                 </thead>
 
                 <tbody>
-                    @foreach (var s in userStatistics)
+                    @foreach (var s in UserStatistics)
                     {
                         <tr>
-                            <td>@ExerciseService.GetExerciseById(s.ExerciseId).Name</td>
+                            <td>    <p>@ExerciseService.GetExerciseById(s.ExerciseId).Name</p>  </td>
 
-                            <td>@s.Total_minutes.ToString()</td>
+                            <td>    <p>@s.Total_minutes.ToString()</p>                          </td>
 
-                            <td>@s.Total_coins.ToString()</td>
+                            <td>    <p>@s.Total_coins.ToString()</p>                            </td>
                         </tr>
                     }
                 </tbody>
             </table>
+
+             <div class="bar-wrapper"> 
+                @foreach (var s in UserStatistics) 
+                 { 
+                     var exerciseName = @ExerciseService.GetExerciseById(s.ExerciseId).Name; 
+                     var exerciseWidth = BarWidth(@s.Total_minutes); 
+
+                     <div class="bar-container"> 
+                         <span class="bar-text">@exerciseName</span> 
+                         <div class="bars"> 
+                             <div class="bar" style="width:@exerciseWidth%"></div> 
+                         </div> 
+                         <span class="bar-minutes">@s.Total_minutes.ToString()</span> 
+                     </div> 
+                } 
+            </div>
+
         </main>
-       
+
 
     }
     else
     { 
         <h1>You must be logged in to access this page.</h1>
         <br />
-        <a href="login" class=" btn btn-primary">Go to Login</a>
-    
+        <a href="login" class="btn btn-primary">Go to Login</a>
     }
-</body>
 
 @code {
-    private List<UserStatistics> userStatistics = new();
-    private Users? user;
+    private List<UserStatistics> UserStatistics = new();
+    private Users? User;
+    private Pets? Pet;
 
     private bool LoggedIn = false;
+    private int MinutesAmount { get; set; } = 1;
+    private string ErrorMessage;
 
     private void LoadStats()
     {
         try
         {
-            // Update and fetch user statistics
-            UserStatisticsService.UpdateUserStatistics(user.Id);
-            userStatistics = UserStatisticsService.GetStatisticsByUser(user.Id);
+            // Update and fetch User statistics
+            UserStatisticsService.UpdateUserStatistics(User.Id);
+            UserStatistics = UserStatisticsService.GetStatisticsByUser(User.Id);
+            if (UserStatistics.Any())
+            {
+                MinutesAmount = UserStatistics.Max(s => s.Total_minutes);
+            }
         }
         catch (Exception ex)
         {
-            // Log error or show a user-friendly message
-            Console.WriteLine($"Error updating stats: {ex.Message}");
+            ErrorMessage = "Error loading stats";
+        }
+    }
+
+    private int BarWidth(int minutes)
+    {
+        try
+        {
+            return MinutesAmount > 0 ? (int)((minutes / (double)MinutesAmount) * 100) : 0; 
+        }
+        catch
+        {
+            return 100; 
         }
     }
 
@@ -97,17 +134,19 @@
     {
         try
         {
-            // Update and fetch user statistics
-            UserStatisticsService.UpdateUserStatistics(user.Id);
-            userStatistics = UserStatisticsService.GetStatisticsByUser(user.Id);
+            // Update and fetch User statistics
+            UserStatisticsService.UpdateUserStatistics(User.Id);
+            UserStatistics = UserStatisticsService.GetStatisticsByUser(User.Id);
             navigationManager.NavigateTo(navigationManager.Uri, true);
         }
         catch (Exception ex)
         {
-            // Log error or show a user-friendly message
-            Console.WriteLine($"Error updating stats: {ex.Message}");
+            
+            ErrorMessage = "Error updating stats";
         }
     }
+
+
 
 
     protected override async void OnInitialized()
@@ -118,17 +157,21 @@
 
         if (httpContext?.User.Identity?.IsAuthenticated == true)
         {
-            // Extract user ID from claims
-            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            // Extract User ID from claims
+            var UserIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+            if (UserIdClaim != null && int.TryParse(UserIdClaim.Value, out int loggedInUserId))
             {
 
-                user = UserService.GetUserById(loggedInUserId);
+                User = UserService.GetUserById(loggedInUserId);
+                Pet = PetService.GetPet(User.Id);
                 LoadStats();
+               // await ViewPeriod('w'); Commented this out because it's displaying the bar chart in a weird way if not
 
                 LoggedIn = true;
             }
         }
     }
 }
+
+    

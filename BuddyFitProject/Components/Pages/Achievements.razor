@@ -1,0 +1,510 @@
+﻿@page "/Achievements"
+@using BuddyFitProject.Data.Models
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.EntityFrameworkCore
+
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
+@inject NavigationManager navigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject Services.UserService UserService
+@inject Services.ItemService ItemService
+@inject Services.PetService PetService
+@inject Services.UserInventoryService UserInventoryService
+@inject Services.UserStatisticsService UserStatisticsService
+@inject Services.WorkoutSessionService WorkoutSessionService
+@rendermode InteractiveServer
+
+<head>
+    <PageTitle> Achievements (work in progress...) </PageTitle>
+</head>
+
+@code {
+    private int coinsamount; //aantal coins user
+    private int level; //hoogte level van de user, heeft ook invloed op achievements
+
+    //variabelen die bepalen of achievements true of false zijn
+    private int CurrentMinutes; 
+    private int elementscheme = 0;
+    private int FlappyBuddyScore = 0;
+
+    //variabelen om het percentage voltooide achievements te berekenen
+    private int aantalAchievements = 12;
+    private int Achievementscomplete = 0;
+    private int percentage = 0;
+
+    //geeft aan of een achievement gecomplete is of niet
+    bool lvl10Completed = false;
+    bool lvl50Completed = false;
+    bool lvl100Completed = false;
+
+    bool starterCompleted = false;
+    bool expertCompleted = false;
+    bool goatCompleted = false;
+
+    bool motivatedCompleted = false;
+    bool disciplineCompleted = false;
+    bool determinedCompleted = false;
+
+    bool flappy100Completed = false;
+    bool Game2Completed = false;
+    bool Game3Completed = false;
+
+
+    private Users? user;
+    private Pets? pet;
+    private List<UserStatistics>? userStats;
+    private bool LoggedIn = false;
+
+    protected override async void OnInitialized()
+    {
+        await base.OnInitializedAsync();
+
+        var httpContext = HttpContextAccessor.HttpContext;
+
+        if (httpContext?.User.Identity?.IsAuthenticated == true)
+        {
+            // Extract user ID from claims
+            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+            {
+
+                user = UserService.GetUserById(loggedInUserId);
+
+                // Boolean LoggedIn is changed to true so the user has access to the page
+                LoggedIn = true;
+
+                pet = PetService.GetPet(user.Id);
+                userStats = UserStatisticsService.GetStatisticsByUser(user.Id);
+
+                coinsamount = user.Coins;
+                level = pet.Level;
+
+                CurrentMinutes = userStats.Sum(x => x.Total_minutes);
+            }
+        }
+        Achievementchecker();
+        PercentageComplete();
+    }
+
+    public void Achievementchecker() {
+        if (level >= 10)
+        {
+            lvl10Completed = true;
+            coinsamount += 1000;
+        }
+        if (level >= 50)
+        {
+            lvl50Completed = true;
+            coinsamount += 2000;
+        }
+        if (level >= 100)
+        {
+            lvl100Completed = true;
+            coinsamount += 5000;
+        }
+
+
+        if (CurrentMinutes >= 100)
+        {
+            starterCompleted = true;
+            coinsamount += 1000;
+        }
+        if (CurrentMinutes >= 500)
+        {
+            expertCompleted = true;
+            coinsamount += 2000;
+        }
+        if (CurrentMinutes >= 1000)
+        {
+            goatCompleted = true;
+            coinsamount += 5000;
+        }
+
+        if (elementscheme >= 50)
+        {
+            motivatedCompleted = true;
+            coinsamount += 1000;
+        }
+        if (elementscheme >= 200)
+        {
+            disciplineCompleted = true;
+            coinsamount += 2000;
+        }
+        if (elementscheme >= 500)
+        {
+            determinedCompleted = true;
+            coinsamount += 25000;
+        }
+
+
+        if (FlappyBuddyScore >= 100)
+        {
+            flappy100Completed = true;
+            coinsamount += 1000;
+        }
+
+        //nog 2 if opdrachten voor 2 toekomstige minigames
+        StateHasChanged();
+    }
+    // berekent percentage voltooide achievements
+    public void PercentageComplete() {
+        //elk achievement dat op true staat verhoogt het voltooide aantal achievements
+        if (lvl10Completed)
+            Achievementscomplete++;
+        if (lvl50Completed)
+            Achievementscomplete++;
+        if (lvl100Completed)
+            Achievementscomplete++;
+        if (starterCompleted)
+            Achievementscomplete++;
+        if (expertCompleted)
+            Achievementscomplete++;
+        if (goatCompleted)
+            Achievementscomplete++;
+        if (motivatedCompleted)
+            Achievementscomplete++;
+        if (disciplineCompleted)
+            Achievementscomplete++;
+        if (determinedCompleted)
+            Achievementscomplete++;
+        if (flappy100Completed)
+            Achievementscomplete++;
+        if (Game2Completed)
+            Achievementscomplete++;
+        if (Game3Completed)
+            Achievementscomplete++;
+
+        percentage = (Achievementscomplete * 100) / aantalAchievements;
+    }
+}
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, purple, blue);
+        color: #333;
+        padding: 20px;
+        position: relative;
+    }
+
+    h1 {
+        font-size: 4rem;
+        margin-top: 5px;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        text-align: center;
+    }
+    
+    /* dit houdt bij hoeveel coins de user heeft */
+    .coin {
+        position: absolute;
+        top: 10px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: gold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .coin-label {
+        position: absolute;
+        top: 15px;
+        right: 120px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Dit houdt bij welk level de user is */
+    .level-coin {
+        position: absolute;
+        top: 60px;
+        right: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: green;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 18px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .level-label {
+        position: absolute;
+        top: 65px;
+        right: 120px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .wrappercolumn {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .wrapperrow {
+        display: flex;
+        flex-direction: row;
+    }
+
+    /*alle kaders voor achievements*/
+    .Achievement {
+        width: 200px;
+        height: 200px;
+        margin-left: 70px;
+        margin-top: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        outline-color: white;
+        outline-style: auto;
+        background-color: rgba(255, 215, 0, 0.2);
+    }
+
+        .Achievement label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            margin: 3px;
+        }
+
+    /*als achievement op true, dan is voltooid, text groen*/
+    .Achievement-waarde {
+        width: 150px;
+        height: 30px;
+        display: flex;
+        margin-bottom: 8px;
+        justify-content: center;
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: limegreen;
+        outline-color: white;
+        outline-style: auto;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+    }
+
+    /*logo achievemen voor level*/
+    .achievement-item {
+        width: 80px;
+        height: 80px;
+        margin-top: 10px;
+        background-color: green;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 2rem;
+        color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /*logo achievemen voor minuten*/
+    .achievement-item-min {
+        width: 100px;
+        height: 70px;
+        margin-top: 10px;
+        background: linear-gradient(90deg, #3f51b5, #2196f3);
+        border: 3px solid white;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.8rem;
+        color: white;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+        transform: skewX(-10deg); /*from ai*/
+    }
+
+    /*logo achievemen voor schema*/
+    .achievement-item-schema {
+        width: 165px;
+        height: 80px;
+        margin-top: 10px;
+        background: repeating-linear-gradient( 45deg, #607d8b, #607d8b 10px, #37474f 10px, #37474f 20px );
+        border: 5px double #cfd8dc;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.8rem;
+        color: gold;
+        text-shadow: 20px 20px 20px rgba(0, 100, 200, 0.5);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+    }
+
+    /*logo achievemen voor games*/
+    .achievement-item-game {
+        width: 95px;
+        height: 85px;
+        margin-top: 10px;
+        background: conic-gradient(from 0deg, #ff5722, #e91e63, #9c27b0, #673ab7, #ff5722);
+        border: 4px solid white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 2.2rem;
+        color: #fff;
+        box-shadow: 0 0 20px rgba(255, 87, 34, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.3);
+        animation: rotate 4s linear infinite;
+    }
+
+    /*als achievement op false dan text is rood*/
+    .incomplete {
+        color: red;
+    }
+
+    /*toont percentage behaalde achievements*/
+    .percentagecomplete {
+        position: absolute;
+        top: 5px;
+        left: 300px;
+        width: 280px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: rgba(0,0,0,0.2);
+    }
+
+    .percentagecomplete label {
+            font-weight: bold;
+            font-size: 2rem;
+            text-align: center;
+            color: gold;
+    }
+</style>
+
+<div class="coin">$</div>
+<div class="coin-label">@coinsamount</div>
+
+<div class="level-coin">lvl</div>
+<div class="level-label">@level</div>
+
+<h1>Achievements (WIP)</h1>
+<div class="percentagecomplete">
+    <label>Completed: @percentage%</label>
+</div>
+
+<div class="wrapperrow">
+    <div class="wrappercolumn">
+        <div class="Achievement">
+            <div class="achievement-item">10</div>
+            <label>Reach level 10 to get a 1000 coin bonus.</label>
+            <!--Als achievement op true, dan wordt de klasse voor rode text niet toegevoegd en text is "completed", bij false andersom-->
+            <div class="Achievement-waarde @(lvl10Completed ? "" : "incomplete")">
+                @(lvl10Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item">50</div>
+            <label>Are you already level 50? You will get a 2000 coins bonus for reaching level 50!</label>
+            <div class="Achievement-waarde @(lvl50Completed ? "" : "incomplete")">
+                @(lvl50Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item">100</div>
+            <label>Triple digits? It’s tough, but you can do it! Reward: 5000 coins!</label>
+            <div class="Achievement-waarde @(lvl100Completed ? "" : "incomplete")">
+                @(lvl100Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+    </div>
+    <div class="wrappercolumn">
+        <div class="Achievement">
+            <div class="achievement-item-min">Starter</div>
+            <label>Reach a total of 100 minutes of exercises to earn a 1000 coin bonus</label>
+            <div class="Achievement-waarde @(starterCompleted ? "" : "incomplete")">
+                @(starterCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-min">Expert</div>
+            <label>Hungry for coins? Exercise for 500 minutes to earn 2000 coins!</label>
+            <div class="Achievement-waarde @(expertCompleted ? "" : "incomplete")">
+                @(expertCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-min">GOAT</div>
+            <label>Keep your head up. 1000 minutes and a big prize of 5000 coins is waiting for you!</label>
+            <div class="Achievement-waarde @(goatCompleted ? "" : "incomplete")">
+                @(goatCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+    </div>
+    <div class="wrappercolumn">
+        <div class="Achievement">
+            <div class="achievement-item-schema">Motivated</div>
+            <label>Complete an element of your own scheme 50 times to get 1000 coins</label>
+            <div class="Achievement-waarde @(motivatedCompleted ? "" : "incomplete")">
+                @(motivatedCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-schema">Discipline</div>
+            <label>Disciplined enough? Complete an element of your own scheme 200 times to get 2000 coins</label>
+            <div class="Achievement-waarde @(disciplineCompleted ? "" : "incomplete")">
+                @(disciplineCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-schema">Determined</div>
+            <label>You've got the hang of it. Complete an element of your own scheme 500 times to get 5000 coins</label>
+            <div class="Achievement-waarde @(determinedCompleted ? "" : "incomplete")">
+                @(determinedCompleted ? "Completed" : "Incomplete")
+            </div>
+        </div>
+    </div>
+    <div class="wrappercolumn">
+        <div class="Achievement">
+            <div class="achievement-item-game">100</div>
+            <label>Prove you're the KING of FlappyBuddy by scoring 100 in the minigame.</label>
+            <div class="Achievement-waarde @(flappy100Completed ? "" : "incomplete")">
+                @(flappy100Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-game">game</div>
+            <label>game2</label>
+            <div class="Achievement-waarde @(Game2Completed ? "" : "incomplete")">
+                @(Game2Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+        <div class="Achievement">
+            <div class="achievement-item-game">game</div>
+            <label>game3</label>
+            <div class="Achievement-waarde @(Game3Completed ? "" : "incomplete")">
+                @(Game3Completed ? "Completed" : "Incomplete")
+            </div>
+        </div>
+    </div>
+</div>

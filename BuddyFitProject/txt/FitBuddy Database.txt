@@ -1,5 +1,4 @@
-Database: FitBuddyDb
-
+Database: FitBuddy_Db
 
 Tables
 
@@ -13,7 +12,7 @@ o gender: Gender of the user.
 o start_condition: Initial fitness level of the user.
 o coins: Total coins earned by the user.
 o resetcode: Code used for resetting password.
-o validatecode: code used of validating the account when registering.
+o register_moment: Timestamp of when the account is registered.
 
 2. Pets
 o Id (Primary Key): Unique identifier for each pet.
@@ -23,11 +22,15 @@ o type: Type of pet chosen (e.g., cat, dog, etc.).
 o level: Current level of the pet.
 o food_bar: Current status of the food bar.
 o health_bar: Current status of the health bar.
+o clothing: What clothing piece is equiped.
+o food_bar_tlc: Time last changed (tlc) of the food bar.
+o health_bar_tlc: Time last changed (tlc) of the health bar.
 
 3. Exercises
 o Id (Primary Key): Unique identifier for each exercise type.
 o name: Name of the exercise (e.g., Running, Cycling).
 o coins_pm: Number of coins awarded per minute for the exercise.
+
 4. WorkoutSessions
 o Id (Primary Key): Unique identifier for each workout session.
 o userId (Foreign Key): References the user who logged the session.
@@ -55,7 +58,9 @@ o exerciseId (Foreign Key): References the exercise.
 o total_minutes: Total minutes spent on the exercise in the time period.
 o total_coins: Total coins earned for the exercise in the time period.
 
+
 Relationships
+
 * Users - Pets: One-to-One (Each user has one pet).
 * Users - WorkoutSessions: One-to-Many (A user can log multiple sessions).
 * Users - UserInventory: One-to-Many (A user owns multiple items).

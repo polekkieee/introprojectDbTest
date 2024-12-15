@@ -19,15 +19,16 @@ main {
     align-items: center;
     gap: 20px;
 }
-
+/*handles the input boxes*/
 div.input {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     padding: 20px;
     width: 80%;
+    margin-left: 10%;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
 }
 
     div.input label {
@@ -37,6 +38,7 @@ div.input {
         margin-bottom: 10px;
     }
 
+    /*handles error message*/
 div.message {
     text-align: center;
     margin-top: 20px;
@@ -49,31 +51,11 @@ div.message {
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
 
-div.button-group{
+div.button-group {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     margin-top: 15px;
 }
-
-btn {
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-}
-
-/*
-.b2 {
-    font-family: Impact;
-    font-size: 2em;
-}
-
-.b3 {
-    font-family: Impact;
-    font-size: 1em
-}*/

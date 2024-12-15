@@ -9,28 +9,23 @@
 @inject UserStatisticsService UserStatisticsService
 @inject WorkoutSessionService WorkoutService
 @inject ExerciseService ExerciseService
+@inject PetService PetService
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager NavigationManager
 
-<head>
-    <link href="Session.razor.css" rel="stylesheet" />
-    <PageTitle> Workout Session </PageTitle>
-</head>
-
-<body>
-
+<PageTitle>Workout Session</PageTitle>
 
 
 @if (LoggedIn)
 {
-        <h1>Workout</h1>
-        <p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox</p>
-          
+    <h1>Workout</h1>
+    <p>Log your exercises by filling the minutes or by adding +1 minute by clicking the arrow in the textbox</p>
+
     <div class="coin">$</div>
-    <div class="coin-label">@user.Coins</div>
+    <div class="coin-label">@User.Coins</div>
 
     <div class="level-coin">lvl</div>
-    <div class="level-label">@user.</div>
+    <div class="level-label">@Pet.Level</div>
 
     <div class="wrapper">
         <!-- Left white frame with Coins amount label -->
@@ -39,10 +34,10 @@
             <label>@coinsamount</label>
 
             <button @onclick="CalculateRewards">Convert given data to coins</button>
-            <button  @onclick="LogWorkout">Log your workout</button>
+            <button @onclick="LogWorkout">Log your workout</button>
 
 
-            <label>So @user.Username, what exercises did you do today?</label>
+            <label>So @User.Username, what exercises did you do today?</label>
         </div>
 
 
@@ -50,7 +45,8 @@
         <!-- Exercise container -->
         <div class="exercise-container">
 
-            @foreach(var workout in WorkoutList){
+            @foreach (var workout in WorkoutList)
+            {
 
                 if (WeightExercises.Contains(ExerciseService.GetExerciseById(workout.ExerciseId).Name))
                 {
@@ -77,7 +73,9 @@
                         <input type="number" @bind="workout.Minutes" />
                         <input type="number" class="speed-input" />
                     </div>
-                } else {
+                }
+                else
+                {
                     <div class="onderdeel-item">
                         <label>Minutes</label>
                     </div>
@@ -106,17 +104,15 @@ else
     <a href="login">Go to Login</a>
 }
 
-</body>
 @code {
-    private Users? user;
+    private Users? User;
+    private Pets? Pet;
     private List<Exercises> Exercises = new();
     private bool LoggedIn = false;
     private string RewardMessage = string.Empty;
     private List<WorkoutSessions> WorkoutList = new();
     private List<string> WeightExercises = ["Bench Press", "Dumbbell Rows", "Curls", "Leg Press"];
     private List<string> DistanceExercises = ["Walking", "Cycling", "Swimming", "Running", "Sprinting", "Stair Walking"];
-
-    
 
     private int coinsamount = 0;
 
@@ -126,17 +122,19 @@ else
 
         if (httpContext?.User.Identity?.IsAuthenticated == true)
         {
-            var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+            var UserIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (UserIdClaim != null && int.TryParse(UserIdClaim.Value, out int loggedInUserId))
             {
-                user = UserService.GetUserById(loggedInUserId);
+                User = UserService.GetUserById(loggedInUserId);
+                Pet = PetService.GetPet(User.Id);
                 LoggedIn = true;
                 Exercises = ExerciseService.LoadExercises();
 
-                foreach(var exercise in Exercises){
+                foreach (var exercise in Exercises)
+                {
                     WorkoutList.Add(new WorkoutSessions
                         {
-                            UserId = user.Id,
+                            UserId = User.Id,
                             ExerciseId = exercise.Id
                         }
                      );
@@ -145,28 +143,37 @@ else
         }
     }
 
-    private void CalculateRewards(){
+    private void CalculateRewards()
+    {
         coinsamount = 0;
-        foreach(var workout in WorkoutList){
+        foreach (var workout in WorkoutList)
+        {
             if (workout.Minutes > 0)
             {
                 coinsamount += workout.Minutes * ExerciseService.GetExerciseById(workout.ExerciseId).Coins_pm;
             }
         }
-        if(coinsamount == 0){
+        if (coinsamount == 0)
+        {
             return;
         }
     }
 
     private async Task LogWorkout()
     {
-        if(coinsamount == 0){
+        int TotalMinutes = 0;
+        if (coinsamount == 0)
+        {
             return;
         }
-        foreach (var workout in WorkoutList){
-            if(workout.Minutes > 0){
+        foreach (var workout in WorkoutList)
+        {
+            if (workout.Minutes > 0)
+            {
+                TotalMinutes += workout.Minutes;
                 workout.Reward = workout.Minutes * ExerciseService.GetExerciseById(workout.ExerciseId).Coins_pm;
                 await WorkoutService.AddWorkoutSessionAsync(workout);
+                User.Coins += workout.Reward;
             }
         }
         WorkoutList.Clear();
@@ -174,41 +181,16 @@ else
         {
             WorkoutList.Add(new WorkoutSessions
                 {
-                    UserId = user.Id,
+                    UserId = User.Id,
                     ExerciseId = exercise.Id
                 }
              );
         }
-        UserStatisticsService.UpdateUserStatistics(user.Id); 
+        PetService.ChangeStamina(Pet, TotalMinutes);
+        PetService.IncreaseHealth(TotalMinutes, Pet);
+        UserService.UpdateUser(User);
+        UserStatisticsService.UpdateUserStatistics(User.Id);
         CalculateRewards();
         NavigationManager.NavigateTo(NavigationManager.Uri, true);
-
-        // private int PushUpMinutes = 0;
-        // private int PlankMinutes = 0;
-        // private int BurpeesMinutes = 0;
-        // private int JumpingJacksMinutes = 0;
-        // private int BenchPressMinutes = 0;
-        // private int BenchPressWeight = 0;
-        // private int DumbbellRowsMinutes = 0;
-        // private int DumbbellRowsWeight = 0;
-        // private int CurlsMinutes = 0;
-        // private int CurlsWeight = 0;
-        // private int PullUpMinutes = 0;
-        // private int LegPressMinutes = 0;
-        // private int LegPressWeight = 0;
-        // private int WalkingMinutes = 0;
-        // private int WalkingSpeed = 0;
-        // private int CyclingMinutes = 0;
-        // private int CyclingSpeed = 0;
-        // private int SwimmingMinutes = 0;
-        // private int SwimmingSpeed = 0;
-        // private int RunningMinutes = 0;
-        // private int RunningSpeed = 0;
-        // private int SprintingMinutes = 0;
-        // private int SprintingSpeed = 0;
-        // private int WallsitsMinutes = 0;
-        // private int RopeJumpingMinutes = 0;
-        // private int StairWalkingMinutes = 0;
-        // private int StairWalkingSpeed = 0;
     }
 }

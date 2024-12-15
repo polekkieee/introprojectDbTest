@@ -1,0 +1,284 @@
+﻿@page "/Minigames"
+@using System.Timers;
+@using BuddyFitProject.Data.Models
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.EntityFrameworkCore
+
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
+@inject NavigationManager navigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject Services.UserService UserService
+@inject Services.ItemService ItemService
+@inject Services.PetService PetService
+@inject Services.UserInventoryService UserInventoryService
+@rendermode InteractiveServer
+
+<h3>Minigames</h3>
+
+@if (LoggedIn)
+{
+	<div class="game-container" @onclick="Flap">
+
+		<!-- Background elements -->
+		<div class="sun"></div>
+		@foreach (var cloud in Clouds)
+		{
+			<div class="cloud"
+				 style="top: @($"{cloud.Y}px");
+                left: @($"{cloud.X}px");
+                width: @($"{cloud.Width}px");
+                height: @($"{cloud.Height}px");">
+			</div>
+		}
+
+		<!-- Static bird -->
+		<img class="bird" style="top: @($"{Birdie.Y}px"); left: @($"{Birdie.X}px"); width: @($"{Birdie.Width}px"); height: @($"{Birdie.Height}px");" src="@(petimg)" />
+
+		<!-- Pipes -->
+		@foreach (var pipe in Pipes)
+		{
+			<div class="pipe-top" style="top: 0; left:@($"{pipe.X}px"); height:@($"{pipe.TopHeight}px");"> </div>
+			<div class="pipe-bottom" style="bottom: 0; left:@($"{pipe.X}px"); height:@($"{pipe.BottomHeight}px");"> </div>
+		}
+
+
+
+
+		<div class="score"> Score: @Score </div>
+	</div>
+
+	@if (GameEnded)
+	{
+		<button class="start-button" @onclick="ResetGame"> Reset Game </button>
+	}
+	else
+	{
+		<button class="start-button" @onclick="StartGame" disabled="@IsGameRunning"> Start Game </button>
+	}
+}
+else
+{
+	<h1>Login to access this page</h1>
+}
+
+@code {
+	private Users? user;
+	private Pets? pet;
+	private bool LoggedIn = false;
+	private string? petimg;
+
+	private bool IsGameRunning = false;
+	private bool GameEnded = false;
+	private Bird Birdie = new Bird { X = 100, Y = 200, Width = 50, Height = 50, Velocity = 0 };
+	private List<Pipe> Pipes = new();
+	private List<Cloud> Clouds = new();
+	private int Score = 0;
+	private const double Gravity = 0.5;
+	private const int PipeSpeed = 2;
+	private const int CloudSpeed = 1;
+	private int GroundLevel = 600;
+	private PeriodicTimer? GameTimer;
+	private static readonly Random RandomGenerator = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+
+		var httpContext = HttpContextAccessor.HttpContext;
+
+		if (httpContext?.User.Identity?.IsAuthenticated == true)
+		{
+			// Extract user ID from claims
+			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			{
+
+				user = UserService.GetUserById(loggedInUserId);
+				LoggedIn = true;
+			}
+
+
+			pet = PetService.GetPet(user.Id);
+			petimg = $"Pets/{pet.Type.ToLower()}.png";
+		}
+
+		ResetGame();
+		GenerateClouds();
+
+	}
+
+	private void ResetGame()
+	{
+
+		GameEnded = false;
+		Birdie.X = 50;
+		Birdie.Y = 200;
+		Birdie.Width = 50;
+		Birdie.Height = 50;
+		Birdie.Velocity = 0;
+		Pipes.Clear();
+		for (int i = 0; i < 3; i++)
+		{
+			Pipes.Add(GeneratePipe(i * 300 + 400)); // Generating pipes at spaced positions
+		}
+		Score = 0;
+	}
+
+	private void StartGame()
+	{
+		if (IsGameRunning) return;
+		IsGameRunning = true;
+		GameTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(16)); // 30 FPS
+		_ = Gameloop();
+	}
+
+	private async Task Gameloop()
+	{
+		while (await GameTimer.WaitForNextTickAsync() && IsGameRunning)
+		{
+			UpdateGame();
+			StateHasChanged();  // Refresh the UI after each update
+		}
+	}
+
+	private void UpdateGame()
+	{
+		// Apply gravity to bird's velocity and update its Y position
+		Birdie.Velocity += Gravity;
+		Birdie.Y += (int)Birdie.Velocity;
+
+		// Move pipes
+		for (int i = 0; i < Pipes.Count; i++)
+		{
+			Pipes[i].X -= PipeSpeed;
+
+			// Reset pipes to the right side when they go off screen
+			if (Pipes[i].X + Pipes[i].Width < 0)
+			{
+				Pipes[i] = GeneratePipe(800);
+				Score++;
+			}
+
+			// Check for collision
+			if (IsCollision(Birdie, Pipes[i]))
+			{
+				EndGame();
+				return;
+			}
+		}
+
+		// Move clouds
+		foreach (var cloud in Clouds)
+		{
+			cloud.X -= CloudSpeed;
+			if (cloud.X < -100) // Reset when cloud goes off screen
+			{
+				cloud.X = 800;
+				cloud.Y = RandomGenerator.Next(0, 400);
+			}
+		}
+
+		// Check if bird hits top or ground
+		if (Birdie.Y <= 0 || Birdie.Y + Birdie.Height >= GroundLevel)
+		{
+			EndGame();
+		}
+	}
+
+	private void EndGame()
+	{
+		IsGameRunning = false;
+		GameTimer?.Dispose();
+		GameEnded = true;
+
+		if (pet != null) //Substract 5 from the stamina bar everytime a game is played
+		{
+			pet.Stamina_bar = Math.Max(0, pet.Stamina_bar - 5);
+			PetService.UpdatePet(pet);
+		}
+
+	}
+
+	private Pipe GeneratePipe(int xPosition)
+	{
+		const int gap = 190;
+		int topHeight = RandomGenerator.Next(30, 300);
+		return new Pipe
+			{
+				X = xPosition,
+				Width = 50,
+				TopHeight = topHeight,
+				BottomHeight = 600 - gap - topHeight
+			};
+	}
+
+	private void GenerateClouds()
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			Clouds.Add(new Cloud
+				{
+					X = RandomGenerator.Next(0, 800), // Game width
+					Y = RandomGenerator.Next(0, 400), // Within visible height range
+					Width = RandomGenerator.Next(80, 120),
+					Height = RandomGenerator.Next(30, 50)
+				});
+		}
+	}
+
+
+	private bool IsCollision(Bird bird, Pipe pipe)
+	{
+		// Check horizontal overlap
+		bool horizontalHit = bird.X < pipe.X + pipe.Width && bird.X + bird.Width > pipe.X;
+
+		// Check vertical position of the bird
+		bool inTopPipe = bird.Y < pipe.TopHeight;
+		bool inBottomPipe = bird.Y + bird.Height > (GroundLevel - pipe.BottomHeight);
+
+		// Vertical hit occurs if the bird is outside the gap
+		bool verticalHit = inTopPipe || inBottomPipe;
+
+		// Return true if there's both horizontal and vertical overlap
+		return horizontalHit && verticalHit;
+	}
+
+
+
+
+	private void Flap()
+	{
+		if (IsGameRunning)
+		{
+			Birdie.Velocity = -10; // Flap: negative velocity to make the bird move up
+		}
+	}
+
+	private class Bird
+	{
+		public int X { get; set; }
+		public int Y { get; set; }
+		public int Width { get; set; }
+		public int Height { get; set; }
+		public double Velocity { get; set; }
+	}
+
+	private class Pipe
+	{
+		public int X { get; set; }
+		public int Width { get; set; }
+		public int TopHeight { get; set; }
+		public int BottomHeight { get; set; }
+	}
+
+	private class Cloud
+	{
+		public int X { get; set; }
+		public int Y { get; set; }
+		public int Width { get; set; }
+		public int Height { get; set; }
+	}
+}

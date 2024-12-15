@@ -18,9 +18,6 @@ namespace BuddyFitProject.Components.Services
             {
                 var exercises = dbContext.Exercises.ToList();
 
-                //if (!exercises.Any())
-                //    throw new Exception("Exercises do not exist!");
-
                 return exercises;
             }
         }
@@ -29,7 +26,7 @@ namespace BuddyFitProject.Components.Services
         {
             using (var dbContext = DbContextFactory.CreateDbContext())
             {
-                Exercises exercise = dbContext.Exercises.SingleOrDefault<Exercises>(x => x.Id == id) ?? throw new Exception("Exercise bestaat niet!");
+                Exercises exercise = dbContext.Exercises.SingleOrDefault<Exercises>(x => x.Id == id);
                 return exercise;
             }
         }

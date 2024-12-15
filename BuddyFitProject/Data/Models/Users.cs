@@ -14,7 +14,6 @@ public class Users
     public string Start_condition { get; set; } = "new";
     public int Coins { get; set; } = 0;
     public string Resetcode { get; set; } = "Empty";
-    public string Validatecode { get; set; } = "Empty";
-
+    public DateTime Register_moment { get; set; }
     
 }

@@ -3,6 +3,7 @@
 @using BuddyFitProject.Data.Models
 @using BuddyFitProject.Data;
 @using BuddyFitProject.Components.Services
+@using static BuddyFitProject.Data.Models.UserAndPet.TypesOfPets;
 @inject UserService UserService
 @inject NavigationManager navigationManager
 @using System.Security.Claims
@@ -13,53 +14,68 @@
 @inject NavigationManager navigationManager
 @attribute [ExcludeFromInteractiveRouting]
 
-<PageTitle>User Info</PageTitle>
-
-
-<h1 class="h">Set up your account</h1>
-<hr />
-
-
-<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo">
-	<div>
-	</div>
-	<label for="Age" class="l2">Age:</label>
-	<InputNumber required @bind-Value="UserAndPet.User.Age" />
-	<br>
-	<br>
-	<label for="Gender" class="l2">Gender:</label>
-	<InputText required @bind-Value="UserAndPet.User.Gender" />
-	<br />
-	<br>
-	<label for="StartCondition" class="l2">Start Condition:</label>
-	<InputText required @bind-Value="UserAndPet.User.Start_condition" />
-	<br />
-	<hr />
-	<label>Choose your pet:</label>
+<head>
+	<PageTitle>User Info</PageTitle>
+	<link href="UserInfo.razor.css" rel="stylesheet" />
+</head>
+<body>
+	<header>
+		<h1>Set up your account</h1>
+	</header>
+	
 	<br />
 
-	<label>
-		<InputCheckbox @bind-Value="UserAndPet.bear" />
-		<img src="bear.png" aria-hidden="true" width="200">
-	</label>
-	<br />
-	<label>
-		<InputCheckbox @bind-Value="UserAndPet.cat" />
-		<img src="cat.png" aria-hidden="true" width="200">
-	</label>
-	<br />
-	<label>
-		<InputCheckbox @bind-Value="UserAndPet.bunny" />
-		<img src="bunny.png" aria-hidden="true" width="200">
-	</label>
+	<main>
+	<!--Form where the user needs to fill in their age, gender, start condition, name for their pet and can also choose their pet:-->
+	<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo"> 
+		<h2>About you:</h2><div class="input">
+			<label for="Age" class="l2">Age:</label>
+			<InputNumber required @bind-Value="UserAndPet.User.Age" />
+		</div>
+		<br />
+		<div class="input">
+			<label for="Gender" class="l2">Gender:</label>
+			<InputText required @bind-Value="UserAndPet.User.Gender" />
+		</div>
+		<br />
+		<div class="input">
+			<label for="StartCondition" class="l2">Start Condition:</label>
+			<InputText required @bind-Value="UserAndPet.User.Start_condition" />
+		</div>
 
-	<br>
-	<label for="PetName" class="l2">My pet's name is </label>
-	<InputText required @bind-Value="UserAndPet.Pet.Name" />
-	<br />
+		<br />
+		<br />
 
+		<h2>Choose your Fit Buddy:</h2>
+		<div class="input">
+			<label for="PetName" class="l2">My pet's name is </label>
+			<InputText required @bind-Value="UserAndPet.Pet.Name" />
+		</div>
+		<br />
+		<div class="radio-group">
+			<InputRadioGroup @bind-Value="UserAndPet.Pet.Type">
+				<label class="radio">
+					<InputRadio Value="Bear" />
+					<img src="Pets/bear.png" aria-hidden="true" width="200">
+				</label>
+
+				<label class="radio">
+					<InputRadio Value="Cat" />
+					<img src="Pets/cat.png" aria-hidden="true" width="200">
+				</label>
+
+				<label class="radio">
+					<InputRadio Value="Bunny" />
+					<img src="Pets/bunny.png" aria-hidden="true" width="200">
+				</label>
+			</InputRadioGroup>
+
+		</div>
 	<button type="submit" class="b2">Let's start!</button>
-</EditForm>
+	</EditForm>
+	</main>
+</body>
+
 
 @code {
 	[SupplyParameterFromForm]
@@ -70,7 +86,7 @@
 
 	private string errorMessage;
 
-	private void AddInfo()
+	private void AddInfo() //Logic to save the info the user just gave and a few default values, into the database
 	{
 		if (UserDb != null)
 		{
@@ -78,21 +94,25 @@
 			UserDb.Age = UserAndPet.User.Age;
 			UserDb.Start_condition = UserAndPet.User.Start_condition;
 
-			UserService.UpdateUser(UserDb); // Save additional user details
+			UserService.UpdateUser(UserDb); //Saves the new  user details into the database
 
-			var pet = new Pets
+			var pet = new Pets //Set default values
 				{
 					UserId = UserDb.Id,
 					Name = UserAndPet.Pet.Name,
-					Type = this.determinePetType(),
+					Type = UserAndPet.Pet.Type,
 					Level = 1,
-					Food_bar = 100,
-					Health_bar = 100
+					Food_bar = 0,
+					Health_bar = 0,
+					Stamina_bar = 0,
+					Clothing = "nothing",
+					Health_bar_tlc = UserDb.Register_moment,
+					Food_bar_tlc = UserDb.Register_moment
 				};
 
-			UserService.AddPet(pet); // Save the pet
+			UserService.AddPet(pet); //Saves the pet's information into the database
 
-			navigationManager.NavigateTo("/pet"); // Redirect to the pet page
+			navigationManager.NavigateTo("/pet"); //Navigates to the pet page
 		}
 		else
 		{
@@ -100,52 +120,22 @@
 		}
 	}
 
-	protected override void OnInitialized()
+	protected override void OnInitialized() //Checks if the user is authenticated and takes consequent actions
 	{
-		var httpContext = HttpContextAccessor.HttpContext;
+		var httpContext = HttpContextAccessor.HttpContext; //Retrieves the HTTP context
 
 		if (httpContext?.User.Identity?.IsAuthenticated == true)
 		{
 			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId)) //Parses the user's ID claim
 			{
-				UserDb = UserService.GetUserById(loggedInUserId);
+				UserDb = UserService.GetUserById(loggedInUserId); //Retrieves the id of the user, if the user is authenticated
 			}
 			else
 			{
-				navigationManager.NavigateTo("/login");
+				navigationManager.NavigateTo("/login"); //Navigates unauthenticated users to the login page
 			}
 		}
 	}
-
-	private string determinePetType()
-	{
-		if (UserAndPet.bear)
-		{
-			return "bear";
-		}
-
-		if (UserAndPet.cat)
-		{
-			return "cat";
-		}
-
-		if (UserAndPet.bunny)
-		{
-			return "bunny";
-		}
-
-		return "";
-	}
 }
 
-<style>
-	body {
-		margin: 0;
-		font-family: Arial, sans-serif;
-		background: linear-gradient(to bottom, purple, blue);
-		color: #333;
-		padding: 20px;
-		position: relative;
-	}
-</style>

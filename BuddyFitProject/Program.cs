@@ -9,7 +9,7 @@ using Microsoft.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextFactory<BuddyFitDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Sam") ?? throw new InvalidOperationException("Connection string 'Sam' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Liesbeth") ?? throw new InvalidOperationException("Connection string 'Default' not found.")));
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

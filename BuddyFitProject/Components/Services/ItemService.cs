@@ -19,9 +19,18 @@ namespace BuddyFitProject.Components.Services
         {
             using (var dbContext = DbContextFactory.CreateDbContext())
             {
-                return dbContext.Items.SingleOrDefault<Items>(x => x.Id == id) ?? throw new Exception("Item bestaat niet!");
+                return dbContext.Items.SingleOrDefault<Items>(x => x.Id == id);
             }
         }
+
+        public List<Items> LoadItems()
+        {
+            using (var dbContext = DbContextFactory.CreateDbContext())
+            {
+                return dbContext.Items.ToList();
+            }
+        }
+
     }
 }
 

@@ -1,485 +1,314 @@
-﻿	@page "/store"
-	@inject IJSRuntime JSRuntime
-	@inject BuddyFitDbContext DbContext
-	@using BuddyFitProject.Data
-	@using BuddyFitProject.Data.Models
-	@using Microsoft.EntityFrameworkCore
-
+﻿@page "/store"
+@inject BuddyFitDbContext DbContext
+@using BuddyFitProject.Data
+@using BuddyFitProject.Data.Models
+@using Microsoft.EntityFrameworkCore
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@using BuddyFitProject.Components.Services
+@using System.Security.Claims
+@inject UserService UserService
+@inject UserStatisticsService UserStatisticsService
+@inject UserInventoryService UserInventoryService
+@inject WorkoutSessionService WorkoutService
+@inject ExerciseService ExerciseService
+@inject ItemService ItemService
+@inject PetService PetService
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager NavigationManager
 
 <PageTitle> Store </PageTitle>
 
-<h1 class="h">Store </h1>
-
-<!-- Display Coin Balance -->
-<div class="top-right-coins">
-	<div class="coin">$</div>
-	<div class="coin-label">@CoinsAmount</div>
-</div>
-
-<!-- Display Store Items-->
-@foreach (var item in storeItems)
-{
-	<div class="store-item">
-		<p>@item.Name - @item.Type</p>
-		<p> Price: $@item.Price</p>
-		<button @onclick="() => ConfirmUnlock(item)"> Unlock</button>
-		<br>
-
-	</div>
-}
-
-
-<h2> Your Inventory</h2>
-@if (Inventory.Count > 0)
-{
-	@foreach (var fruit in InventoryFruits)
+	@if (LoggedIn)
 	{
-		<FruitItem Fruit ="@fruit" />
+		<h1 class="h">Store</h1>
+
+		<div class="coin">$</div>
+		<div class="coin-label">@User.Coins</div>
+
+		<div class="level-coin">lvl</div>
+		<div class="level-label">@Pet.Level</div>
+
+		<div class="storepagebox">
+			<h3>What do you want to buy?</h3>
+
+			<div class="choosestore">
+				<span class="@foodbutton" @onclick='() => ToggleStore("food")'>Food</span>
+				<span class="@outfitsbutton" @onclick='() => ToggleStore("outfit")'>Outfits</span>
+			</div>
+
+			@if (foodSelected)
+			{	
+				<div class="storebox">
+					<div class="product-container">
+						@foreach (var item in Food)
+						{
+							<div class="productbox" tabindex="@Food.IndexOf(item)" @onclick="() => UpdateSelectedFood(item)">
+								<div class="product">
+									<img style="width: inherit; object-fit:cover;" src=@($"Food/{item.Name}.png") />
+								</div>
+							</div>
+						}
+					</div>
+
+					<div class="previewbox">
+						@if (SelectedFood != null)
+						{
+							<div class="previewoutfit">
+								<p>Buy @SelectedFood.Name </p>
+								<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"Food/{SelectedFood.Name}.png") />
+							</div>
+							<div>
+								@SelectedFood.Price coins per piece
+							</div>
+
+							<div>
+								<InputNumber @bind-Value=SelectedFoodQuantity>Quantity</InputNumber>
+								<button class="buybutton" @onclick="BuyFood">Buy</button>
+							</div>
+							<div>
+								@responseMessage
+							</div>
+						}
+					</div>
+				</div>
+			}
+			else if (outfitSelected)
+			{
+				<div class="storebox">
+					<div class="product-container">
+						@foreach (var item in Outfits)
+						{
+							<div class="productbox" tabindex="@Outfits.IndexOf(item)" @onclick="() => UpdateSelectedOutfit(item)">
+								<div class="product">
+									<img style="width: inherit; object-fit:cover;" src=@($"Clothing/{item.Name}.png") />
+								
+
+									@if (UnlockedOutfits.Contains(item))
+									{
+										<span style="color: gray; text-decoration: line-through;">@item.Name</span>
+									}
+								</div>
+							</div>
+						}
+					</div>
+
+					<div class="previewbox">
+						@if (SelectedOutfit != null)
+						{
+							<div class="previewoutfit">
+								<p>Selected Outfit: </p>
+							<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"Clothing/{SelectedOutfit.Name}.png") />
+							</div>
+							<div>
+								Price: @SelectedOutfit.Price
+							</div>
+							<div>
+								@if (UnlockedOutfits.Any(x => x.Id == SelectedOutfit.Id))
+								{
+									<button disabled class="buybutton">Owned</button>
+								}
+								else
+								{
+									<button class="buybutton" @onclick="BuyOutfit">Buy</button>
+								}
+							</div>
+							<div>
+								@responseMessage
+							</div>
+						}
+					</div>
+				</div>
+
+
+			}
+		</div>
+
 	}
-}
+	else
+	{
+		<h1>You must be logged in to access this page.</h1>
+		<a href="login">Go to Login</a>
+	}
 
-else
-{
-	<p> No items in inventory. </p>
-}
+@code {
+	private Users? User { get; set; }
+	private Pets? Pet { get; set; }
+
+	private string responseMessage = string.Empty;
+
+	private List<Items> storeItems = new();
+
+	private bool LoggedIn = false;
+
+	private List<Items> Outfits = new();
+	private List<Items> Food = new();
+
+	private List<UserInventory> userInventory = new();
+
+	private List<Items> UnlockedOutfits = new();
+	private List<Items> OwnedFood = new();
+
+	private bool foodSelected = true;
+	private bool outfitSelected = false;
+
+	private string foodbutton = "foodbutton active";
+	private string outfitsbutton = "outfitsbutton";
+
+	private Items? SelectedOutfit;
+	private Items? SelectedFood;
+	private int SelectedFoodQuantity;
+	private int SelectedFoodTotalPrice;
 
 
-<body style="background-color: #ffcc99;">
-
-	<!-- Links to different store sections (Food, Costumes, Pets, Homepage) -->
-	<div>
-		<a href="Food">
-			Go to Food
-		</a>
-	</div>
-
-	<div>
-		<a href="Costumes">
-			Go to Costumes
-		</a>
-	</div>
-
-	<div>
-		<a href="Pets">
-			Go to Pets
-		</a>
-	</div>
-
-	<div>
-		<a href="Home">
-			Go to Homepage
-		</a>
-	</div>
-
-	<br />
-
-	<!-- Pet Preview section -->
-	<div class= "Pet-preview" style= "margin-top: 20px;">
-		<h2> Pet Preview</h2>
-		@if (SelectedOutfit != null)
+	private void ToggleStore(string section)
+	{
+		if (section == "food")
 		{
-			<img src = "@($"{SelectedOutfit?.Name}.png")" alt = "Pet wearing @SelectedOutfit?.Name"
-			style = "width:100px; height: 100px;"/>
+			foodSelected = true;
+			outfitSelected = false;
+			foodbutton = "foodbutton active";
+			outfitsbutton = "outfitsbutton";
 		}
 		else
 		{
-			<p> Select an outfit to see the preview</p>
+			outfitSelected = true;
+			foodSelected = false;
+			foodbutton = "foodbutton";
+			outfitsbutton = "outfitsbutton active";
 		}
-
-	</div>
-
-	<br />
-
-	<!-- Inventory display section -->
-	<div> Inventory: </div>
-
-	<br/>
-
-	<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; object-fit: contain;">
-		<!--Cat outfits section-->
-		<div style = "flex: 1;"> 
-			<h2>Cat outfits</h2>
-			<div id = "outfitDiv" style= "height:300px; overflow-y: auto; border: 1px solid black;">
-				<table style="width: 100%; border-collapse: collapse;">
-					@foreach (var outfit in VisibleOutfits)
-					{
-						<tr style = "text-align: center;"> 
-							<td>
-								<div style = "padding: 10px;">
-									<img src= "@outfit.CostumeImage" alt= "@outfit.Name"
-									style="width:100px; height:100px; border: 1px solid gray;" />
-									<p>@outfit.Name</p>
-									@if (Inventory.Any(i => i.Name == outfit.Name))
-									{
-										<button @onclick = "() => SelectedOutfit= outfit"> Preview</button>
-									}
-
-									else 
-									{
-										<button @onclick = "() => ShowPurchaseConfirmation
-										(outfit.Name, outfit.CostumeImage, outfit.Price)"> Unlock </button>
-									}
+	}
 
 
-								</div>
-							</td>
-						</tr>
-					}
-				</table>
-			</div>
-		</div>
-
-
-		<!--Fruits section-->
-		<div style= "flex: 1;">
-			<h2>Fruits</h2>
-			<div id = "FruitDiv" style= "height:300px; overflow-y: auto; border: 1px solid black;"> 
-				<table style= "width: 100%; border-collapse:collapse;">
-					@foreach (var fruit in InventoryFruits)
-					{
-						<tr style ="text-align: center;"> 
-							<td>
-								<div style= "padding: 10px;">
-									<img src = "@fruit.ImageUrl" alt = "@fruit.Name" 
-									style = "width: 100px; height: 100px; border: 1px solid gray;" />
-									<p> @fruit.Name</p>
-									<button @onclick = "() => AddToInventory(fruit)"> Add to Inventory </button>
-								</div>
-							</td>
-						</tr>
-					}
-				</table>
-			</div>
-		</div>
-	</div>
-</body>
-
-
-@code{
-
-	// CoinsAmount to hold the user's current coin balance
-	private int CoinsAmount { get; set; }
-
-	// CurrentUserId represents the user that is logged in
-	private int CurrentUserId { get; set; } = 1;
-
-	// Store items fetched from the database
-	private List<Items> storeItems = new ();
-
-	// The selected item that a user may wish to unlock
-	// private Items? SelectedItem = null;
-
-	// Displays a purchase confirmation dialog for unlocking an item
-	private async Task ShowPurchaseConfirmation(string itemName, string ImageUrl, int price)
+	private void UpdateSelectedFood(Items item)
 	{
-		var confirmed = await JSRuntime.InvokeAsync<bool>
-		("confirmed purchase", $"Would you like to buy {itemName} for {price} coins?");
+		SelectedFood = item;
+		SelectedFoodQuantity = 0;
+		responseMessage = string.Empty;
+	}
 
-		// If the user confirms, proceed with unlocking the item
-		if (confirmed)
+	private void UpdateSelectedOutfit(Items item)
+	{
+		SelectedOutfit = item;
+		responseMessage = string.Empty;
+	}
+
+	private async Task BuyFood()
+	{
+		responseMessage = string.Empty;
+		if (SelectedFoodQuantity > 0)
 		{
-			var item = storeItems.FirstOrDefault(i => i.Name == itemName);
-			if (item != null)
+			SelectedFoodTotalPrice = SelectedFood.Price * SelectedFoodQuantity;
+			if (User.Coins >= SelectedFoodTotalPrice)
 			{
-				await UnlockItem(item);
+				UserInventory existingInventoryItem = UserInventoryService.GetInventoryItem(User.Id, SelectedFood.Id);
+				existingInventoryItem.Quantity += SelectedFoodQuantity;
+				UserInventoryService.UpdateUserInventoryItem(existingInventoryItem);
+
+				User.Coins -= SelectedFoodTotalPrice;
+				UserService.UpdateUser(User);
+
+				LoadUserInventory();
+				SelectedFoodQuantity = 0;
+				responseMessage = "Succesfully bought";
+			}
+			else
+			{
+				responseMessage = "Not enough coins!";
 			}
 		}
-	}
-
-	// A predefined list of outfits (could be extended in future)
-	private List<Outfit> Outfits = new List<Outfit> 
-	{
-			new Outfit {Name = "Military Cat", CostumeImage = "Military Outfit.png"},
-			new Outfit {Name = "Cat in Suit", CostumeImage = "Cat In Suit.png"},
-			new Outfit {Name = "Cat in Tutu", CostumeImage = "Cat In Tutu.png"},
-			new Outfit {Name = "Pajamas Cat", CostumeImage = "Pyjamas Cat.png"}
-	};
-
-	// A list of fruits available in the store (could be extended in the future)
-	private List<Fruit> InventoryFruits = new List<Fruit> 
-	{
-			new Fruit {Name = "Banana", ImageUrl = "Banana.png"},
-			new Fruit {Name = "Apple", ImageUrl = "Apple.png"},
-			new Fruit {Name = "Strawberry", ImageUrl= "Strawberry.png"},
-			new Fruit {Name = "Tomato", ImageUrl= "Tomato.png"}
-	};
-
-	// A list of outfits that are visible in the store based on availability
-	private List<Outfit> VisibleOutfits = new ();
-
-	// A list of fruits that are visible in the store
-	private List<Fruit> VisibleFruits = new ();
-
-	// List of unlocked outfits for the user
-	private List<Outfit> UnlockedOutfits = new List<Outfit>();
-
-	// The user's inventory of fruit items
-	private List<Fruit> Inventory { get; set; } = new List<Fruit>();
-
-	// Selected outfit for preview
-	private Outfit? SelectedOutfit = null;
-
-	// Loads inventory data from the database
-	private async Task LoadInventory()
-	{
-		var inventoryItems = await DbContext.UserInventory
-			.Join(DbContext.Items, 
-				ui => ui.ItemId,
-				item => item.Id,
-				(ui, item) => new {ui, item})
-			.Where(joined => joined.ui.UserId == CurrentUserId && joined.item.Type == "food") 
-			.ToListAsync();
-
-		// Convert the fetched data into a list of Fruit objects for display
-		Inventory = inventoryItems
-			.Select(joined => new Fruit
-				{
-					Name = joined.item.Name,
-					ImageUrl = $"{joined.item.Name}.png"
-				}).ToList();
-	}
-
-	// Updates the user's coins and gives them the purchased item
-	private async Task UpdateCoinsAmountAndGiveItem()
-	{
-		var user = await DbContext.Users.FindAsync(CurrentUserId);
-		if (user != null)
-		{
-			user.Coins -= 10; 
-			await DbContext.SaveChangesAsync();
-			CoinsAmount = user.Coins;
-		}
-	}
-
-	// Adds a fruit item to the user's inventory
-	private async Task AddToInventory(Fruit fruit)
-	{
-		var item = await DbContext.Items.FirstOrDefaultAsync(i => i.Name == fruit.Name);
-		if (item == null) return;
-
-		// Check if the item is already in the inventory; if not, add it
-		var inventoryItem = await DbContext.UserInventory.
-		FirstOrDefaultAsync(ui => ui.UserId == CurrentUserId && ui.ItemId == item.Id);
-
-		if (inventoryItem == null)
-		{
-			DbContext.UserInventory.Add(new UserInventory
-				{
-					UserId = CurrentUserId,
-					ItemId = item.Id,
-					Quantity = 1
-				});
-
-		}
-
 		else
 		{
-			inventoryItem.Quantity += 1;
+			responseMessage = "Enter a valid value";
 		}
 
-		await DbContext.SaveChangesAsync();
-		await LoadInventory();
+
 	}
 
-	// Loads the user's coin balance from the database
-	private async Task LoadUserCoins()
+
+	private void BuyOutfit()
 	{
-		var user = await DbContext.Users.FindAsync(CurrentUserId);
-		CoinsAmount = user?.Coins ?? 0;
+		responseMessage = string.Empty;
+		if (User.Coins >= SelectedOutfit.Price)
+		{
+			UserInventory existingInventoryItem = UserInventoryService.GetInventoryItem(User.Id, SelectedOutfit.Id);
+			existingInventoryItem.Quantity = 1;
+			UserInventoryService.UpdateUserInventoryItem(existingInventoryItem);
+
+			User.Coins -= SelectedOutfit.Price;
+			UserService.UpdateUser(User);
+			LoadUserInventory();
+			responseMessage = "Succesfully bought";
+
+		}
+		else
+		{
+			responseMessage = "Not enough coins!";
+		}
+
 	}
 
-	// Handles the purchase of an outfit
-	private async Task PurchaseOutfit(Outfit outfit)
+	private void LoadUserInventory()
 	{
-		var item= await DbContext.Items.FirstOrDefaultAsync(i => i.Name== outfit.Name);
-		if (item== null || CoinsAmount < item.Price) 
-		{
-			await JSRuntime.InvokeVoidAsync("alert", $"not enough coins to unlock {outfit.Name}");
-			return;
-		}
+		UserInventoryService.UpdateUserInventory(User.Id);
 
-		if (CoinsAmount >= outfit.Price)
-		{
-			await UpdateCoinsAmountAndGiveItem();
-			UnlockedOutfits.Add(outfit);
-			await JSRuntime.InvokeVoidAsync("alert", $"You have unlocked the {outfit.Name}!");
-			await LoadUserCoins(); // Reload the coin balance after the purchase
-			StateHasChanged();
-		}
+		userInventory = UserInventoryService.GetInventory(User.Id);
 
-		var user= await DbContext.Users.FindAsync(CurrentUserId);
-		if (user!= null)
+		foreach (var userInventoryItem in userInventory)
 		{
-			user.Coins = CoinsAmount;
-			await DbContext.SaveChangesAsync();
-		}
-
-		var inventoryItem = new UserInventory
+			if (ItemService.GetItemById(userInventoryItem.ItemId).Type == "outfit")
 			{
-				UserId = CurrentUserId,
-				ItemId = item.Id,
-				Quantity = 1
-			};
+				UnlockedOutfits.Add(ItemService.GetItemById(userInventoryItem.ItemId));
+			}
+			else if (ItemService.GetItemById(userInventoryItem.ItemId).Type == "food")
+			{
+				OwnedFood.Add(ItemService.GetItemById(userInventoryItem.ItemId));
+			}
+		}
 
-		DbContext.UserInventory.Add(inventoryItem);
-		await DbContext.SaveChangesAsync();
+	}
 
-		await JSRuntime.InvokeVoidAsync("alert", $"{outfit.Name} has been unlocked");
-		StateHasChanged();
+	private void DistributeStoreItemsByType()
+	{
+		foreach (var item in storeItems)
+		{
+			if (item.Type == "outfit")
+			{
+				Outfits.Add(ItemService.GetItemById(item.Id));
+			}
+			else if (item.Type == "food")
+			{
+				Food.Add(ItemService.GetItemById(item.Id));
+			}
+		}
 	}
 
 	// Calls to load all store data when the page initializes
 	protected override async Task OnInitializedAsync()
 	{
-		await LoadUserCoins();
-		storeItems = await DbContext.Items.ToListAsync();
+		var httpContext = HttpContextAccessor.HttpContext;
 
-		// var items = await DbContext.Items.ToListAsync();
-		// VisibleOutfits = storeItems
-		// 	.Where(item => item.Type == "outfit")
-		// 	.Select(item => new Outfit
-		// 		{
-		// 			Name = item.Name,
-		// 			CostumeImage = $"{item.Name}.png"
-
-		// 		}).ToList();
-
-		// VisibleFruits = storeItems
-		// 	.Where(item => item.Type == "fruit")
-		// 	.Select(item => new Fruit
-		// 		{
-		// 			Name = item.Name,
-		// 			ImageUrl = $"{item.Name}.png"
-		// 		}).ToList();
-
-		// VisibleOutfits.AddRange(Outfits);
-		// VisibleFruits.AddRange(InventoryFruits);
-
-		// Inventory = await DbContext.UserInventory
-		// 	.Join(DbContext.Items,
-		// 		ui => ui.ItemId,
-		// 		item => item.Id,
-		// 		(ui, item) => new { ui, item })
-		// 	.Where(joined => joined.ui.UserId == CurrentUserId && joined.item.Type == "fruit")
-		// 	.Select(joined => new Fruit
-		// 			{
-		// 				Name = joined.item.Name,
-		// 				ImageUrl = $"{joined.item.Name}.png"
-		// 			})
-		// 	.ToListAsync();
-	}
-
-	[JSInvokable]
-	public async Task LoadMoreOutfits()
-	{
-		VisibleOutfits.AddRange(Outfits);
-		StateHasChanged();
-		await Task.CompletedTask;
-	}
-
-	[JSInvokable]
-	public async Task LoadMoreFruits()
-	{
-		VisibleFruits.AddRange(InventoryFruits);
-		StateHasChanged();
-		await Task.CompletedTask;
-
-	}
-
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (firstRender)
+		if (httpContext?.User.Identity?.IsAuthenticated == true)
 		{
-			await JSRuntime.InvokeVoidAsync(
-				"checkDivScrollEnd",
-				"outfitDiv",
-				nameof(LoadMoreOutfits),
-				DotNetObjectReference.Create(this)
-			);
-			await JSRuntime.InvokeVoidAsync(
-				"checkDivScrollEnd",
-				"FruitDiv",
-				nameof(LoadMoreFruits),
-				DotNetObjectReference.Create(this)
-			);
-		}
-	}
-
-
-	public class Outfit
-	{
-		public string Name { get; set; } = string.Empty;
-		public string CostumeImage { get; set; } = string.Empty;
-		public string PetImage { get; set; } = string.Empty;
-		public int Price { get; set; }
-	}
-
-	public class Fruit
-	{
-		public string Name { get; set; } = string.Empty;
-		public string ImageUrl { get; set; } = string.Empty;
-	}
-
-	[JSInvokable]
-	private async Task ConfirmUnlock (Items item)
-	{
-		if (item.Price > CoinsAmount)
-		{
-			await JSRuntime.InvokeVoidAsync
-			("Alert", $"You dont have enough coins to unlock {item.Name}");
-			return;
-		}
-
-		else
-		{
-			var confirmed = await JSRuntime.InvokeAsync<bool>
-			("confirm", $"Unlock {item.Name} for {item.Price} coins?");
-			if (confirmed)
+			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
 			{
-				await UnlockItem(item);
+				User = UserService.GetUserById(loggedInUserId);
+				Pet = PetService.GetPet(User.Id);
+				LoggedIn = true;
+				storeItems = ItemService.LoadItems();
+
+				LoadUserInventory();
+
+				DistributeStoreItemsByType();
+
+				SelectedOutfit = Outfits.FirstOrDefault();
+				SelectedFood = Food.FirstOrDefault();
+				SelectedFoodQuantity = 0;
 			}
 		}
-		
 	}
-
-	private async Task UnlockItem(Items item)
-	{
-		CoinsAmount -= item.Price;
-
-		var user = await DbContext.Users.FindAsync(CurrentUserId);
-		if (user != null)
-		{
-			user.Coins = CoinsAmount;
-			await DbContext.SaveChangesAsync();
-		}
-
-		var userInventory = new UserInventory
-		{
-			UserId = CurrentUserId,
-			ItemId = item.Id,
-			Quantity = 1
-		};
-
-		DbContext.UserInventory.Add(userInventory);
-		await DbContext.SaveChangesAsync();
-
-		await JSRuntime.InvokeVoidAsync("alert", $"{item.Name} has been unlocked!");
-		StateHasChanged();
-
-		
-
-		
-	}
-
-
 }
 
 
 
-
-
-
-
-
-
-		
