@@ -1,8 +1,13 @@
 ﻿@page "/deletingaccount"
 @using BuddyFitProject.Data.Models
 @using BuddyFitProject.Components.Services;
+@using System.Security.Claims
 @inject UserService UserService
 @inject NavigationManager navigationManager
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject NavigationManager navigationManager
+@inject IHttpContextAccessor HttpContextAccessor
 
 <head>
 	<PageTitle> DeleteAccount </PageTitle>
@@ -10,35 +15,42 @@
 </head>
 
 <body>
-	<header>
-		<h1>Delete your account</h1>
-	</header>
-	<hr />
-	<main>
+	@if (LoggedIn)
+	{
+		<header>
+			<h1>Delete your account</h1>
+		</header>
+		<hr />
+		<main>
 
-		<h3>Are you sure? Your pet will miss you!</h3>
-		<!--Form to fill in your credentials to delete your account:-->
-		<EditForm FormName="DeleteYourUser" Model="@User" OnValidSubmit="DeleteUser">
-			<div class="input">
-				<label for="Username">Username:</label>
-				<InputText required @bind-Value="User.Username" />
-			</div>
-			<br />
-			<div class="input">
-				<label for="Password">Password:</label>
-				<InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="User.Password" />
-			</div>
-			<br />
-			<div class="input">
-				<label for="Email">E-mail:</label>
-				<InputText required @bind-Value="User.Email" />
-			</div>
-			<br />
-			<span> @errorMessage </span>
-			<br />
-			<button class="btn btn-primary" type="submit">Delete</button>
-		</EditForm>
-	</main>
+			<h3>Are you sure? Your pet will miss you!</h3>
+			<!--Form to fill in your credentials to delete your account:-->
+			<EditForm FormName="DeleteYourUser" Model="@User" OnValidSubmit="DeleteUser">
+				<div class="input">
+					<label for="Username">Username:</label>
+					<InputText required @bind-Value="User.Username" />
+				</div>
+				<br />
+				<div class="input">
+					<label for="Password">Password:</label>
+					<InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="User.Password" />
+				</div>
+				<br />
+				<div class="input">
+					<label for="Email">E-mail:</label>
+					<InputText required @bind-Value="User.Email" />
+				</div>
+				<br />
+				<span> @errorMessage </span>
+				<br />
+				<button class="btn btn-primary" type="submit">Delete</button>
+			</EditForm>
+		</main>
+	}
+	else
+	{
+		<p>You have to be logged in to access this page</p>
+	}
 </body>
 
 @code {
@@ -47,8 +59,33 @@
 
 	private string errorMessage = string.Empty;
 
+	private Users? LoggedInUser;
+
+	// The boolean LoggedIn is added for later so we can put a different home screen for users who have already logged in
+	private bool LoggedIn = false;
+
+	protected override async void OnInitialized()
+	{
+		await base.OnInitializedAsync();
+
+		var httpContext = HttpContextAccessor.HttpContext;
+
+		if (httpContext?.User.Identity?.IsAuthenticated == true)
+		{
+			// Extract user ID from claims
+			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			{
+				LoggedInUser = UserService.GetUserById(loggedInUserId);
+				LoggedIn = true;
+			}
+		}
+	}
+
 	private async Task DeleteUser() //Handles the logic to delete the account, function was originally from chatgpt, but I had to change it significantly. I tested by trying to delete my account again and again, until I fixed all my errors and it worked.
 	{
+
 		bool isUserValid = UserService.ValidateUserByEmaiUsernameAndPassword(User.Username, User.Email, User.Password);
 
 		if (!isUserValid) //When one or more of the username, email or password are incorrect
@@ -56,10 +93,26 @@
 			errorMessage = "Your username, email or password is invalid.";
 			return;
 		}
-		else //When they're all three correct
+		else
 		{
-			UserService.DeleteUser(User);
-		}
+			User = UserService.GetUserByName(User.Username);
+			if (User.Id == LoggedInUser.Id) //When they're all three correct
+			{
+
+				var httpContext = HttpContextAccessor.HttpContext; //Retrieves the HTTP context
+
+				if (httpContext?.User.Identity?.IsAuthenticated == true) //Logic to sign out user and remove coockie
+				{
+					await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+				}
+				UserService.DeleteUser(User);
+			}
+			else
+			{
+				errorMessage = "Your username, email or password is invalid.";
+				return;
+			}
+		} 
 
 		navigationManager.NavigateTo("/home"); //Navigates back to home after deleting account
 
