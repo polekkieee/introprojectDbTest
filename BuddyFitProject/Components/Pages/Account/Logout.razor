@@ -5,6 +5,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 @code {
+    //https://www.youtube.com/watch?v=GKvEuA80FAE&t=343s, parts of the code under here are from this video. I tested it by trying to logout again and again, until I fixed all the errors and it worked.
     protected override async Task OnInitializedAsync() //Logic to handle logging out
     {
         await base.OnInitializedAsync();
