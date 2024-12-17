@@ -1,8 +1,11 @@
 ﻿@page "/deletingaccount"
 @using BuddyFitProject.Data.Models
 @using BuddyFitProject.Components.Services;
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
 @inject UserService UserService
 @inject NavigationManager navigationManager
+@inject IHttpContextAccessor HttpContextAccessor
 
 <head>
 	<PageTitle> DeleteAccount </PageTitle>
@@ -47,6 +50,7 @@
 
 	private string errorMessage = string.Empty;
 
+
 	private async Task DeleteUser() //Handles the logic to delete the account, function was originally from chatgpt, but I had to change it significantly. I tested by trying to delete my account again and again, until I fixed all my errors and it worked.
 	{
 		bool isUserValid = UserService.ValidateUserByEmaiUsernameAndPassword(User.Username, User.Email, User.Password);
@@ -59,7 +63,14 @@
 		else //When they're all three correct
 		{
 			UserService.DeleteUser(User);
+			var httpContext = HttpContextAccessor.HttpContext; //Retrieves the HTTP context
+
+			if (httpContext?.User.Identity?.IsAuthenticated == true) //Logic to remove coockie
+			{
+				await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			}
 		}
+		StateHasChanged();
 
 		navigationManager.NavigateTo("/home"); //Navigates back to home after deleting account
 

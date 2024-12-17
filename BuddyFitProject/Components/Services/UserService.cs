@@ -34,7 +34,7 @@ namespace BuddyFitProject.Components.Services
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                Users user = dbContext.Users.SingleOrDefault<Users>(x => x.Username == name) ?? throw new Exception("User bestaat niet!");
+                Users user = dbContext.Users.SingleOrDefault<Users>(x => x.Username == name);
                 return user;
             }
         }
@@ -43,7 +43,7 @@ namespace BuddyFitProject.Components.Services
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                Users user = dbContext.Users.SingleOrDefault<Users>(x => x.Id == id) ?? throw new Exception("User bestaat niet!");
+                Users user = dbContext.Users.SingleOrDefault<Users>(x => x.Id == id);
                 return user;
             }
         }
@@ -52,7 +52,7 @@ namespace BuddyFitProject.Components.Services
         {
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
-                Users user = dbContext.Users.SingleOrDefault<Users>(x => x.Username == name && x.Password == password) ?? throw new Exception("User bestaat niet!");
+                Users user = dbContext.Users.SingleOrDefault<Users>(x => x.Username == name && x.Password == password);
                 return user;
             }
         }
@@ -62,11 +62,6 @@ namespace BuddyFitProject.Components.Services
             using (var dbContext = this.DbContextFactory.CreateDbContext())
             {
                 var userToDelete = dbContext.Users.FirstOrDefault(u => u.Username == user.Username && u.Email == user.Email);
-
-                if (userToDelete == null)
-                {
-                    throw new InvalidOperationException("User not found in the database.");
-                }
 
                 dbContext.Users.Remove(userToDelete); //Removes the user from the database
                 dbContext.SaveChanges();

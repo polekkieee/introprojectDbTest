@@ -12,7 +12,6 @@ o gender: Gender of the user.
 o start_condition: Initial fitness level of the user.
 o coins: Total coins earned by the user.
 o resetcode: Code used for resetting password.
-o validatecode: Code used of validating the account when registering.
 o register_moment: Timestamp of when the account is registered.
 
 2. Pets
@@ -24,6 +23,8 @@ o level: Current level of the pet.
 o food_bar: Current status of the food bar.
 o health_bar: Current status of the health bar.
 o clothing: What clothing piece is equiped.
+o food_bar_tlc: Time last changed (tlc) of the food bar.
+o health_bar_tlc: Time last changed (tlc) of the health bar.
 
 3. Exercises
 o Id (Primary Key): Unique identifier for each exercise type.

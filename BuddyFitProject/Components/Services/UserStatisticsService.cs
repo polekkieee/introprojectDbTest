@@ -22,31 +22,9 @@ namespace BuddyFitProject.Components.Services
                     .Where(x => x.UserId == id)
                     .ToList();
 
-                if (!stats.Any())
-                    throw new Exception("User statistics do not exist!");
-
                 return stats;
             }
         }
-
-        //public List<UserStatistics> GetStatisticsByUserAndTime(int userId, DateTime startTime, DateTime endTime)
-        //{
-        //    //TODO: uitvogelen hoe je bij de timestamps van elke excercise kan komen want die zit in workoutsession ipv userstatistic
-        //    //using (var dbContext = DbContextFactory.CreateDbContext())
-        //    //{
-        //    //    var stats = dbContext.UserStatistics
-        //    //    .Where(x => x.UserId == userId)
-        //    //    .ToList();
-
-        //    //    if (!stats.Any())
-        //    //        throw new Exception("User statistics do not exist!");
-
-        //    //    return stats;
-        //    //}
-         
-
-          
-        //}
 
         public UserStatistics GetStatisticByUserAndExercise(int userId, int exerciseId)
         {
