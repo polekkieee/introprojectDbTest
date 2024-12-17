@@ -1,93 +1,69 @@
-# introproject
+# Buddy Fit Project 
+Introproject Informatica <br>UU 2024-2025 <br> Group 6
 
+## Project description
+BuddyFit is all about staying fit. We all know the struggle, you wanna work out but simply do not have the motivation to. No worries, we have found a way to keep you motivated.  A Fit Buddy will accompany you on your fitness journey to keep you motivated.
 
+Users can create an account and select a virtual pet to join them on their fitness journey.
 
-## Getting started
+Once logged in, registered users can access a session page where they can log their workout sessions. Completing a session earns coins, which can be spent in the store on items like food and costumes. Keeping your pet happy requires feeding it regularly, making every workout rewarding and fun.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Instructions 
+1. Install ```ASP.Net & web development.```
+    1) Go to **Visual Studio Installer** <br> (This is a different program than Visual Studio so look it up on your computer instead of in Visual Studio)
+    2)  Your version of Visual Studio should appear under '_Installed_'. Click on **Modify**.
+    3) Check whether ASP.Net & web development (under 'Web & Cloud') is installed. If not, please install it.
+2. Download the packages in Visual Studio.
+    1) Go to **Tools** -> **NuGet Package Manager** -> **Manage NuGet Packages for Solution**
+    2) Go to _Browse_ and make sure you have donwloaded the following packages:
+        -  ```SendGrid```
+        - ```Microsoft.EntityFrameworkCore.Sqlserver```
+        - ```Microsoft.EntityFrameworkCore```
+        - ```Microsoft.EntityFrameworkCore.Tools```
+3. Execute the complete [SQL script](https://git.science.uu.nl/jazzmex/introproject/-/blob/5e177a37472649c4c226e7bd1fadc3129743c618/BuddyFitProject/sql/CompleteQuery.sql) we have included in our repo.
+4. That's it! Click _start without debugging_ in Visual Studio and a website will appear in your browser (localhost). 
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Overview of codebase structure
+All project files are located in the ```BuddyFitProject``` folder. Open the solution file to run the project. We have organized the files into the following structure:
 
-## Add your files
+> _note: <br>if something is not mentioned in the following list, it probably means that it already came with the framework and we haven't changed anything ourselves_
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### Components
+- [ ] _Layout_ contains the code for the navigation bar and UI elementst that are shared across the pages
+- [ ] _Pages_ contains the individual webpages
+- [ ] _Services_ contains the services which are used to fetch and add data from and to a certain table from the database
+    - ```UserService.cs``` for example is used to add a new user to the database
 
-```
-cd existing_repo
-git remote add origin https://git.science.uu.nl/jazzmex/introproject.git
-git branch -M main
-git push -uf origin main
-```
+### Data
+- [ ] ```BuddyFitDbContext.cs``` creates the different models
+- [ ] _Models_ contains C# classes that represent database table structures.
 
-## Integrate with your tools
+### SQL
+- [ ] ```CompleteQuery``` is the file that creates the database entirely. It defines the different tables and inserts initial values, like the items for the store
 
-- [ ] [Set up project integrations](https://git.science.uu.nl/jazzmex/introproject/-/settings/integrations)
+### txt
+- [ ] _FitBuddyDatabase_ explains the structure of database tables and their relationships
 
-## Collaborate with your team
+### wwwroot
+- [ ] _Clothing_ contains the costumes
+- [ ] _Food_ contains the food items
+- [ ]  _Pets_ contains the images of the pets
+- [ ] _PetWithClothes_ contains the images of pets wearing costumes <br>(currently not in use)
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## Known Issues
+- We know that sometimes running the project will take some time. This is due to the images that need to be loaded. No worries if it takes 15-25 seconds before the website appears.
+- Logged out, but you're still on a page that's only accessible to logged in users? Simply refresh the site in your browser and you should be led back to the home screen.
+- We are still working on the ```Achievements```-page, meaning it is not yet linked to the database.
+- We know that the rabbit image is scaled incorrectly, making it fit weirdly on the pet page and while playing the minigame.
+- It may happen that the connection string to the database is incorrect. Follow the steps to fix this:
+    1. Look up **SQL SERVER OBJECT EXPLORER** in Visual Studio 
+    2. Go to **SQL Server** -> **(localdb)\MSSQLLocalDB(......)**
+    3. Click on **Databases**
+    4. Right-click on ```FitBuddy_Db``` and check out the **properties**
+    5. The **properties** will appear on the bottom-right of your screen
+    6. Go to ```Connection String``` and copy your connection string
+    7. Go to the file [appsettings.json](https://git.science.uu.nl/jazzmex/introproject/-/blob/main/BuddyFitProject/appsettings.json) and replace the default connection string. <br> Make sure you paste the connection string in between the ```""```
+    8. Run the website again, it should work now
 
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## Contact Information
+For any questions, please send an e-mail to:<br> j.s.zhang@students.uu.nl

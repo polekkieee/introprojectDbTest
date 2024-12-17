@@ -21,6 +21,7 @@ main {
     justify-content: space-between;
    
 }
+/*handles the left side of the screen on which the pet is shown*/
 .pet-section {
     flex: 5;
     display: flex;
@@ -33,11 +34,13 @@ main {
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.show-pet {
+/*the stats in text*/
+.pet-stats{
     margin-bottom: 20px;
     color: floralwhite;
 }
 
+/*in the wrapper both the clothing and the pet are handled*/
 .img-wrapper {
     position: relative;
    margin:auto;
@@ -54,20 +57,15 @@ main {
 
 .img-clothes {
     position: absolute;
-    top: 37%; 
-    width: 80%;
+    top: 28%; 
+    width: 100%;
     height: auto;
-    width: 60%;
-    left: 20%
+   left:0%;
 }
 
+/*handles the right side of the screen where the userinv is shown*/
 .inventory-section {
     flex:2;
-    /*    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);*/
     display: flex;
     flex-direction: column;
     background-position: 20px
@@ -82,6 +80,7 @@ main {
     margin-top:10px;
 }
 
+/*handles the userinventory list*/
 .inventory-list {
     list-style-type: none;
     padding: 0;
@@ -107,6 +106,7 @@ main {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+/*these are the bars that visually show how much a health, food or stamina the pet has*/
 .bar {
     width: 100%;
     height: 20px;
@@ -123,6 +123,7 @@ main {
     background-color: hotpink; 
 }
 
+/*used getcssscan.com/css-buttons-examples for this button */
 .use-button {
 
     background-color: #EA4C89;
@@ -130,7 +131,6 @@ main {
     border-style: none;
     box-sizing: border-box;
     color: #FFFFFF;
-    cursor: pointer;
     display: inline-block;
     font-weight: 500;
     height: 40px;
@@ -142,13 +142,8 @@ main {
     position: relative;
     text-align: center;
     text-decoration: none;
-    transition: color 100ms;
     vertical-align: baseline;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
 }
-
 
 
 .coin {
@@ -209,6 +204,6 @@ main {
     color: #fff;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
-/* hier moet uiteindelijk ipv 1000 en 10 coinsamount en Level moeten staan zoals in workoutscherm*/
+
 
 

@@ -1,4 +1,4 @@
-USE MASTER
+﻿USE MASTER
 
 -- Create the database
 CREATE DATABASE FitBuddy_db;
@@ -48,6 +48,28 @@ CREATE TABLE Exercises (
 );
 GO
 
+-- Insert Exercises
+INSERT INTO Exercises (name, coins_pm)
+VALUES 
+('Push-up', 150),
+('Plank', 100),
+('Burpees', 200),
+('Jumping Jacks', 100),
+('Bench Press', 50),
+('Dumbbell Rows', 30),
+('Curls', 30),
+('Pull-up', 50),
+('Leg Press', 30),
+('Walking', 20),
+('Cycling', 20),
+('Swimming', 50),
+('Running', 60),
+('Sprinting', 100),
+('Wallsits', 70),
+('Rope Jumping', 120),
+('Stair Walking', 140);
+GO
+
 -- Create WorkoutSessions table
 CREATE TABLE WorkoutSessions (
     Id INT IDENTITY(1,1) PRIMARY KEY,
@@ -68,6 +90,18 @@ CREATE TABLE Items (
     type NVARCHAR(50) NOT NULL,
     price INT NOT NULL
 );
+GO
+
+-- Insert Items
+INSERT INTO Items (name, type, price) VALUES 
+('Military', 'outfit', 5000),
+('Pyjamas', 'outfit', 8000),
+('Tutu', 'outfit', 1000),
+('Suit', 'outfit', 2000),
+('Banana', 'food', 50),
+('Apple', 'food', 50),
+('Strawberry', 'food', 150),
+('Tomato', 'food', 100);
 GO
 
 -- Create UserInventory table
@@ -92,3 +126,4 @@ CREATE TABLE UserStatistics (
     FOREIGN KEY (exerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
 );
 GO
+

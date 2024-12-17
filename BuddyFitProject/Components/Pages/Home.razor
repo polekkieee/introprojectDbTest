@@ -16,16 +16,19 @@
     <link href="Session.razor.css" rel="stylesheet" />
 
 </head>
-
 <body>
-    @if (LoggedIn == false)
-    {
+        @if (@LoggedIn)
+        {
+            <h1> Welcome back @user.Username!</h1>
+        }
+        else
+        {
         <header>
             <h1>Welcome to BuddyFit!</h1>
+
             <br />
             <h2>How to be fit with <strong>BuddyFit</strong>?</h2>
         </header>
-
         <main>
             <div class="step">
                 <h3>STEP 1: REGISTER</h3>
@@ -46,24 +49,13 @@
                 <p>That's it! Have fun and stay fit ;)</p>
             </div>
         </main>
-    }
-
-    @if(LoggedIn)
-    {
-        <header>
-            <h1>Welcome Back, @user.Username!</h1>
-            <br />
-        </header>
-        <!--kijken of je hier een overzichtje van alles kan plaatsen, dus verkort stats en pet health etc.-->
-        <main>
-        </main>
-   
-    }
+        }
 </body>
 
 @code {
     private Users? user;
 
+    // The boolean LoggedIn is added for later so we can put a different home screen for users who have already logged in
     private bool LoggedIn = false;
 
     protected override async void OnInitialized()

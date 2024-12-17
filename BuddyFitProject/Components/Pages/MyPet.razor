@@ -20,14 +20,14 @@
 	<link href="MyPet.razor.css" rel="stylesheet" />
 </head>
 
+@if(LoggedIn)
+{
 
-<div class="coin">$</div>
-<div class="coin-label">@user.Coins</div>
+	<div class="coin">$</div>
+	<div class="coin-label">@user.Coins</div>
 
-<div class="level-coin">lvl</div>
-<div class="level-label">@pet.Level</div>
-
-
+	<div class="level-coin">lvl</div>
+	<div class="level-label">@pet.Level</div>
 
 	<header>
 		<h1>@user.Username's Fit Buddy</h1>
@@ -35,15 +35,16 @@
 
 	<br />
 	<main>
+		@* Null checker for both the Pet and User Inventory, otherwise the page won't load and/or show errors *@
 		@if (pet != null)
 		{
-			<div class="pet-section">
-				<div class="show-pet">
+			<div class="pet-section"> @* Pet section is the left side of the page and displays the Pet*@
+				<div class="pet-stats"> 
 					<h2>@pet.Name (Level: @pet.Level)</h2>
 					<br />
-					<p>Health: @HealthBar %</p>
+					<p>Health: @pet.Health_bar %</p>
 					<div class="bar">
-						<div class="bar-filled" style="width:@HealthBar%;"></div>
+						<div class="bar-filled" style="width:@pet.Health_bar%;"></div>
 					</div>
 					<br />
 					<p>Food: @pet.Food_bar %</p>
@@ -58,17 +59,22 @@
 				</div>
 				<br />
 				<div class="img-wrapper">
-					@*dit is nu hardcoded, maar we moeten ff alle imgs even groot maken want anders loop je echt eindeloos te klooien
-						in t css file met alle percentages voor positionering*@
-					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" />
+					
+					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" /> 
 
-					@if (!string.IsNullOrEmpty(pet.Clothing))
+					@if (!string.IsNullOrEmpty(pet.Clothing)) @* Again, a null-checker to avoid the page not loading due to a null value *@
 					{
-						@* <img class="img-clothes" src="@($"Clothing/{pet.Clothing.ToLower()}.png")" alt="@pet.Clothing" /> *@
-						<img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" />
+						@if(pet.Clothing == "Tutu"){
+							<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" style="top:17%"  alt="@pet.Clothing" />
+					
+						}
+						else{
+							<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" alt="@pet.Clothing" />
+						}
 					}
-
-					@* <img class="img-clothes" src="Clothing/Tutu.png" alt="tutu fitje" /> *@
+					@if (@pet.Clothing == "nothing"){
+						<img class="img-clothes" src="@($"Clothing/nothing.png")"/>
+					}
 				</div>
 			</div>
 		}
@@ -78,20 +84,21 @@
 			<p>No pet found!</p>
 		}
 
-		<div class="inventory-section">
-			<h2<strong>@user.Username's inventory</strong></h2>
-			@if (userInventory.Any())
+		@* UserInventory section is the right side of the page and displays the the Food-items on the uppercolumn and Outfit-items on the lower column *@
+		<div class="inventory-section"> 
+			<h2><strong>@user.Username's inventory</strong></h2>
+			@if (userInventory.Any()) @* Null checker to avoid null-errors*@
 			{
 				<div class="food-items">
 					<h3><strong>Food</strong></h3>
 					<ul class="inventory-list">
-
 						@foreach (var inventoryItem in userInventory)
 						{
+							@* Each item in UserInventory is checked to see whether it's a food. If so, it will be displayed and the User is able to use it *@
 							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "food" && inventoryItem.Quantity > 0)
 							{
 								<li class="inventory-item">
-									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
+									<img src=@($"Food/{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
 									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
 									<p>@inventoryItem.Quantity x </p>
 									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
@@ -99,59 +106,59 @@
 							}
 						}
 					</ul>
-
 				</div>
 
 				<div class="clothing-items">
 					<h3><strong>Clothing</strong></h3>
 					<ul class="inventory-list">
+						<li class="inventory-item">
+							<img class="img-item" src=@($"Pets/{pet.Type.ToLower()}.png") />
+							<p>Nothing</p>
+							<button class="use-button" @onclick="() => ClothingUnequip() ">Use</button>
+						</li>
+
 						@foreach (var inventoryItem in userInventory)
 						{
+							@* Same logic for Food-items is applied here *@
 							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "outfit" && inventoryItem.Quantity > 0)
 							{ 
 								<li class="inventory-item">
-									<img src=@($"{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
+									<img src=@($"Clothing/{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
 									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
 									<p>@inventoryItem.Quantity</p>
 									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
 								</li>
 							}
-
 						}
 					</ul>
 				</div>
 			}
+
 			else
 			{
 				<p>Inventory is empty</p>
 			}
 		</div>
 	</main>
+}
+else
+{
+	<h1>You must be logged in to access this page.</h1>
+	<br />
+	<a href="login" class="btn btn-primary">Go to Login</a>
+}
 
-
-	@*
-	<svg width="600" height="200" xmlns="https://localhost:7068/pets"> </svg>
-	<img src="bunny.png"
-	aria-hidden="true"
-	width="400">
-	<img src="bear.png"
-	aria-hidden="false"
-	width="400">
-	<img src="cat.png"
-	aria-hidden="true"
-	width="400">*@
 
 
 @code {
 	private Users? user;
 	private Pets? pet;
 	private List<UserInventory> userInventory = new();
-
 	private List<WorkoutSessions> allWorkouts = new();
 	private bool LoggedIn = false;
+	
 	private int Id { get; set; }
 
-	private int HealthBar { get; set; }
 
 	protected override async void OnInitialized()
 	{
@@ -169,45 +176,54 @@
 
 				user = UserService.GetUserById(loggedInUserId);
 
+				// Boolean LoggedIn is changed to true so the user has access to the page
+				LoggedIn = true;
 
+				// User items are fetched from the database using the services
 				pet = PetService.GetPet(user.Id);
 				allWorkouts = WorkoutSessionService.LoadWorkoutSessionsByUser(user.Id);
-				HealthBar = PetService.ChangeHealth(user, pet, allWorkouts);
-				LoggedIn = true;
+				userInventory = UserInventoryService.GetInventory(user.Id);
+				PetService.DecreaseHealth(user, pet);
+				PetService.DigestFood(user, pet);
+				
 			}
-
-			pet = PetService.GetPet(user.Id);
-			userInventory = UserInventoryService.GetInventory(user.Id);
 		}
-
 	}
 
-	private async Task UseItem(UserInventory invItem)
+	private void ClothingUnequip()
 	{
-		// Get the item details
+		pet.Clothing = "nothing";
+		PetService.UpdatePet(pet);
+
+		// The User Inventory will be fetched again in order to display the right quantity
+		userInventory = UserInventoryService.GetInventory(user.Id);
+		navigationManager.NavigateTo(navigationManager.Uri, true);
+	}
+
+	private void UseItem(UserInventory invItem)
+	{
+		// Fetch the item that the user wants to use from the database
 		var item = ItemService.GetItemById(invItem.ItemId);
 
+		// Check what kind of item it is
 		if (item.Type == "food")
 		{
-
-			pet.Food_bar = Math.Min(100, pet.Food_bar + 20); 
-			PetService.UpdatePet(pet);
-
+			// The pet's food bar will go up whenever the user feeds their pet
+			// and the quantity will drop in the database, both using the method in the needed services
+			PetService.EatFood(pet);
 
 			invItem.Quantity -= 1;
 			UserInventoryService.UpdateUserInventoryItem(invItem);
 		}
 		else if (item.Type == "outfit")
 		{
-
+			// The clothing item is applied to the pet
 			pet.Clothing = item.Name;
 			PetService.UpdatePet(pet);
 		}
 
-
+		// The User Inventory will be fetched again in order to display the right quantity
 		userInventory = UserInventoryService.GetInventory(user.Id);
-		await InvokeAsync(StateHasChanged);
-
 		navigationManager.NavigateTo(navigationManager.Uri, true);
 	}
 

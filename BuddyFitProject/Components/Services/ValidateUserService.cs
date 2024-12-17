@@ -14,89 +14,58 @@ public class ValidateUserService
     UserService UserService;
     public ValidateUserService(UserService UserService)
     {
-        this.UserService = UserService;
+        this.UserService = UserService; //Dependency injection of the userservice
     }
 
-    public async Task<string> ChangePasswordAsync(string username, string resetCode, string newPassword, string email)
+    public async Task<string> ChangePasswordAsync(string username, string resetCode, string newPassword, string email) //Logic to change the password
     {
         try
         {
-            if (string.IsNullOrEmpty(newPassword))
+            if (string.IsNullOrEmpty(newPassword)) //When the new password is empty
             {
                 return "Password cannot be empty.";
             }
 
             Users user = UserService.GetUserByUsernameAndEmail(username, email);
 
-            if (user == null)
+            if (user == null) //When the new user isn't found
             {
                 return $"User '{username}' not found.";
             }
 
-            if (user.Resetcode != resetCode)
+            if (user.Resetcode != resetCode) //When the resetcode is invalid
             {
                 return "Invalid reset code.";
             }
 
-            user.Password = newPassword;
-            UserService.UpdateUser(user);
-            return "Password reset successfully.";
+            user.Password = newPassword; //Updates the user's password
+            UserService.UpdateUser(user); //Saves the new password into the database
+            return "Password reset successfully."; 
         }
-        catch (DbUpdateException dbEx)
+        catch (DbUpdateException dbEx) //Handles database update errors
         {
             return $"Error updating password: {dbEx.InnerException?.Message ?? dbEx.Message}";
         }
-        catch (Exception ex)
+        catch (Exception ex) //Handles other errors
         {
-            return $"Unexpected error: {ex.Message}";
+            return $"Unexpected error: {ex.Message}"; 
         }
     }
 
-    public string SetResetCode(string username, string email)
+    public string SetResetCode(string username, string email) //Logic to save the resetcode into the database
     {
         string resetcode = GenerateRandomCode();
         Users user = UserService.GetUserByUsernameAndEmail(username, email);
         user.Resetcode = resetcode;
-        UserService.UpdateUser(user);
+        UserService.UpdateUser(user); //Saves the resetcode into the database
         return resetcode;
     }
 
-    public string SetValidateCode(string email)
-    {
-        string validatecode = GenerateRandomCode();
-        Users user = UserService.GetUserByEmail( email);
-        user.Validatecode = validatecode;
-        UserService.UpdateUser(user);
-        return validatecode;
-    }
-
-    private string GenerateRandomCode()
+    private string GenerateRandomCode() //Logic to generate a random resetcode
     {
         const string chars = "0123456789";
         Random random = new();
         return new string(Enumerable.Repeat(chars, 6)
             .Select(s => s[random.Next(s.Length)]).ToArray());
-    }
-
-    public bool CheckValidateCode(string email, string validatecode)
-    {
-        Users user = UserService.GetUserByEmail(email);
-        if (user.Validatecode == validatecode)
-        {
-            return true;
-        }
-
-        return false;
-    }
-    /// <summary>
-    /// Hashes a password using SHA-256.
-    /// </summary>
-    private string HashPassword(string password)
-    {
-        using (SHA256 sha256 = SHA256.Create())
-        {
-            byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(hashedBytes);
-        }
     }
 }

@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Authentication.Cookies
 @using BuddyFitProject.Components.Services;
+@using BuddyFitProject.Components.Pages.Account;
 @inject UserService UserService
 @inject BuddyFitDbContext appDbContext
 @inject NavigationManager navigationManager
@@ -13,82 +14,86 @@
 @attribute [ExcludeFromInteractiveRouting]
 
 <head>
-    <PageTitle> Login </PageTitle>
-    <link href="Login.razor.css" rel="stylesheet" />
- 
+	<PageTitle> Login </PageTitle>
+	<link href="Login.razor.css" rel="stylesheet" />
+
 </head>
 
-<body>
-    <header>
-  <h1>Log in</h1>
-    </header>
-    <main>
-<EditForm FormName="LoginUser" Model="@User" OnValidSubmit="LoginUser">
-	<div class="input">
-                <label for="Username" class="label">Username:</label>
-                <InputText required @bind-Value="User.Username" />
-    </div>
-    <hr />
-    <div class="input">
-                <label for="Password" class="label">Password:</label>
-                <InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="User.Password" />
-    </div>
-            <hr />
-    <div class="message">
-               <p>@errorMessage</p>  
-    </div>
-            <hr />
-            <div class="button-group">
-                <button type="submit" class="btn btn-primary">Login</button>
-                <a href="register" class="btn btn-secondary">Register</a>
-                <a href="password" class="btn btn-secondary">Password forgotten?</a>
-            </div>
- 
-</EditForm>
+<main>
+	<header>
+		<h1>Log in</h1>
+	</header>
+
+	<!--Form where the user can fill in their username and password:-->
+	<EditForm FormName="LoginUser" Model="@User" OnValidSubmit="LoginUser">
+		<div class="input">
+			<label for="Username" class="label">Username:</label>
+			<InputText required @bind-Value="User.Username" />
+		</div>
+		<hr />
+		<div class="input">
+			<label for="Password" class="label">Password:</label>
+			<InputText required style="-webkit-text-security: disc; text-security: disc;" @bind-Value="User.Password" />
+		</div>
+		<hr />
+		<div class="message">
+			<p>@errorMessage</p>
+		</div>
+		<hr />
+		<div class="button-group">
+			<button type="submit" class="btn btn-primary">Login</button>
+			<a href="register" class="btn btn-secondary">Register</a>
+			<a href="password" class="btn btn-secondary">Password forgotten?</a>
+		</div>
+
+	</EditForm>
+
 </main>
-</body>
 
 @code {
-    [SupplyParameterFromForm]
-    private Users User { get; set; } = new();
+	//https://www.youtube.com/watch?v=GKvEuA80FAE&t=343s, parts of the code under here are from this video. I tested it by trying to login again and again, until I fixed all the errors and it worked.
+	[SupplyParameterFromForm]
+	private Users User { get; set; } = new(); //Holds the information for the LoginUser form
 
-    [CascadingParameter]
-    public HttpContext httpcontext { get; set; } = default!;
+	[CascadingParameter]
+	public HttpContext httpcontext { get; set; } = default!; //Provides HTTP context to help signing in the user
 
-    private string errorMessage;
+	private string errorMessage;
+
+	//Handles the login logic:
+	private async Task LoginUser()
+	{
+		bool isUserValid = UserService.ValidateUser(User.Username, User.Password); //Looks if the user exists
+
+		if (!isUserValid)
+		{
+			errorMessage = "Your username or password is invalid.";
+			return;
+		}
+		else
+		{
+			User = UserService.GetUserByLogin(User.Username, User.Password);
+		}
 
 
-
-    private async Task LoginUser()
-    {
-        bool isUserValid = UserService.ValidateUser(User.Username, User.Password);
-
-        if (!isUserValid)
-        {
-            errorMessage = "Your username or password is invalid.";
-            return;
-        } else {
-            User = UserService.GetUserByLogin(User.Username, User.Password);
-        }
-
-
-        var claims = new List<Claim>
+		var claims = new List<Claim> //Creates claims for the authenticated user
 		{
 			new Claim(ClaimTypes.Name, User.Username),
 			new Claim(ClaimTypes.NameIdentifier, User.Id.ToString())
 		};
 
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
-        await httpcontext.SignInAsync(principal);
+		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme); //Creates new ClaimIdentity object, represents the authenticated identity of the user
+		var principal = new ClaimsPrincipal(identity); //Creates new ClaimsPrincipal object, represents the user's security context
+		await httpcontext.SignInAsync(principal);
 
-        bool newUser = UserService.NewUser(User.Username, User.Start_condition);
-        if (newUser)
-        {navigationManager.NavigateTo("/userinfo"); 
-        }
-        else
-        {
-            navigationManager.NavigateTo("/session");
-        }
+		bool newUser = UserService.NewUser(User.Username, User.Start_condition);
+		if (newUser)
+		{
+			navigationManager.NavigateTo("/userinfo"); //Navigates to the userinfo page for new users
+		}
+		else
+		{
+			navigationManager.NavigateTo("/session"); //Navigates to the session page for existing users
+		}
 	}
 }

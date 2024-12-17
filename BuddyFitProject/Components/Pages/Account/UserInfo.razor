@@ -18,7 +18,6 @@
 	<PageTitle>User Info</PageTitle>
 	<link href="UserInfo.razor.css" rel="stylesheet" />
 </head>
-
 <body>
 	<header>
 		<h1>Set up your account</h1>
@@ -27,7 +26,8 @@
 	<br />
 
 	<main>
-	<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo">
+	<!--Form where the user needs to fill in their age, gender, start condition, name for their pet and can also choose their pet:-->
+	<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo"> 
 		<h2>About you:</h2><div class="input">
 			<label for="Age" class="l2">Age:</label>
 			<InputNumber required @bind-Value="UserAndPet.User.Age" />
@@ -56,17 +56,17 @@
 			<InputRadioGroup @bind-Value="UserAndPet.Pet.Type">
 				<label class="radio">
 					<InputRadio Value="Bear" />
-					<img src="bear.png" aria-hidden="true" width="200">
+					<img src="Pets/bear.png" aria-hidden="true" width="200">
 				</label>
 
 				<label class="radio">
 					<InputRadio Value="Cat" />
-					<img src="cat.png" aria-hidden="true" width="200">
+					<img src="Pets/cat.png" aria-hidden="true" width="200">
 				</label>
 
 				<label class="radio">
 					<InputRadio Value="Bunny" />
-					<img src="bunny.png" aria-hidden="true" width="200">
+					<img src="Pets/bunny.png" aria-hidden="true" width="200">
 				</label>
 			</InputRadioGroup>
 
@@ -86,7 +86,7 @@
 
 	private string errorMessage;
 
-	private void AddInfo()
+	private void AddInfo() //Logic to save the info the user just gave and a few default values, into the database
 	{
 		if (UserDb != null)
 		{
@@ -94,9 +94,9 @@
 			UserDb.Age = UserAndPet.User.Age;
 			UserDb.Start_condition = UserAndPet.User.Start_condition;
 
-			UserService.UpdateUser(UserDb); // Save additional user details
+			UserService.UpdateUser(UserDb); //Saves the new  user details into the database
 
-			var pet = new Pets
+			var pet = new Pets //Set default values
 				{
 					UserId = UserDb.Id,
 					Name = UserAndPet.Pet.Name,
@@ -105,11 +105,14 @@
 					Food_bar = 0,
 					Health_bar = 0,
 					Stamina_bar = 0,
+					Clothing = "nothing",
+					Health_bar_tlc = UserDb.Register_moment,
+					Food_bar_tlc = UserDb.Register_moment
 				};
 
-			UserService.AddPet(pet); // Save the pet
+			UserService.AddPet(pet); //Saves the pet's information into the database
 
-			navigationManager.NavigateTo("/pet"); // Redirect to the pet page
+			navigationManager.NavigateTo("/pet"); //Navigates to the pet page
 		}
 		else
 		{
@@ -117,20 +120,20 @@
 		}
 	}
 
-	protected override void OnInitialized()
+	protected override void OnInitialized() //Checks if the user is authenticated and takes consequent actions
 	{
-		var httpContext = HttpContextAccessor.HttpContext;
+		var httpContext = HttpContextAccessor.HttpContext; //Retrieves the HTTP context
 
 		if (httpContext?.User.Identity?.IsAuthenticated == true)
 		{
 			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId)) //Parses the user's ID claim
 			{
-				UserDb = UserService.GetUserById(loggedInUserId);
+				UserDb = UserService.GetUserById(loggedInUserId); //Retrieves the id of the user, if the user is authenticated
 			}
 			else
 			{
-				navigationManager.NavigateTo("/login");
+				navigationManager.NavigateTo("/login"); //Navigates unauthenticated users to the login page
 			}
 		}
 	}

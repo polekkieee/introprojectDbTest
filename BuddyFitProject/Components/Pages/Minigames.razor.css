@@ -19,6 +19,8 @@
 .bird {
     position: absolute;
     object-fit: cover;
+    width: 50px; /* Adjust the width */
+    height: 50px; /* Adjust the height */
 }
 
 .pipe-top, .pipe-bottom {
