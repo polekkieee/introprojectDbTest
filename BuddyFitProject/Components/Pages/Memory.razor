@@ -1,0 +1,99 @@
+﻿@page "/Memory"
+
+@using BuddyFitProject.Data.Models
+@using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
+
+@inject Services.UserService UserService
+@inject Services.ItemService ItemService
+@inject Services.PetService PetService
+
+<h3>Memory</h3>
+
+@if (LoggedIn)
+{
+	@for (int i = 0; i < 12; i++)
+	{
+		<div style="position: relative; display: inline-block; width: 200px; height: auto;">
+			<img src="@petimg" alt="Image of @pet.Type" style="width:200px;height:auto;" @onclick="(() => HeightenPoints(i))" />
+			<img src="@($"Clothing/{clothingOptions[i]}.png")" style="position: absolute; top:28%; left:0; width:200px; height:auto;" alt="@clothingOptions[i]" />
+		</div>
+
+		<div class='box'></div>
+	}
+
+	<div>
+		<p>Points: @points</p>
+	</div>
+
+	HeightenPoints(imageId);
+}
+else
+{
+	<p>You must be logged in to play the memory game.</p>
+}
+
+@code {
+	private Users? user;
+	private Pets? pet;
+	private string? petimg;
+	private int imageId;
+	private bool LoggedIn = false;
+	private int points = 0;
+	private HashSet<int> clickedImages = new HashSet<int>();
+
+	private List<string> clothingOptions = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+
+		var httpContext = HttpContextAccessor.HttpContext;
+
+		if (httpContext?.User.Identity?.IsAuthenticated == true)
+		{
+			//Extract user ID from claims
+			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			{
+				user = UserService.GetUserById(loggedInUserId);
+				LoggedIn = true;
+			}
+
+			if (user != null)
+			{
+				pet = PetService.GetPet(user.Id);
+				petimg = $"Pets/{pet.Type.ToLower()}.png";
+			}
+		}
+		RandomizeClothing();
+	}
+
+	private void RandomizeClothing()
+	{
+		// Define clothing options with each type appearing twice
+		var availableClothing = new List<string>
+	{
+		"Tutu", "Tutu",
+		"White", "White",
+		"Suit", "Suit",
+		"Pyjamas", "Pyjamas",
+		"Military", "Military",
+		"nothing", "nothing"
+	};
+
+		// Shuffle the list
+		var random = new Random();
+		clothingOptions = availableClothing.OrderBy(_ => random.Next()).ToList();
+	}
+
+	private void HeightenPoints(int imageId)
+	{
+		if (clickedImages.Add(imageId))
+		{
+			points += 1;
+			StateHasChanged();
+		}
+	}
+}
