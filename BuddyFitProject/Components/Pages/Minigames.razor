@@ -16,7 +16,7 @@
 
 <h3>Minigames</h3>
 
-@if (LoggedIn)
+@if (LoggedIn && Playable)
 {
 	<div class="game-container" @onclick="Flap">
 
@@ -25,7 +25,7 @@
 		@foreach (var cloud in Clouds)
 		{
 			<div class="cloud"
-				 style="top: @($"{cloud.Y}px");
+			style="top: @($"{cloud.Y}px");
                 left: @($"{cloud.X}px");
                 width: @($"{cloud.Width}px");
                 height: @($"{cloud.Height}px");">
@@ -41,10 +41,6 @@
 			<div class="pipe-top" style="top: 0; left:@($"{pipe.X}px"); height:@($"{pipe.TopHeight}px");"> </div>
 			<div class="pipe-bottom" style="bottom: 0; left:@($"{pipe.X}px"); height:@($"{pipe.BottomHeight}px");"> </div>
 		}
-
-
-
-
 		<div class="score"> Score: @Score </div>
 	</div>
 
@@ -57,6 +53,11 @@
 		<button class="start-button" @onclick="StartGame" disabled="@IsGameRunning"> Start Game </button>
 	}
 }
+else if(LoggedIn && !Playable)
+{
+	<h1>Your stamina is to low):</h1>
+}
+
 else
 {
 	<h1>Login to access this page</h1>
@@ -67,7 +68,7 @@ else
 	private Pets? pet;
 	private bool LoggedIn = false;
 	private string? petimg;
-
+	private bool Playable = false;
 	private bool IsGameRunning = false;
 	private bool GameEnded = false;
 	private Bird Birdie = new Bird { X = 100, Y = 200, Width = 50, Height = 50, Velocity = 0 };
@@ -100,9 +101,13 @@ else
 				LoggedIn = true;
 			}
 
-
 			pet = PetService.GetPet(user.Id);
 			petimg = $"Pets/{pet.Type.ToLower()}.png";
+		}
+
+		if (pet.Stamina_bar >= 5)
+		{
+			Playable = true;
 		}
 
 		ResetGame();
@@ -198,6 +203,10 @@ else
 		{
 			pet.Stamina_bar = Math.Max(0, pet.Stamina_bar - 5);
 			PetService.UpdatePet(pet);
+		}
+		if (pet.Stamina_bar < 5)
+		{
+			Playable = false;
 		}
 
 	}

@@ -8,6 +8,8 @@
 @inject Services.ItemService ItemService
 @inject Services.PetService PetService
 
+@rendermode InteractiveServer
+
 <h3>Memory</h3>
 
 @if (LoggedIn)
@@ -15,19 +17,16 @@
 	@for (int i = 0; i < 12; i++)
 	{
 		<div style="position: relative; display: inline-block; width: 200px; height: auto;">
-			<img src="@petimg" alt="Image of @pet.Type" style="width:200px;height:auto;" @onclick="(() => HeightenPoints(i))" />
+			<img src="@petimg" alt="Image of @pet.Type" style="width:200px;height:auto;" />
 			<img src="@($"Clothing/{clothingOptions[i]}.png")" style="position: absolute; top:28%; left:0; width:200px; height:auto;" alt="@clothingOptions[i]" />
 		</div>
-
-		<div class='box'></div>
 	}
 
-	<div>
+	<div @onclick="HeightenPoints">
 		<p>Points: @points</p>
 	</div>
-
-	HeightenPoints(imageId);
 }
+
 else
 {
 	<p>You must be logged in to play the memory game.</p>
@@ -88,12 +87,9 @@ else
 		clothingOptions = availableClothing.OrderBy(_ => random.Next()).ToList();
 	}
 
-	private void HeightenPoints(int imageId)
+	private void HeightenPoints()
 	{
-		if (clickedImages.Add(imageId))
-		{
 			points += 1;
 			StateHasChanged();
-		}
 	}
 }
