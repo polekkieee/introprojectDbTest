@@ -26,7 +26,7 @@
     //variabelen die bepalen of achievements true of false zijn
     private int CurrentMinutes; 
     private int elementscheme = 0;
-    private int FlappyBuddyScore = 0;
+    private int Score = 0; //flappy score
 
     //variabelen om het percentage voltooide achievements te berekenen
     private int aantalAchievements = 12;
@@ -139,7 +139,7 @@
         }
 
 
-        if (FlappyBuddyScore >= 100)
+        if (Score >= 100)
         {
             flappy100Completed = true;
             coinsamount += 1000;
