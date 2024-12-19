@@ -1,0 +1,181 @@
+﻿@page "/Buddory"
+
+@using BuddyFitProject.Data.Models
+@using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc
+
+@inject Services.UserService UserService
+@inject Services.ItemService ItemService
+@inject Services.PetService PetService
+
+@rendermode InteractiveServer
+
+<h3>Buddory! Can you match them all??</h3>
+
+@if (LoggedIn)
+{
+	@if (Playable)
+	{
+		@for (int i = 0; i < 12; i++)
+		{
+			var myValue = i;
+			<div style="position: relative; display: inline-block; width: 200px; height: auto;">
+				<img src="@petimg" alt="Image of @pet.Type" style="width:200px;height:auto;" />
+				<img id="@myValue" src="@($"Clothing/{clothingOptions[i]}.png")" style="position: absolute; top:28%; left:0; width:200px; height:auto;" alt="@clothingOptions[i]" @onclick="() => OnImageClick(myValue)" /> <!--@onclick="() => OnImageClick(i)"-->
+			</div>
+		}
+		<div>
+			<p>Points: @points</p>
+			<p>Time Left: @remainingTime</p>
+			<p>Clicked Image: @TestValue</p>
+		</div>
+	}
+
+	else if (remainingTime <= 0)
+	{
+		<h1>Time's up! Your final score: @points</h1>
+	}
+
+	else if (LoggedIn && !Playable)
+	{
+		<h1>Your stamina is too low! Workout to increase it.</h1>
+	}
+}
+
+else
+{
+	<p>You must be logged in to play the memory game.</p>
+}
+
+@code {
+	private int TestValue;
+	private Users? user;
+	private Pets? pet;
+	private string? petimg;
+	private bool LoggedIn = false;
+	private int points = 0;
+	private bool Playable = false;
+	private int? firstClickedIndex = null;
+	private int? secondClickedIndex = null;
+
+	private List<string> clothingOptions = new();
+
+	private int remainingTime = 30;
+	private System.Timers.Timer? gameTimer;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+
+		var httpContext = HttpContextAccessor.HttpContext;
+
+		if (httpContext?.User.Identity?.IsAuthenticated == true)
+		{
+			//Extract user ID from claims
+			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			{
+				user = UserService.GetUserById(loggedInUserId);
+				LoggedIn = true;
+			}
+
+			if (user != null)
+			{
+				pet = PetService.GetPet(user.Id);
+				petimg = $"Pets/{pet.Type.ToLower()}.png";
+			}
+
+			if (pet?.Stamina_bar >= 5)
+			{
+				Playable = true;
+			}
+		}
+		RandomizeClothing();
+		StartGameTimer();
+	}
+
+	private void RandomizeClothing()
+	{
+		var availableClothing = new List<string>
+		{
+			"Tutu", "Tutu",
+			"White", "White",
+			"Suit", "Suit",
+			"Pyjamas", "Pyjamas",
+			"Military", "Military",
+			"nothing", "nothing"
+		};
+		var random = new Random();
+		clothingOptions = availableClothing.OrderBy(_ => random.Next()).ToList();
+	}
+
+	private void StartGameTimer()
+	{
+		gameTimer = new System.Timers.Timer(1000);
+		gameTimer.Elapsed += (sender, e) =>
+		{
+			if (remainingTime > 0)
+			{
+				remainingTime--;
+				StateHasChanged();
+			}
+			else
+			{
+				StopGame();
+			}
+		};
+		gameTimer.Start();
+	}
+
+	private void StopGame()
+	{
+		if (pet != null) //Substract 5 from the stamina bar everytime a game is played
+		{
+			pet.Stamina_bar = Math.Max(0, pet.Stamina_bar - 5);
+			PetService.UpdatePet(pet);
+		}
+		Playable = false;
+		gameTimer?.Stop();
+	}
+
+	private void OnImageClick(int i)
+	{
+		this.TestValue = i;
+		if (firstClickedIndex == null)
+		{
+			firstClickedIndex = i;
+		}
+		else if (secondClickedIndex == null)
+		{
+			secondClickedIndex = i;
+			if (firstClickedIndex.Value != secondClickedIndex.Value)
+			{
+				CheckForMatch();
+			}
+			firstClickedIndex = null;
+			secondClickedIndex = null;
+		}
+	}
+
+	private void CheckForMatch()
+	{
+		if (firstClickedIndex.HasValue && secondClickedIndex.HasValue)
+		{
+			if (clothingOptions[firstClickedIndex.Value] == clothingOptions[secondClickedIndex.Value])
+			{
+				points += 1;
+			}
+			firstClickedIndex = null;
+			secondClickedIndex = null;
+			StateHasChanged();
+		}
+	}
+
+	private void HeightenPoints(int i)
+	{
+		points += 1;
+		StateHasChanged();
+	}
+}
