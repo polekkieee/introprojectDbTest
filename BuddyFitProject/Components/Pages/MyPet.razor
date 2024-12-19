@@ -60,17 +60,39 @@
 				<br />
 				<div class="img-wrapper">
 					
-					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" /> 
+						<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" />
+					
+
 
 					@if (!string.IsNullOrEmpty(pet.Clothing)) @* Again, a null-checker to avoid the page not loading due to a null value *@
 					{
-						@if(pet.Clothing == "Tutu"){
-							<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" style="top:17%"  alt="@pet.Clothing" />
-					
+						@if (pet.Type == "Bunny")
+						{
+							@if (pet.Clothing == "Tutu")
+							{
+								<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" style="top:17%" alt="@pet.Clothing" />
+
+							}
+							else
+							{
+								<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" style="top:32%" alt="@pet.Clothing" />
+							}
 						}
 						else{
-							<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" alt="@pet.Clothing" />
+							@if (pet.Clothing == "Tutu")
+							{
+								<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" style="top:17%" alt="@pet.Clothing" />
+
+							}
+							else
+							{
+								<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" alt="@pet.Clothing" />
+							}
+
 						}
+
+						
+						
 					}
 					@if (@pet.Clothing == "nothing"){
 						<img class="img-clothes" src="@($"Clothing/nothing.png")"/>

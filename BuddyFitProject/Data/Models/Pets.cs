@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BuddyFitProject.Data.Models
+﻿namespace BuddyFitProject.Data.Models
 {
     public class Pets
     {
@@ -16,5 +14,7 @@ namespace BuddyFitProject.Data.Models
 
         public DateTime Food_bar_tlc { get; set; }
         public DateTime Health_bar_tlc { get; set; }
+        public int Evolution { get; set; }
+      
     }
 }
