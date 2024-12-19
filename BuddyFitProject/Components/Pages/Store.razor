@@ -218,6 +218,7 @@ else
 				LoadUserInventory();
 				SelectedFoodQuantity = 0;
 				responseMessage = "Succesfully bought";
+				PetService.UpdatePet(Pet);
 			}
 			else
 			{
@@ -253,6 +254,7 @@ else
 
 			LoadUserInventory();
 			responseMessage = "Succesfully bought";
+			PetService.UpdatePet(Pet);
 
 		}
 		else
