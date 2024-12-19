@@ -64,6 +64,7 @@
 
 						<div>
 							<InputNumber @bind-Value=SelectedFoodQuantity>Quantity</InputNumber>
+
 							<button class="buybutton" @onclick="BuyFood">Buy</button>
 						</div>
 						<div>
@@ -137,6 +138,7 @@ else
 
 	private string responseMessage = string.Empty;
 
+	private int quantitiybought = 0; //for level algorithm when you buy multiple items once
 	private int bought = 0; //the amount of items bought for level algorithm
 
 	private List<Items> storeItems = new();
@@ -215,6 +217,9 @@ else
 				if (bought % 5 == 0)
 					Pet.Level++;
 
+			    Pet.Level += (int)SelectedFoodQuantity / 5;
+
+
 				LoadUserInventory();
 				SelectedFoodQuantity = 0;
 				responseMessage = "Succesfully bought";
@@ -249,7 +254,6 @@ else
 
 			if (bought % 5 == 0)
 				Pet.Level++;
-			
 
 			LoadUserInventory();
 			responseMessage = "Succesfully bought";
