@@ -59,40 +59,18 @@
 				</div>
 				<br />
 				<div class="img-wrapper">
-					
-						<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" />
-					
 
+					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" /> 
 
 					@if (!string.IsNullOrEmpty(pet.Clothing)) @* Again, a null-checker to avoid the page not loading due to a null value *@
 					{
-						@if (pet.Type == "Bunny")
-						{
-							@if (pet.Clothing == "Tutu")
-							{
-								<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" style="top:17%" alt="@pet.Clothing" />
+						@if(pet.Clothing == "Tutu"){
+							<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" style="top:17%"  alt="@pet.Clothing" />
 
-							}
-							else
-							{
-								<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" style="top:32%" alt="@pet.Clothing" />
-							}
 						}
 						else{
-							@if (pet.Clothing == "Tutu")
-							{
-								<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" style="top:17%" alt="@pet.Clothing" />
-
-							}
-							else
-							{
-								<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" alt="@pet.Clothing" />
-							}
-
+							<img class="img-clothes" src="@($"Clothing/{pet.Clothing}.png")" alt="@pet.Clothing" />
 						}
-
-						
-						
 					}
 					@if (@pet.Clothing == "nothing"){
 						<img class="img-clothes" src="@($"Clothing/nothing.png")"/>
@@ -178,7 +156,8 @@ else
 	private List<UserInventory> userInventory = new();
 	private List<WorkoutSessions> allWorkouts = new();
 	private bool LoggedIn = false;
-	
+
+
 	private int Id { get; set; }
 
 
@@ -207,7 +186,7 @@ else
 				userInventory = UserInventoryService.GetInventory(user.Id);
 				PetService.DecreaseHealth(user, pet);
 				PetService.DigestFood(user, pet);
-				
+
 			}
 		}
 	}
@@ -228,20 +207,25 @@ else
 		var item = ItemService.GetItemById(invItem.ItemId);
 
 		// Check what kind of item it is
-		if (item.Type == "food")
-		{
-			// The pet's food bar will go up whenever the user feeds their pet
-			// and the quantity will drop in the database, both using the method in the needed services
-			PetService.EatFood(pet);
-
-			invItem.Quantity -= 1;
-			UserInventoryService.UpdateUserInventoryItem(invItem);
-		}
-		else if (item.Type == "outfit")
+		
+		if (item.Type == "outfit")
 		{
 			// The clothing item is applied to the pet
 			pet.Clothing = item.Name;
 			PetService.UpdatePet(pet);
+		}
+
+		else if (item.Type == "food" && !(pet.Health_bar == 100 && pet.Food_bar == 100 && pet.Stamina_bar == 100))
+		{		
+				// The pet's food bar will go up whenever the user feeds their pet
+				// and the quantity will drop in the database, both using the method in the needed services
+				PetService.EatFood(pet);
+
+				invItem.Quantity -= 1;
+				UserInventoryService.UpdateUserInventoryItem(invItem);
+			
+			if (pet.Health_bar == 100 && pet.Food_bar == 100 && pet.Stamina_bar == 100)
+			pet.Level++;
 		}
 
 		// The User Inventory will be fetched again in order to display the right quantity
