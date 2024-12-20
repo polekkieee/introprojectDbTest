@@ -34,7 +34,7 @@
 				<InputNumber required @bind-Value="UserAndPet.User.Age" Min="0" @oninput="ValidateAge"/>
 				@if (showAgeWarning)
 				{
-					<h3>Age cannot be negative. Please enter a valid age.</h3>
+					<h3 class="warning">Age cannot be negative. Please enter a valid age.</h3>
 				}
 			</div>
 			<br />

@@ -1,4 +1,4 @@
-﻿﻿USE MASTER
+﻿USE MASTER
 
 -- Create the database
 CREATE DATABASE FitBuddy_db;

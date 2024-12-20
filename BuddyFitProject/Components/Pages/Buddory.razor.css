@@ -1,0 +1,13 @@
+﻿div[style*="background-color"] {
+    transition: background-color 0.3s ease;
+}
+
+div[style*="background-color"]:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.revealed {
+    background-color: transparent;
+    z-index: 1;
+    pointer-events: none; 
+}

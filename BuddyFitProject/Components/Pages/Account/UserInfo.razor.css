@@ -65,3 +65,9 @@ div.input {
     height: auto;
     max-width: 200px;
 }
+
+.warning {
+    color: red;
+    font-size: 0.9em;
+    display: block;
+}

@@ -20,15 +20,27 @@
 		@for (int i = 0; i < 12; i++)
 		{
 			var myValue = i;
-			<div style="position: relative; display: inline-block; width: 200px; height: auto;">
-				<img src="@petimg" alt="Image of @pet.Type" style="width:200px;height:auto;" />
-				<img id="@myValue" src="@($"Clothing/{clothingOptions[i]}.png")" style="position: absolute; top:28%; left:0; width:200px; height:auto;" alt="@clothingOptions[i]" @onclick="() => OnImageClick(myValue)" /> <!--@onclick="() => OnImageClick(i)"-->
+			<div style="position: relative; display: inline-block; width: 200px; height: 200px; margin: 10px;">
+				<!-- Pet Image -->
+				<img src="@petimg" alt="Image of @pet.Type" style="width:200px;height:200px;" />
+
+				<!-- Clothing Image -->
+				<img id="@myValue" src="@($"Clothing/{clothingOptions[i]}.png")"
+					 style="position: absolute; top:28%; left:0; width:200px; height:200px; opacity: @(revealedTiles[i] ? "1" : "0")"
+					 alt="@clothingOptions[i]" />
+
+				<!-- Square Overlay -->
+				<div @onclick="() => OnImageClick(myValue)"
+					 style="position: absolute; top:0; left:0; width:200px; height:200px;
+                    background-color: @(revealedTiles[i] ? "transparent" : "rgba(0, 0, 0, 0.5)")">
+				</div>
 			</div>
 		}
 		<div>
-			<p>Points: @points</p>
-			<p>Time Left: @remainingTime</p>
-			<p>Clicked Image: @TestValue</p>
+			<br />
+			<h4>Points: @points</h4>
+			<h4>Time Left: @remainingTime</h4>
+			<h4>Clicked Image: @TestValue</h4>
 		</div>
 	}
 
@@ -60,6 +72,7 @@ else
 	private int? secondClickedIndex = null;
 
 	private List<string> clothingOptions = new();
+	private List<bool> revealedTiles = new List<bool>(new bool[12]);
 
 	private int remainingTime = 30;
 	private System.Timers.Timer? gameTimer;
@@ -142,6 +155,11 @@ else
 
 	private void OnImageClick(int i)
 	{
+
+		revealedTiles[i] = !revealedTiles[i];
+
+		this.TestValue = i;
+
 		this.TestValue = i;
 		if (firstClickedIndex == null)
 		{
@@ -171,11 +189,5 @@ else
 			secondClickedIndex = null;
 			StateHasChanged();
 		}
-	}
-
-	private void HeightenPoints(int i)
-	{
-		points += 1;
-		StateHasChanged();
 	}
 }
