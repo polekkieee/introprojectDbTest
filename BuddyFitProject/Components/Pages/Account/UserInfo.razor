@@ -22,57 +22,72 @@
 	<header>
 		<h1>Set up your account</h1>
 	</header>
-	
+
 	<br />
 
 	<main>
-	<!--Form where the user needs to fill in their age, gender, start condition, name for their pet and can also choose their pet:-->
-	<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo"> 
-		<h2>About you:</h2><div class="input">
-			<label for="Age" class="l2">Age:</label>
-			<InputNumber required @bind-Value="UserAndPet.User.Age" />
-		</div>
-		<br />
-		<div class="input">
-			<label for="Gender" class="l2">Gender:</label>
-			<InputText required @bind-Value="UserAndPet.User.Gender" />
-		</div>
-		<br />
-		<div class="input">
-			<label for="StartCondition" class="l2">Start Condition:</label>
-			<InputText required @bind-Value="UserAndPet.User.Start_condition" />
-		</div>
+		<!--Form where the user needs to fill in their age, gender, start condition, name for their pet and can also choose their pet:-->
+		<EditForm FormName="infoUser" Model="@UserAndPet" OnValidSubmit="AddInfo">
+			<h2>About you:</h2>
+			<div class="input">
+				<label for="Age" class="l2">Age:</label>
+				<InputNumber required @bind-Value="UserAndPet.User.Age" Min="0" @oninput="ValidateAge"/>
+				@if (showAgeWarning)
+				{
+					<h3>Age cannot be negative. Please enter a valid age.</h3>
+				}
+			</div>
+			<br />
+			<div class="input">
+				<label for="Gender" class="l2">Gender:</label>
+				<InputSelect required @bind-Value="UserAndPet.User.Gender">
+					<option value="Female">Female</option>
+					<option value="Male">Male</option>
+					<option value="Other">Other</option>
+				</InputSelect>
+			</div>
+			<br />
+			<div class="input">
+				<label for="StartCondition" class="l2">Start Condition:</label>
+				<InputSelect required @bind-Value="UserAndPet.User.Start_condition">
+					<option value="Terrible">Terrible</option>
+					<option value="Bad">Bad</option>
+					<option value="Average">Average</option>
+					<option value="Good">Good</option>
+					<option value="Great">Great</option>
+				</InputSelect>
+			</div>
 
-		<br />
-		<br />
+			<br />
+			<br />
 
-		<h2>Choose your Fit Buddy:</h2>
-		<div class="input">
-			<label for="PetName" class="l2">My pet's name is </label>
-			<InputText required @bind-Value="UserAndPet.Pet.Name" />
-		</div>
-		<br />
-		<div class="radio-group">
-			<InputRadioGroup @bind-Value="UserAndPet.Pet.Type">
-				<label class="radio">
-					<InputRadio Value="Bear" />
-					<img src="Pets/bear.png" aria-hidden="true" width="200">
-				</label>
+			<h2>Choose your Fit Buddy:</h2>
+			<div class="input">
+				<label for="PetName" class="l2">My pet's name is </label>
+				<InputText required @bind-Value="UserAndPet.Pet.Name" />
+			</div>
+			<br />
+			<div class="radio-group">
+				<InputRadioGroup @bind-Value="UserAndPet.Pet.Type">
+					<label class="radio">
+						<InputRadio Value="Bear" />
+						<img src="Pets/bear.png" aria-hidden="true" width="200">
+					</label>
 
-				<label class="radio">
-					<InputRadio Value="Cat" />
-					<img src="Pets/cat.png" aria-hidden="true" width="200">
-				</label>
+					<label class="radio">
+						<InputRadio Value="Cat" />
+						<img src="Pets/cat.png" aria-hidden="true" width="200">
+					</label>
 
-				<label class="radio">
-					<InputRadio Value="Bunny" />
-					<img src="Pets/bunny.png" aria-hidden="true" width="200">
-				</label>
-			</InputRadioGroup>
+					<label class="radio">
+						<InputRadio Value="Bunny" />
+						<img src="Pets/bunny.png" aria-hidden="true" width="200">
+					</label>
+				</InputRadioGroup>
 
-		</div>
-	<button type="submit" class="b2">Let's start!</button>
-	</EditForm>
+			</div>
+			<button type="submit" class="b2">Let's start!</button>
+		</EditForm>
 	</main>
 </body>
 
@@ -80,7 +95,7 @@
 @code {
 	[SupplyParameterFromForm]
 	private UserAndPet UserAndPet { get; set; } = new();
-
+	private bool showAgeWarning = false;
 
 	Users? UserDb;
 
@@ -120,6 +135,27 @@
 		}
 	}
 
+	private void ValidateAge(ChangeEventArgs e)
+	{
+		if (int.TryParse(e.Value?.ToString(), out int age))
+		{
+			if (age < 0)
+			{
+				showAgeWarning = true;
+				UserAndPet.User.Age = 0; 
+			}
+			else
+			{
+				showAgeWarning = false;
+			}
+		}
+		else
+		{
+			showAgeWarning = true; 
+		}
+		StateHasChanged();
+	}
+
 	protected override void OnInitialized() //Checks if the user is authenticated and takes consequent actions
 	{
 		var httpContext = HttpContextAccessor.HttpContext; //Retrieves the HTTP context
@@ -138,4 +174,6 @@
 		}
 	}
 }
+
+
 
