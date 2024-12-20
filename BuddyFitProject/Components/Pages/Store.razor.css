@@ -131,7 +131,8 @@ p {
 }
 
 .foodbutton,
-.outfitsbutton {
+.outfitsbutton,
+.attachmentbutton{
     font-size: 1.4rem;
     padding: 10px 20px;
     cursor: pointer;

@@ -227,12 +227,21 @@
 			foodbutton = "foodbutton active";
 			outfitsbutton = "outfitsbutton";
 		}
-		else
+		else if (section == "outfit")
 		{
 			outfitSelected = true;
 			foodSelected = false;
 			foodbutton = "foodbutton";
 			outfitsbutton = "outfitsbutton active";
+		}
+		else if (section == "attachment")
+		{
+			attachmentSelected = true;
+			foodSelected = false;
+			outfitSelected = false;
+			foodbutton = "foodbutton";
+			outfitsbutton = "outfitsbutton";
+			attachmentbutton = "attachmentbutton active";
 		}
 	}
 
