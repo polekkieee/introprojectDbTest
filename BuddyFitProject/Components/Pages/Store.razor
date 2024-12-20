@@ -35,6 +35,8 @@
 			<div class="choosestore">
 				<span class="@foodbutton" @onclick='() => ToggleStore("food")'>Food</span>
 				<span class="@outfitsbutton" @onclick='() => ToggleStore("outfit")'>Outfits</span>
+				@* Added *@
+				<span class="@attachmentbutton" @onclick='() => ToggleStore("attachment")'>Attachment</span>
 			</div>
 
 			@if (foodSelected)
@@ -122,6 +124,56 @@
 
 
 			}
+
+		else if (attachmentSelected)
+		{
+			<div class="storebox">
+				<div class="product-container">
+					@foreach (var item in Attachments)
+					{
+						<div class="productbox" tabindex="@Attachments.IndexOf(item)" @onclick="() => UpdateSelectedAttachment(item)">
+							<div class="product">
+								<img style="width: inherit; object-fit:cover;" src=@($"Clothing/{item.Name}.png") />
+
+
+								@if (UnlockedOutfits.Contains(item))
+								{
+									<span style="color: gray; text-decoration: line-through;">@item.Name</span>
+								}
+							</div>
+						</div>
+					}
+				</div>
+
+				<div class="previewbox">
+					@if (SelectedAttachment != null)
+					{
+						<div class="previewoutfit">
+							<p>Selected Attachment: </p>
+							<img style="width: 280px; height: 280px; object-fit:cover;" src=@($"Accessories/{SelectedAttachment.Name}.png") />
+						</div>
+						<div>
+							Price: @SelectedAttachment.Price
+						</div>
+						<div>
+							@if (UnlockedOutfits.Any(x => x.Id == SelectedAttachment.Id))
+							{
+								<button disabled class="buybutton">Owned</button>
+							}
+							else
+							{
+								<button class="buybutton" @onclick="BuyAttachment">Buy</button>
+							}
+						</div>
+						<div>
+							@responseMessage
+						</div>
+					}
+				</div>
+			</div>
+
+
+		}
 		</div>
 
 	}
@@ -143,20 +195,25 @@
 
 	private List<Items> Outfits = new();
 	private List<Items> Food = new();
+	private List<Items> Attachments = new();
 
 	private List<UserInventory> userInventory = new();
 
 	private List<Items> UnlockedOutfits = new();
 	private List<Items> OwnedFood = new();
+	private List<Items> UnlockedAttachment = new();
 
 	private bool foodSelected = true;
 	private bool outfitSelected = false;
+	private bool attachmentSelected = false;
 
 	private string foodbutton = "foodbutton active";
 	private string outfitsbutton = "outfitsbutton";
+	private string attachmentbutton = "attachmentbutton";
 
 	private Items? SelectedOutfit;
 	private Items? SelectedFood;
+	private Items? SelectedAttachment;
 	private int SelectedFoodQuantity;
 	private int SelectedFoodTotalPrice;
 
@@ -190,6 +247,12 @@
 	private void UpdateSelectedOutfit(Items item)
 	{
 		SelectedOutfit = item;
+		responseMessage = string.Empty;
+	}
+
+	private void UpdateSelectedAttachment(Items item)
+	{
+		SelectedAttachment = item;
 		responseMessage = string.Empty;
 	}
 
@@ -248,6 +311,28 @@
 
 	}
 
+	private void BuyAttachment()
+	{
+		responseMessage = string.Empty;
+		if (User.Coins >= SelectedAttachment.Price)
+		{
+			UserInventory existingInventoryItem = UserInventoryService.GetInventoryItem(User.Id, SelectedAttachment.Id);
+			existingInventoryItem.Quantity = 1;
+			UserInventoryService.UpdateUserInventoryItem(existingInventoryItem);
+
+			User.Coins -= SelectedAttachment.Price;
+			UserService.UpdateUser(User);
+			LoadUserInventory();
+			responseMessage = "Succesfully bought";
+
+		}
+		else
+		{
+			responseMessage = "Not enough coins!";
+		}
+
+	}
+
 	private void LoadUserInventory()
 	{
 		UserInventoryService.UpdateUserInventory(User.Id);
@@ -264,6 +349,10 @@
 			{
 				OwnedFood.Add(ItemService.GetItemById(userInventoryItem.ItemId));
 			}
+			else if (ItemService.GetItemById(userInventoryItem.ItemId).Type == "attachment")
+			{
+				UnlockedAttachment.Add(ItemService.GetItemById(userInventoryItem.ItemId));
+			}
 		}
 
 	}
@@ -279,6 +368,10 @@
 			else if (item.Type == "food")
 			{
 				Food.Add(ItemService.GetItemById(item.Id));
+			}
+			else if (item.Type == "attachment")
+			{
+				Attachments.Add(ItemService.GetItemById(item.Id));
 			}
 		}
 	}
@@ -304,6 +397,7 @@
 
 				SelectedOutfit = Outfits.FirstOrDefault();
 				SelectedFood = Food.FirstOrDefault();
+				SelectedAttachment = Attachments.FirstOrDefault();
 				SelectedFoodQuantity = 0;
 			}
 		}

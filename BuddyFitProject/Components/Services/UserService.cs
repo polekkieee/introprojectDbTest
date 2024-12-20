@@ -9,6 +9,7 @@ using System;
 using Azure.Identity;
 using SendGrid.Helpers.Mail;
 using BuddyFitProject.Components.Pages.Account;
+using Microsoft.Identity.Client;
 
 namespace BuddyFitProject.Components.Services
 {
@@ -147,6 +148,57 @@ namespace BuddyFitProject.Components.Services
             }
         }
 
-       
+
+        //public int CheckInUser(int userId)
+        //{
+        //    using (var dbContext = this.DbContextFactory.CreateDbContext())
+        //    {
+        //        var user = dbContext.Users.SingleOrDefault(x => x.Id == userId);
+
+        //        if (user == null)
+        //            throw new ArgumentException("User not found");
+
+        //        DateTime today = DateTime.Now;
+
+        //        if (user.LastCheckInDate == today)
+        //        {
+        //            return user.DailyReward;
+        //        }
+
+        //        if (user.LastCheckInDate == today.AddDays(-1))
+        //        {
+        //            user.StreakCount++;
+        //            user.DailyReward = Math.Min(100 + (user.StreakCount * 100), 500)
+        //        }
+
+        //        else
+        //        {
+        //            user.StreakCount = 1;
+        //            user.DailyReward = 100;
+        //        }
+
+        //        user.LastCheckInDate = today;
+
+        //        dbContext.Users.Update(user);
+        //        dbContext.SaveChanges();
+
+        //        return user.DailyReward;
+
+        //    }
+        //}
+
+        //public (int StreakCount, int DailyReward) GetStreakInfo (int userId)
+        //{
+        //    using (var dbContext = this.DbContextFactory.CreateDbContext())
+        //    {
+        //        var user = dbContext.Users.SingleOrDefault(x =>x.Id == userId);
+
+        //        if (user == null)
+        //            throw new ArgumentException("User not found");
+
+        //        return (user.StreakCount, user.DailyReward);
+        //    }
+        //}
+
     }
 }

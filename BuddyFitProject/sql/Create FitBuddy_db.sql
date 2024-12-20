@@ -34,6 +34,7 @@ CREATE TABLE Pets (
     health_bar INT DEFAULT 100,
     stamina_bar INT DEFAULT 100,
     clothing NVARCHAR(50) NOT NULL,
+    accessories NVARCHAR(50) NOT NULL,
     food_bar_tlc DATETIME2,
     health_bar_tlc DATETIME2,
     FOREIGN KEY (userId) REFERENCES Users(Id) ON DELETE CASCADE
@@ -92,3 +93,9 @@ CREATE TABLE UserStatistics (
     FOREIGN KEY (exerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
 );
 GO
+
+-- Added Create Streak table, doesn't work yet
+Create Table Streak (
+    CurrentStreak INT DEFAULT 0,
+    LastAttendanceDate DATETIME NULL,
+    CoinBalance INT DEFAULT 0);

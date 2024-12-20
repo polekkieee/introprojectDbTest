@@ -13,6 +13,7 @@ namespace BuddyFitProject.Data.Models
         public int Health_bar { get; set; }
         public int Stamina_bar { get; set; }
         public string Clothing { get; set; }
+        public string Accessories { get; set; }
 
         public DateTime Food_bar_tlc { get; set; }
         public DateTime Health_bar_tlc { get; set; }

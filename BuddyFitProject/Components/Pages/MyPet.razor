@@ -76,6 +76,28 @@
 						<img class="img-clothes" src="@($"Clothing/nothing.png")"/>
 					}
 				</div>
+
+				<div class="img-wrapper">
+
+					<img class="img-pet" src="@($"Pets/{pet.Type.ToLower()}.png")" alt="@pet.Type" />
+
+					@if (!string.IsNullOrEmpty(pet.Accessories)) @* Again, a null-checker to avoid the page not loading due to a null value *@
+					{
+						@if (pet.Accessories == "Belt")
+						{
+							<img class="img-clothes" src="@($"Accessories/{pet.Accessories}.png")" style="top:17%" alt="@pet.Accessories" />
+
+						}
+						else
+						{
+							<img class="img-clothes" src="@($"Clothing/{pet.Accessories}.png")" alt="@pet.Accessories" />
+						}
+					}
+					@if (@pet.Accessories == "nothing")
+					{
+						<img class="img-clothes" src="@($"Accessories/nothing.png")" />
+					}
+				</div>
 			</div>
 		}
 
@@ -124,6 +146,31 @@
 							{ 
 								<li class="inventory-item">
 									<img src=@($"Clothing/{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
+									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
+									<p>@inventoryItem.Quantity</p>
+									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
+								</li>
+							}
+						}
+					</ul>
+				</div>
+
+				<div class="accessories-items">
+					<h3><strong>Accessories</strong></h3>
+					<ul class="inventory-list">
+						<li class="inventory-item">
+							<img class="img-item" src=@($"Pets/{pet.Type.ToLower()}.png") />
+							<p>Nothing</p>
+							<button class="use-button" @onclick="() => AccessoriesUnequip() ">Use</button>
+						</li>
+
+						@foreach (var inventoryItem in userInventory)
+						{
+							@* Same logic for Food-items is applied here *@
+							if (ItemService.GetItemById(inventoryItem.ItemId).Type == "attachment" && inventoryItem.Quantity > 0)
+							{
+								<li class="inventory-item">
+									<img src=@($"Accessories/{ItemService.GetItemById(inventoryItem.ItemId).Name}.png") class="img-item" />
 									<p>@ItemService.GetItemById(inventoryItem.ItemId).Name</p>
 									<p>@inventoryItem.Quantity</p>
 									<button class="use-button" @onclick="() => UseItem(inventoryItem)">Use</button>
@@ -200,6 +247,16 @@ else
 		navigationManager.NavigateTo(navigationManager.Uri, true);
 	}
 
+	private void AccessoriesUnequip()
+	{
+		pet.Accessories = "nothing";
+		PetService.UpdatePet(pet);
+
+		// The User Inventory will be fetched again in order to display the right quantity
+		userInventory = UserInventoryService.GetInventory(user.Id);
+		navigationManager.NavigateTo(navigationManager.Uri, true);
+	}
+
 	private void UseItem(UserInventory invItem)
 	{
 		// Fetch the item that the user wants to use from the database
@@ -219,6 +276,12 @@ else
 		{
 			// The clothing item is applied to the pet
 			pet.Clothing = item.Name;
+			PetService.UpdatePet(pet);
+		}
+		else if (item.Type == "attachment")
+		{
+			// The clothing item is applied to the pet
+			pet.Accessories = item.Name;
 			PetService.UpdatePet(pet);
 		}
 

@@ -1,0 +1,40 @@
+﻿@* @page "/Streaks" *@
+@* @using BuddyFitProject.Data.Models *@
+@* @using System.Security.Claims *@
+@* @using Microsoft.AspNetCore.Mvc *@
+@* @using Microsoft.EntityFrameworkCore *@
+
+@* @inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory *@
+@* @inject NavigationManager navigationManager *@
+@* @inject IHttpContextAccessor HttpContextAccessor *@
+@* @inject Services.UserService UserService *@
+@* @inject Services.ItemService ItemService *@
+@* @inject Services.PetService PetService *@
+@* @rendermode InteractiveServer *@
+
+@* <h3> Daily Streak</h3> *@
+
+@* <p> Check in daily to increase your streak and earn rewards!</p> *@
+@* <button @onclick = "CheckIn"> Check In</button> *@
+
+@* @if (streakInfo != null) *@
+@* { *@
+@* 	<p> CurrentStreak: @streakInfo.CurrentStreak </p> *@
+@* 	<p> Coins earned today: @(streakInfo.CoinsEarned) </p> *@
+@* 	<p> Total Coins: @streakInfo.TotalCoins </p> *@
+@* } *@
+
+
+
+@* @code { *@
+
+@* 	private StreakInfo streakInfo; *@
+
+@* 	private async Task CheckIn() *@
+@* 	{ *@
+@* 		var userId = 1; *@
+@* 		streakInfo = await UserService.CheckInAsync(userId); *@
+@* 	} *@
+
+
+@* } *@
