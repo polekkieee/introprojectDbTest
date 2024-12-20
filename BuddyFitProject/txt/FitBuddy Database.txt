@@ -51,12 +51,27 @@ o userId (Foreign Key): References the owner of the inventory.
 o itemId (Foreign Key): References the item in the inventory.
 o quantity: Number of the specific item owned.
 
-7. Statistics
+7. UserStatistics
 o Id (Primary Key): Unique identifier for each statistics entry.
 o userId (Foreign Key): References the user.
 o exerciseId (Foreign Key): References the exercise.
 o total_minutes: Total minutes spent on the exercise in the time period.
 o total_coins: Total coins earned for the exercise in the time period.
+
+8. Achievements
+o Id (Primary Key): Unique identifier for each achievements entry.
+o name: Name of the achievement (e.g., Reach level 10, Workout for 100 minutes).
+o description: Description text of the achievement.
+o condition_type: The type of condition that has to be met to unlock the achievement.
+o condition_value: Value of the codition that has to be met (e.g. level '10').
+o reward_type: The type of reward when achievement is achieved (e.g. item, coins).
+o reward_value: Value of the reward (e.g. '1000' coins);
+
+9. UserAchievements
+o Id (Primary Key): Unique identifier for each user achievements entry.
+o userId (Foreign Key): References the owner of the achievement.
+o achievementId (Foreign Key): References the achievement.
+o unlocked: Boolean that defines if the user achievement is unlocked.
 
 
 Relationships
@@ -64,7 +79,8 @@ Relationships
 * Users - Pets: One-to-One (Each user has one pet).
 * Users - WorkoutSessions: One-to-Many (A user can log multiple sessions).
 * Users - UserInventory: One-to-Many (A user owns multiple items).
-* Users - Statistics: One-to-Many (Each user has multiple statistic records).
+* Users - UserStatistics: One-to-Many (Each user has multiple statistic records).
+* Users - UserAchievements: One-to-Many (Each user has multiple achievements).
 * Exercises - WorkoutSessions: One-to-Many (Each session references an exercise).
 * Items - UserInventory: One-to-Many (Users buy items from the store).
 

@@ -1,0 +1,528 @@
+﻿@page "/Achievements"
+@using BuddyFitProject.Data.Models
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.EntityFrameworkCore
+
+@inject IDbContextFactory<BuddyFitProject.Data.BuddyFitDbContext> DbFactory
+@inject NavigationManager navigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject Services.UserService UserService
+@inject Services.ItemService ItemService
+@inject Services.PetService PetService
+@inject Services.UserInventoryService UserInventoryService
+@inject Services.UserStatisticsService UserStatisticsService
+@inject Services.WorkoutSessionService WorkoutSessionService
+@inject Services.AchievementsService AchievementsService
+@inject Services.UserAchievementsService UserAchievementsService
+
+
+@rendermode InteractiveServer
+
+<head>
+	<PageTitle> Achievements </PageTitle>
+</head>
+
+@code {
+	private int coinsamount; //aantal coins user
+	private int level; //hoogte level van de user, heeft ook invloed op achievements
+
+	//variabelen die bepalen of achievements true of false zijn
+	private int CurrentMinutes;
+	private int elementscheme; // moet nog gedaan worden !!!
+
+	//variabelen om het percentage voltooide achievements te berekenen
+	private int aantalAchievements;
+	private int Achievementscomplete;
+	private int percentage;
+
+	private List<string> ConditionTypes = new List<string> { "level", "exercise", "scheme", "game1", "game2", "game3" };
+
+	private List<Achievements> AllAchievements = new();
+	private Dictionary<string, List<Achievements>> AchievementsDict = new();
+
+	private List<UserAchievements> AllUserAchievements = new();
+	private List<UserAchievements> LockedAchievements = new();
+	private List<UserAchievements> UnlockedUserAchievements = new();
+	private List<int> UnlockedAchievements = new();
+
+	private Users? user;
+	private Pets? pet;
+	private List<UserStatistics>? userStats;
+	private bool LoggedIn = false;
+
+	protected override async void OnInitialized()
+	{
+		await base.OnInitializedAsync();
+
+		var httpContext = HttpContextAccessor.HttpContext;
+
+		if (httpContext?.User.Identity?.IsAuthenticated == true)
+		{
+			// Extract user ID from claims
+			var userIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+			if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int loggedInUserId))
+			{
+
+				user = UserService.GetUserById(loggedInUserId);
+
+				// Boolean LoggedIn is changed to true so the user has access to the page
+				LoggedIn = true;
+
+				pet = PetService.GetPet(user.Id);
+				userStats = UserStatisticsService.GetStatisticsByUser(user.Id);
+
+				coinsamount = user.Coins;
+				level = pet.Level;
+
+				CurrentMinutes = userStats.Sum(x => x.Total_minutes);
+
+				LoadAchievements();
+				LoadUserAchievements();
+
+				CheckNewUnlockedAchievements();
+
+				LoadUserAchievements();
+
+				UpdatePercentageComplete();
+			}
+		}
+
+	}
+
+	public void CheckNewUnlockedAchievements()
+	{
+		foreach (var Achiev in AllAchievements)
+		{
+			if (CheckAchievementCondition(Achiev))
+			{
+				if (!UnlockedAchievements.Contains(Achiev.Id))
+				{
+					UnlockAchievement(Achiev);
+				}
+			}
+		}
+
+	}
+
+	public void UnlockAchievement(Achievements Achiev)
+	{
+		int RewardValueInt = int.Parse(Achiev.Reward_Value);
+		if (Achiev.Reward_Type == "coins")
+		{
+			user.Coins += RewardValueInt;
+			UserService.UpdateUser(user);
+		}
+		else if (Achiev.Reward_Type == "item")
+		{
+			try
+			{
+				if (UserInventoryService.UserInventoryExists(user.Id))
+				{
+					if (!UserInventoryService.
+						GetInventory(user.Id).
+						Contains(
+								UserInventoryService.GetInventoryItem(user.Id, RewardValueInt)
+							)
+						)
+					{
+						UserInventoryService.AddUserInventory(
+												new UserInventory
+													{
+														UserId = user.Id,
+														ItemId = RewardValueInt,
+														Quantity = 1
+													}
+												);
+						UserInventoryService.UpdateUserInventory(user.Id);
+					}
+				}
+			}
+			catch
+			{
+				Console.WriteLine("error: could not add item to inventory");
+				return;
+			}
+		}
+		UserAchievements userAchiev = UserAchievementsService.GetUserAchievementByUserAndAchievement(user.Id, Achiev.Id);
+		userAchiev.Unlocked = true;
+		UserAchievementsService.UpdateUserAchievement(userAchiev);
+	}
+
+	public void LoadAchievements()
+	{
+		AchievementsDict.Clear();
+		AllAchievements = AchievementsService.GetAllAchievements();
+
+		foreach (var achievement in AllAchievements)
+		{
+			if (AchievementsDict.ContainsKey(achievement.Condition_Type))
+			{
+				AchievementsDict[achievement.Condition_Type].Add(achievement);
+			}
+			else
+			{
+				AchievementsDict.Add(achievement.Condition_Type, new List<Achievements>());
+				AchievementsDict[achievement.Condition_Type].Add(achievement);
+			}
+		}
+
+		aantalAchievements = AllAchievements.Count();
+	}
+
+	public void LoadUserAchievements()
+	{
+		// Ensure the user achievements are updated before we load them
+		UserAchievementsService.UpdateUserAchievements(user.Id);
+
+		// Load all user achievements
+		AllUserAchievements = UserAchievementsService.GetAllAchievements(user.Id);
+		UnlockedUserAchievements = UserAchievementsService.GetUnlockedAchievements(user.Id);
+		Console.WriteLine(AllUserAchievements.Count().ToString());
+		// Initialize or clear the collections
+		LockedAchievements.Clear();
+
+		// Add unlocked achievements to UnlockedAchievements
+		UnlockedAchievements = AchievementsService.GetUnlockedAchievementsIds(user.Id);
+
+		// Add the remaining locked achievements to LockedAchievements
+		foreach (var achievement in AllUserAchievements)
+		{
+			if (!UnlockedUserAchievements.Contains(achievement))
+			{
+				LockedAchievements.Add(achievement);
+			}
+		}
+	}
+
+
+	public bool CheckAchievementCondition(Achievements Achiev)
+	{
+		if (Achiev.Condition_Type == "level")
+		{
+			return pet.Level >= Achiev.Condition_Value;
+		}
+		else if (Achiev.Condition_Type == "exercise")
+		{
+			return CurrentMinutes >= Achiev.Condition_Value;
+		}
+		else if (Achiev.Condition_Type == "game1")
+		{
+			return user.Highscore_1 >= Achiev.Condition_Value;
+		}
+		else if (Achiev.Condition_Type == "game2")
+		{
+			return user.Highscore_2 >= Achiev.Condition_Value;
+		}
+		else if (Achiev.Condition_Type == "game3")
+		{
+			return user.Highscore_3 >= Achiev.Condition_Value;
+		}
+
+		return false; // Return false if conditionType doesn't match or parsing failed
+	}
+
+	// berekent percentage voltooide achievements
+	public void UpdatePercentageComplete()
+	{
+		//elk achievement die unlocked is verhoogt het voltooide aantal achievements
+		percentage = (int)((double)UnlockedAchievements.Count() / AllUserAchievements.Count() * 100);
+	}
+}
+
+<style>
+	body {
+		margin: 0;
+		font-family: Arial, sans-serif;
+		background: linear-gradient(to bottom, purple, blue);
+		color: #333;
+		padding: 20px;
+		position: relative;
+	}
+
+	h1 {
+		font-size: 4rem;
+		margin-top: 5px;
+		color: #fff;
+		text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+		text-align: center;
+	}
+
+	/* dit houdt bij hoeveel coins de user heeft */
+	.coin {
+		position: absolute;
+		top: 10px;
+		right: 200px;
+		width: 40px;
+		height: 40px;
+		background-color: gold;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: bold;
+		color: #fff;
+		font-size: 18px;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	}
+
+	.coin-label {
+		position: absolute;
+		top: 15px;
+		right: 120px;
+		font-size: 22px;
+		font-weight: bold;
+		text-align: left;
+		color: #fff;
+		text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+	}
+
+	/* Dit houdt bij welk level de user is */
+	.level-coin {
+		position: absolute;
+		top: 60px;
+		right: 200px;
+		width: 40px;
+		height: 40px;
+		background-color: green;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: bold;
+		color: #fff;
+		font-size: 18px;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	}
+
+	.level-label {
+		position: absolute;
+		top: 65px;
+		right: 120px;
+		font-size: 22px;
+		font-weight: bold;
+		text-align: left;
+		color: #fff;
+		text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+	}
+
+	.wrappercolumn {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.wrapperrow {
+		display: flex;
+		flex-direction: row;
+	}
+
+	/*alle kaders voor achievements*/
+	.Achievement {
+		width: 200px;
+		height: 200px;
+		margin-left: 70px;
+		margin-top: 50px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+		outline-color: white;
+		outline-style: auto;
+		background-color: rgba(255, 215, 0, 0.2);
+	}
+
+		.Achievement label {
+			font-size: 0.9rem;
+			font-weight: bold;
+			text-align: center;
+			color: white;
+			margin: 3px;
+		}
+
+	/*als achievement op true, dan is voltooid, text groen*/
+	.Achievement-waarde {
+		width: 150px;
+		height: 30px;
+		display: flex;
+		margin-bottom: 8px;
+		justify-content: center;
+		font-size: 1.3rem;
+		font-weight: bold;
+		color: limegreen;
+		outline-color: white;
+		outline-style: auto;
+		background-color: rgba(0, 0, 0, 0.2);
+		border-radius: 5px;
+	}
+
+	/*logo achievemen voor level*/
+	.level {
+		width: 80px;
+		height: 80px;
+		margin-top: 10px;
+		background-color: green;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: bold;
+		font-size: 2rem;
+		color: #fff;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	}
+
+	/*logo achievemen voor minuten*/
+	.exercise {
+		width: 100px;
+		height: 70px;
+		margin-top: 10px;
+		background: linear-gradient(90deg, #3f51b5, #2196f3);
+		border: 3px solid white;
+		border-radius: 15px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: bold;
+		font-size: 1.8rem;
+		color: white;
+		box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+		transform: skewX(-10deg); /*from ai*/
+	}
+
+	/*logo achievemen voor schema*/
+	.scheme {
+		width: 165px;
+		height: 80px;
+		margin-top: 10px;
+		background: repeating-linear-gradient( 45deg, #607d8b, #607d8b 10px, #37474f 10px, #37474f 20px );
+		border: 5px double #cfd8dc;
+		border-radius: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: bold;
+		font-size: 1.8rem;
+		color: gold;
+		text-shadow: 20px 20px 20px rgba(0, 100, 200, 0.5);
+		box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+	}
+
+	/*logo achievemen voor games*/
+	.game1, .game2, .game3 {
+		width: 95px;
+		height: 85px;
+		margin-top: 10px;
+		background: conic-gradient(from 0deg, #ff5722, #e91e63, #9c27b0, #673ab7, #ff5722);
+		border: 4px solid white;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: bold;
+		font-size: 2.2rem;
+		color: #fff;
+		box-shadow: 0 0 20px rgba(255, 87, 34, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.3);
+		animation: rotate 4s linear infinite;
+	}
+
+	/*als achievement op false dan text is rood*/
+	.incomplete {
+		color: red;
+	}
+
+	/*toont percentage behaalde achievements*/
+	.percentagecomplete {
+		position: absolute;
+		top: 5px;
+		left: 300px;
+		width: 280px;
+		height: 120px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		background-color: rgba(0,0,0,0.2);
+	}
+
+		.percentagecomplete label {
+			font-weight: bold;
+			font-size: 2rem;
+			text-align: center;
+			color: gold;
+		}
+</style>
+
+<div class="coin">$</div>
+<div class="coin-label">@coinsamount</div>
+
+<div class="level-coin">lvl</div>
+<div class="level-label">@level</div>
+
+<h1>Achievements</h1>
+<div class="percentagecomplete">
+	<label>Completed: @percentage%</label>
+</div>
+
+<div class="wrapperrow">
+
+	@foreach (var Type in AchievementsDict)
+	{
+		@if (Type.Key == "game2" || Type.Key == "game3")
+		{
+			continue;
+		}
+		else if (Type.Key == "game1")
+		{
+			<div class="wrappercolumn">
+
+				<div class="Achievement">
+					<div class="@AchievementsDict["game1"].FirstOrDefault().Condition_Type">@AchievementsDict["game1"].FirstOrDefault().Condition_Value</div>
+					<label> @AchievementsDict["game1"].FirstOrDefault().Description </label>
+					<!--Als achievement unlocked, dan wordt de klasse voor rode text niet toegevoegd en text is "completed" wel, bij false andersom-->
+					<div class="Achievement-waarde @(UnlockedAchievements.Contains(AchievementsDict["game1"].FirstOrDefault().Id) ? "" : "incomplete")">
+						@(UnlockedAchievements.Contains(AchievementsDict["game1"].FirstOrDefault().Id) ? "Completed" : "Incomplete")
+					</div>
+				</div>
+
+				<div class="Achievement">
+					<div class="@AchievementsDict["game2"].FirstOrDefault().Condition_Type">@AchievementsDict["game2"].FirstOrDefault().Condition_Value</div>
+					<label> @AchievementsDict["game2"].FirstOrDefault().Description </label>
+					<!--Als achievement unlocked, dan wordt de klasse voor rode text niet toegevoegd en text is "completed" wel, bij false andersom-->
+					<div class="Achievement-waarde @(UnlockedAchievements.Contains(AchievementsDict["game2"].FirstOrDefault().Id) ? "" : "incomplete")">
+						@(UnlockedAchievements.Contains(AchievementsDict["game2"].FirstOrDefault().Id) ? "Completed" : "Incomplete")
+					</div>
+				</div>
+
+				<div class="Achievement">
+					<div class="@AchievementsDict["game3"].FirstOrDefault().Condition_Type">@AchievementsDict["game3"].FirstOrDefault().Condition_Value</div>
+					<label> @AchievementsDict["game3"].FirstOrDefault().Description </label>
+					<!--Als achievement unlocked, dan wordt de klasse voor rode text niet toegevoegd en text is "completed" wel, bij false andersom-->
+					<div class="Achievement-waarde @(UnlockedAchievements.Contains(AchievementsDict["game3"].FirstOrDefault().Id) ? "" : "incomplete")">
+						@(UnlockedAchievements.Contains(AchievementsDict["game3"].FirstOrDefault().Id) ? "Completed" : "Incomplete")
+					</div>
+				</div>
+			</div>
+		}
+		else
+		{
+			<div class="wrappercolumn">
+
+				@foreach (var Achievement in Type.Value)
+				{
+					<div class="Achievement">
+						<div class="@Achievement.Condition_Type">@Achievement.Condition_Value</div>
+						<label> @Achievement.Description </label>
+						<!--Als achievement unlocked, dan wordt de klasse voor rode text niet toegevoegd en text is "completed" wel, bij false andersom-->
+						<div class="Achievement-waarde @(CheckAchievementCondition(Achievement) ? "" : "incomplete")">
+							@(CheckAchievementCondition(Achievement) ? "Completed" : "Incomplete")
+						</div>
+					</div>
+				}
+			</div>
+
+		}
+
+	}
+
+</div>

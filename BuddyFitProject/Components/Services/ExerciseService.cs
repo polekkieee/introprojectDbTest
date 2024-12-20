@@ -15,7 +15,7 @@ namespace BuddyFitProject.Components.Services
         public List<Exercises> LoadExercises()
         {
             using (var dbContext = DbContextFactory.CreateDbContext())
-            {
+            { 
                 var exercises = dbContext.Exercises.ToList();
 
                 return exercises;

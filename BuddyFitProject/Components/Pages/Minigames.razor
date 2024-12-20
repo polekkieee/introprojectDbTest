@@ -1,4 +1,4 @@
-﻿@page "/Minigames"
+﻿@page "/flappypet"
 @using System.Timers;
 @using BuddyFitProject.Data.Models
 @using System.Security.Claims
@@ -25,7 +25,7 @@
 		@foreach (var cloud in Clouds)
 		{
 			<div class="cloud"
-				 style="top: @($"{cloud.Y}px");
+			style="top: @($"{cloud.Y}px");
                 left: @($"{cloud.X}px");
                 width: @($"{cloud.Width}px");
                 height: @($"{cloud.Height}px");">
@@ -198,6 +198,12 @@ else
 		{
 			pet.Stamina_bar = Math.Max(0, pet.Stamina_bar - 5);
 			PetService.UpdatePet(pet);
+		}
+
+		if(user.Highscore_1 < Score){
+			user.Highscore_1 = Score;
+			UserService.UpdateUser(user);
+
 		}
 
 	}

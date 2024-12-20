@@ -23,6 +23,9 @@ builder.Services.AddTransient<UserInventoryService>();
 builder.Services.AddTransient<EmailService>();
 builder.Services.AddTransient<ValidateUserService>();
 builder.Services.AddTransient<ItemService>();
+builder.Services.AddTransient<AchievementsService>();
+builder.Services.AddTransient<UserAchievementsService>(); 
+
 
 builder.WebHost.UseStaticWebAssets();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

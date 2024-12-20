@@ -61,6 +61,7 @@ namespace BuddyFitProject.Components.Services
                                         });
                     }
                 }
+                dbContext.SaveChanges();
             }
         }
 
@@ -111,8 +112,8 @@ namespace BuddyFitProject.Components.Services
                     dbContext.SaveChanges();
                 }
 
-                //dbContext.UserInventory.Update(userinv);
-                //dbContext.SaveChanges();
+                UpdateUserInventoryItem(userinv);
+                dbContext.SaveChanges();
             }
         }
 

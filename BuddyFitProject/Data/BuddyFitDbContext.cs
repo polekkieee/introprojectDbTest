@@ -16,6 +16,10 @@ namespace BuddyFitProject.Data
         public DbSet<UserInventory> UserInventory { get; set; } = default!;
         public DbSet<UserStatistics> UserStatistics { get; set; } = default!;
         public DbSet<WorkoutSessions> WorkoutSessions { get; set; } = default!;
+        public DbSet<Achievements> Achievements { get; set; } = default!;
+        public DbSet<UserAchievements> UserAchievements { get; set; } = default!;
+
+
 
     }
 }

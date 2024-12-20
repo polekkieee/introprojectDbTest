@@ -15,5 +15,10 @@ public class Users
     public int Coins { get; set; } = 0;
     public string Resetcode { get; set; } = "Empty";
     public DateTime Register_moment { get; set; }
-    
+    public int Highscore_1 { get; set; } = 0;
+    public int Highscore_2 { get; set; } = 0;
+    public int Highscore_3 { get; set; } = 0;
+
+
+
 }

@@ -13,11 +13,11 @@ namespace BuddyFitProject.Components.Services
         private IDbContextFactory<BuddyFitDbContext> DbContextFactory;
 
         public PetService(IDbContextFactory<BuddyFitDbContext> dbContext) //Construction to initialize the service with a database context factory
-        {
+        { 
             DbContextFactory = dbContext;
         }
 
-        public Pets GetPet(int userId) //Retrieves pet from correct user from the database
+        public Pets GetPet(int userId) //Retrieves pet from correct user from the database 
         {
             using (var dbContext = DbContextFactory.CreateDbContext())
             {
