@@ -129,6 +129,7 @@ else
 		{
 			Pipes.Add(GeneratePipe(i * 300 + 400)); // Generating pipes at spaced positions
 		}
+
 		Score = 0;
 	}
 
@@ -202,12 +203,32 @@ else
 		if (pet != null) //Substract 5 from the stamina bar everytime a game is played
 		{
 			pet.Stamina_bar = Math.Max(0, pet.Stamina_bar - 5);
+
+			if (Score >= 100)
+			{
+				pet.Level += 8;
+			}
+			else if (Score >= 50)
+			{
+				pet.Level += 3;
+			}
+			else if (Score >= 20)
+			{
+				pet.Level += 2;
+			}
+			else if (Score >= 5)
+			{
+				pet.Level += 1;
+			}
+
 			PetService.UpdatePet(pet);
 		}
 		if (pet.Stamina_bar < 5)
 		{
 			Playable = false;
 		}
+
+
 
 	}
 
