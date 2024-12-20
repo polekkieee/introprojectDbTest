@@ -42,7 +42,7 @@ namespace BuddyFitProject.Components.Services
                 return pet.Health_bar;
             }
 
-            if (pet.Health_bar < 100)
+            if (pet.Health_bar > 0)
             {
                 TimeSpan Ts = DateTime.Now - pet.Health_bar_tlc; //Timespan since user was registered
                 pet.Health_bar -= Ts.Hours; //So the healthbar lowers one every hour
