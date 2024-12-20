@@ -40,11 +40,11 @@
 
         </EditForm>
         <br />
-        
+
         <div class="message">
             <p>@errorMessage</p>
         </div>
-    
+
 
     </main>
 </body>
@@ -63,6 +63,9 @@
             User.Start_condition = "new";
             User.Gender = "new";
             User.Resetcode = "12345678";
+            User.Highscore_1 = 0;
+            User.Highscore_2 = 0;
+            User.Highscore_3 = 0;
             UserService.AddUser(User); //Saves the new user into the database
             navigationManager.NavigateTo("/login");
         }
